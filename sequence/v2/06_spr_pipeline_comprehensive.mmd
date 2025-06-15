@@ -1,0 +1,204 @@
+sequenceDiagram
+    participant User as User[H(U)]
+    participant SPRPipeline as SPR Pipeline[Φ(spr)]
+    participant CompressScript as spr_compress.sh[I(text→spr)]
+    participant DecompressScript as spr_decompress.sh[I(spr→text)]
+    participant ClaudeClient as Claude Client[H(AI)]
+    participant ReactorEngine as Reactor Engine[H(workflow)]
+    participant ValidationEngine as Validation Engine[I(quality)]
+    participant MetricsCollector as Metrics Collector[H(metrics)]
+    participant FileSystem as File System[H(storage)]
+    participant TelemetryEmitter as Telemetry[H(trace)]
+    participant OTEL as OpenTelemetry[H(otel)]
+
+    Note over User,OTEL: SPR Pipeline: Information Compression with Fidelity<br/>Compression Theorem: H(compressed) ≤ H(original) - H(redundancy)<br/>Fidelity Measure: F = I(decompressed;original) / H(original)
+
+    %% Phase 1: SPR Compression Request and Initialization
+    User->>+SPRPipeline: ./spr_pipeline.sh compress document.txt standard 0.1<br/>H(request) = H(file) + H(format) + H(ratio) + H(params)
+    SPRPipeline->>SPRPipeline: parse_compression_parameters()<br/>H(params) = log₂(|formats|) + log₂(|ratios|) + log₂(|options|)
+    SPRPipeline->>SPRPipeline: validate_input_file_existence()<br/>I(file_exists;request) ∈ {0,1}
+    SPRPipeline->>SPRPipeline: initialize_compression_context()<br/>H(context) = H(input_file) + H(compression_settings)
+
+    %% Input File Analysis
+    SPRPipeline->>+FileSystem: read_input_file(document.txt)<br/>H(input) = -∑ p(token) log₂ p(token)
+    FileSystem-->>-SPRPipeline: file_content[text_data, file_size]<br/>I(content;file) = file content information
+    SPRPipeline->>SPRPipeline: analyze_text_characteristics()<br/>H(text) = H(vocabulary) + H(syntax) + H(semantics)
+    SPRPipeline->>SPRPipeline: calculate_baseline_entropy()<br/>H₀(text) = original information content
+    SPRPipeline->>SPRPipeline: estimate_compression_potential()<br/>Compression_Potential = H(redundancy) = H(text) - H(essential)
+
+    %% Phase 2: Compression Process - Information Reduction
+    SPRPipeline->>+CompressScript: execute_compression(text, format=standard, ratio=0.1)<br/>Φ(compress) = text → SPR transformation
+    CompressScript->>CompressScript: prepare_compression_context()<br/>H(compression_context) = H(format_spec) + H(target_ratio)
+    
+    %% Claude AI Compression Processing
+    CompressScript->>+ClaudeClient: request_spr_compression(text, format_spec)<br/>I(text;compression_request) = text-to-SPR information flow
+    ClaudeClient->>ClaudeClient: generate_trace_id_for_spr()<br/>H(trace_id) = 128 bits unique compression identifier
+    ClaudeClient->>+TelemetryEmitter: emit_compression_start_telemetry()<br/>H(start_telemetry) = compression operation metadata
+    TelemetryEmitter->>+OTEL: record_spr_compression_span()<br/>H(span) = compression operation observability
+    OTEL-->>-TelemetryEmitter: span_recorded[span_id]<br/>I(span;compression_op) = tracing information
+    TelemetryEmitter-->>-ClaudeClient: telemetry_active[trace_context]<br/>H(trace_context) = distributed tracing context
+
+    %% AI Compression Analysis
+    ClaudeClient->>ClaudeClient: analyze_text_for_compression()<br/>H(analysis) = AI understanding of text structure
+    Note right of ClaudeClient: SPR Compression Information Theory:<br/>Essential Information: H(essential) = irreducible content<br/>Redundant Information: H(redundant) = removable content<br/>Compression Ratio: R = H(compressed)/H(original)<br/>Information Loss: L = H(original) - I(compressed;original)
+
+    alt Format: Minimal (3-7 words/statement)
+        ClaudeClient->>ClaudeClient: extract_minimal_essence()<br/>H(minimal) = core concepts only
+        ClaudeClient->>ClaudeClient: apply_maximum_compression()<br/>Ratio = 0.05-0.10 (aggressive compression)
+        ClaudeClient->>ClaudeClient: preserve_critical_relationships()<br/>I(relationships;minimal) = essential structure preservation
+    else Format: Standard (8-15 words/statement)
+        ClaudeClient->>ClaudeClient: balance_compression_fidelity()<br/>H(standard) = balanced information preservation
+        ClaudeClient->>ClaudeClient: apply_moderate_compression()<br/>Ratio = 0.10-0.20 (balanced compression)
+        ClaudeClient->>ClaudeClient: maintain_semantic_coherence()<br/>I(semantics;standard) = meaning preservation
+    else Format: Extended (10-25 words/statement)
+        ClaudeClient->>ClaudeClient: preserve_context_richness()<br/>H(extended) = enhanced context preservation
+        ClaudeClient->>ClaudeClient: apply_conservative_compression()<br/>Ratio = 0.20-0.40 (conservative compression)
+        ClaudeClient->>ClaudeClient: retain_nuanced_information()<br/>I(nuance;extended) = detailed information preservation
+    end
+
+    %% SPR Generation Process
+    ClaudeClient->>ClaudeClient: generate_spr_statements()<br/>H(spr_statements) = compressed representation entropy
+    ClaudeClient->>ClaudeClient: validate_spr_format_compliance()<br/>I(format_compliant;spr_spec) = format verification
+    ClaudeClient->>ClaudeClient: calculate_compression_metrics()<br/>Metrics = {ratio, fidelity, processing_time}
+    ClaudeClient-->>-CompressScript: spr_result[compressed_text, metadata]<br/>H(spr) = H(statements) + H(metadata)
+
+    %% SPR Output Processing
+    CompressScript->>CompressScript: add_spr_metadata_headers()<br/>H(headers) = H(original_stats) + H(compression_stats) + H(timestamp)
+    CompressScript->>CompressScript: calculate_compression_ratio()<br/>Actual_Ratio = H(spr) / H(original)
+    CompressScript->>CompressScript: validate_compression_quality()<br/>Quality = f(ratio_achieved, information_preservation, format_compliance)
+    CompressScript->>+FileSystem: write_spr_output(output_file)<br/>I(spr_file;spr_content) = persistent storage
+    FileSystem-->>-CompressScript: file_written[spr_filepath, checksum]<br/>H(written) = storage confirmation entropy
+    CompressScript-->>-SPRPipeline: compression_complete[spr_file, compression_metrics]<br/>I(compressed;original) = compression outcome
+
+    %% Phase 3: SPR Validation - Quality Verification
+    SPRPipeline->>+ValidationEngine: validate_spr_quality(spr_file)<br/>H(validation) = SPR quality assessment
+    ValidationEngine->>+FileSystem: read_spr_file(spr_filepath)<br/>I(spr_content;file) = SPR content extraction
+    FileSystem-->>-ValidationEngine: spr_content[statements, metadata]<br/>H(spr_data) = SPR content entropy
+    
+    %% SPR Structure Validation
+    ValidationEngine->>ValidationEngine: validate_spr_structure()<br/>H(structure_valid) = 0 (deterministic validation)
+    ValidationEngine->>ValidationEngine: check_metadata_completeness()<br/>I(metadata_complete;required_fields) = completeness verification
+    ValidationEngine->>ValidationEngine: analyze_statement_quality()<br/>H(statement_quality) = individual statement assessment
+    ValidationEngine->>ValidationEngine: calculate_format_compliance()<br/>Compliance = I(actual_format;expected_format)
+    
+    %% Compression Quality Metrics
+    ValidationEngine->>ValidationEngine: measure_compression_efficiency()<br/>Efficiency = [H(original) - H(spr)] / Processing_Cost
+    ValidationEngine->>ValidationEngine: assess_information_density()<br/>Density = I(essential_info;spr) / H(spr)
+    ValidationEngine->>ValidationEngine: evaluate_semantic_preservation()<br/>Semantic_Fidelity = I(spr_meaning;original_meaning)
+    ValidationEngine-->>-SPRPipeline: validation_complete[quality_report]<br/>H(quality) = comprehensive quality assessment
+
+    %% Phase 4: SPR Decompression - Information Expansion
+    SPRPipeline->>+DecompressScript: execute_decompression(spr_file, expansion=detailed)<br/>Φ(decompress) = SPR → text transformation
+    DecompressScript->>+FileSystem: read_spr_file(spr_filepath)<br/>I(spr_content;storage) = SPR retrieval
+    FileSystem-->>-DecompressScript: spr_content[statements, metadata]<br/>H(spr_input) = compressed information entropy
+    
+    DecompressScript->>DecompressScript: parse_spr_metadata()<br/>H(metadata) = compression context information
+    DecompressScript->>DecompressScript: extract_compression_parameters()<br/>H(params) = original compression settings
+    DecompressScript->>DecompressScript: prepare_decompression_context()<br/>H(decompression_context) = expansion context preparation
+
+    %% Claude AI Decompression Processing  
+    DecompressScript->>+ClaudeClient: request_spr_decompression(spr_content, expansion_type)<br/>I(spr;decompression_request) = SPR-to-text information flow
+    ClaudeClient->>+TelemetryEmitter: emit_decompression_start_telemetry()<br/>H(decompression_telemetry) = decompression operation metadata
+    TelemetryEmitter->>OTEL: record_spr_decompression_span()<br/>H(decompression_span) = decompression observability
+    TelemetryEmitter-->>-ClaudeClient: decompression_telemetry_active<br/>I(telemetry;decompression) = operation tracing
+
+    %% AI Decompression Analysis
+    ClaudeClient->>ClaudeClient: analyze_spr_for_expansion()<br/>H(expansion_analysis) = AI understanding of SPR structure
+    Note right of ClaudeClient: SPR Decompression Information Theory:<br/>Expansion Factor: E = H(expanded)/H(compressed)<br/>Information Reconstruction: R = I(expanded;original)<br/>Fidelity Measure: F = I(expanded;original)/H(original)<br/>Intelligence Addition: ΔI = H(expanded) - I(compressed;original)
+
+    alt Expansion: Brief (concise essentials)
+        ClaudeClient->>ClaudeClient: expand_to_essential_detail()<br/>H(brief) = H(spr) + H(minimal_detail)
+        ClaudeClient->>ClaudeClient: preserve_compressed_structure()<br/>I(structure;spr) = structural fidelity
+        ClaudeClient->>ClaudeClient: add_minimal_context()<br/>ΔH(context) = minimal context addition
+    else Expansion: Detailed (full explanation)
+        ClaudeClient->>ClaudeClient: reconstruct_original_content()<br/>H(detailed) = H(spr) + H(contextual_expansion)
+        ClaudeClient->>ClaudeClient: add_explanatory_context()<br/>ΔH(explanation) = significant context addition
+        ClaudeClient->>ClaudeClient: enhance_semantic_richness()<br/>I(semantic_rich;spr) = semantic enhancement
+    else Expansion: Comprehensive (extensive background)
+        ClaudeClient->>ClaudeClient: generate_comprehensive_exposition()<br/>H(comprehensive) = H(spr) + H(extensive_context)
+        ClaudeClient->>ClaudeClient: add_background_information()<br/>ΔH(background) = substantial information addition
+        ClaudeClient->>ClaudeClient: provide_detailed_explanations()<br/>I(detailed_explanation;spr) = explanation enhancement
+    end
+
+    %% Decompression Generation
+    ClaudeClient->>ClaudeClient: generate_expanded_text()<br/>H(expanded) = H(spr) + ΔH(expansion)
+    ClaudeClient->>ClaudeClient: validate_expansion_quality()<br/>Quality = f(fidelity, coherence, completeness)
+    ClaudeClient->>ClaudeClient: calculate_expansion_metrics()<br/>Metrics = {expansion_ratio, fidelity, coherence_score}
+    ClaudeClient-->>-DecompressScript: expanded_result[expanded_text, metrics]<br/>H(expanded) = decompressed information entropy
+
+    %% Decompression Output Processing
+    DecompressScript->>DecompressScript: add_decompression_metadata()<br/>H(metadata) = expansion process information
+    DecompressScript->>DecompressScript: calculate_fidelity_metrics()<br/>Fidelity = I(expanded;original) / H(original)
+    DecompressScript->>+FileSystem: write_expanded_output(expanded_file)<br/>I(expanded_file;expanded_content) = persistent expanded storage
+    FileSystem-->>-DecompressScript: expanded_file_written[filepath, checksum]<br/>H(expanded_written) = expanded storage confirmation
+    DecompressScript-->>-SPRPipeline: decompression_complete[expanded_file, metrics]<br/>I(expanded;spr) = decompression outcome
+
+    %% Phase 5: Roundtrip Testing - Fidelity Verification
+    SPRPipeline->>SPRPipeline: execute_roundtrip_test(original, spr, expanded)<br/>H(roundtrip) = complete compression-decompression cycle analysis
+    SPRPipeline->>SPRPipeline: compare_original_to_expanded()<br/>I(expanded;original) = information preservation measure
+    SPRPipeline->>SPRPipeline: calculate_information_loss()<br/>Loss = H(original) - I(expanded;original)
+    SPRPipeline->>SPRPipeline: measure_semantic_similarity()<br/>Similarity = cosine_similarity(semantic_vectors)
+    SPRPipeline->>SPRPipeline: assess_structural_preservation()<br/>Structure_Preservation = I(structure_expanded;structure_original)
+
+    %% Roundtrip Quality Analysis
+    SPRPipeline->>SPRPipeline: analyze_compression_effectiveness()<br/>Effectiveness = [Information_Preserved / Compression_Achieved]
+    SPRPipeline->>SPRPipeline: evaluate_expansion_quality()<br/>Expansion_Quality = [Coherence × Completeness × Accuracy]
+    SPRPipeline->>SPRPipeline: calculate_overall_fidelity()<br/>Overall_Fidelity = I(final;original) / H(original)
+
+    %% Phase 6: Metrics Collection and Analysis
+    SPRPipeline->>+MetricsCollector: collect_spr_pipeline_metrics()<br/>H(metrics) = comprehensive SPR performance data
+    MetricsCollector->>MetricsCollector: aggregate_compression_metrics()<br/>H(compression_metrics) = compression performance summary
+    MetricsCollector->>MetricsCollector: aggregate_decompression_metrics()<br/>H(decompression_metrics) = decompression performance summary
+    MetricsCollector->>MetricsCollector: calculate_pipeline_efficiency()<br/>Efficiency = [Information_Quality / Processing_Resources]
+    
+    %% Performance Metrics Calculation
+    MetricsCollector->>MetricsCollector: measure_processing_throughput()<br/>Throughput = [Words_Processed / Time] = Φ(words)
+    MetricsCollector->>MetricsCollector: analyze_quality_distribution()<br/>Quality_Distribution = H(quality_scores)
+    MetricsCollector->>MetricsCollector: assess_consistency_metrics()<br/>Consistency = variance(quality_scores) inverse measure
+    MetricsCollector->>MetricsCollector: evaluate_scalability_characteristics()<br/>Scalability = ∂Performance/∂(Input_Size)
+
+    %% Advanced Analytics
+    MetricsCollector->>MetricsCollector: identify_optimization_opportunities()<br/>Optimization = argmax(Performance_Improvement_Potential)
+    MetricsCollector->>MetricsCollector: predict_performance_at_scale()<br/>Scale_Performance = f(current_metrics, scale_factor)
+    MetricsCollector-->>-SPRPipeline: metrics_collection_complete[comprehensive_analysis]<br/>H(analysis) = complete SPR pipeline characterization
+
+    %% Phase 7: Reactor Integration - Workflow Orchestration
+    SPRPipeline->>+ReactorEngine: integrate_spr_with_reactor_workflows()<br/>I(spr;reactor) = SPR-reactor integration information
+    ReactorEngine->>ReactorEngine: create_spr_compression_workflow()<br/>H(workflow) = SPR workflow definition
+    ReactorEngine->>ReactorEngine: define_parallel_processing_steps()<br/>H(parallel) = concurrent SPR processing capability
+    ReactorEngine->>ReactorEngine: implement_error_recovery_patterns()<br/>H(recovery) = fault tolerance information
+    ReactorEngine->>ReactorEngine: establish_telemetry_integration()<br/>I(telemetry;spr_workflow) = observability integration
+    ReactorEngine-->>-SPRPipeline: reactor_integration_complete[workflow_definition]<br/>H(integrated_workflow) = SPR reactor workflow
+
+    %% Phase 8: Batch Processing Capabilities
+    SPRPipeline->>SPRPipeline: execute_batch_processing_mode(directory)<br/>H(batch) = multiple file processing information
+    SPRPipeline->>SPRPipeline: discover_processable_files(*.txt)<br/>H(files) = file collection entropy
+    
+    loop File Processing
+        SPRPipeline->>SPRPipeline: process_individual_file(file)<br/>H(file_processing) = per-file SPR processing
+        SPRPipeline->>SPRPipeline: track_batch_progress()<br/>Progress = Files_Processed / Total_Files
+        SPRPipeline->>SPRPipeline: accumulate_batch_metrics()<br/>H(batch_metrics) += H(file_metrics)
+    end
+    
+    SPRPipeline->>SPRPipeline: generate_batch_summary_report()<br/>H(batch_summary) = comprehensive batch processing results
+
+    %% Final Results and Telemetry
+    SPRPipeline->>+TelemetryEmitter: emit_pipeline_completion_telemetry()<br/>H(completion_telemetry) = complete pipeline operation metadata
+    TelemetryEmitter->>OTEL: record_complete_spr_pipeline_span()<br/>H(complete_span) = end-to-end SPR pipeline observability
+    TelemetryEmitter-->>-SPRPipeline: telemetry_emission_complete<br/>I(telemetry;pipeline_operation) = observability completion
+
+    SPRPipeline-->>-User: spr_pipeline_complete[results, metrics, quality_report]<br/>H(final_results) = comprehensive SPR pipeline outcome
+
+    Note over User,OTEL: SPR Pipeline Results Summary:<br/>Compression Ratio: R = H(compressed)/H(original)<br/>Information Fidelity: F = I(expanded;original)/H(original)<br/>Processing Efficiency: E = Quality_Score / Processing_Time<br/>Roundtrip Quality: Q = semantic_similarity × structural_preservation<br/>Pipeline Throughput: Φ = words_processed / time_elapsed
+
+    %% Error Handling and Recovery - Information Preservation
+    rect rgb(255, 240, 240)
+        Note over SPRPipeline: SPR Error Recovery Protocol<br/>Information Loss Prevention
+        SPRPipeline->>SPRPipeline: detect_compression_failure()<br/>H(error_context) = failure state information preservation
+        SPRPipeline->>SPRPipeline: preserve_original_content()<br/>H(preserved) = H(original) (no information loss)
+        SPRPipeline->>SPRPipeline: implement_graceful_degradation()<br/>Degraded_Mode = reduced_quality but preserved_functionality
+        SPRPipeline->>TelemetryEmitter: emit_error_recovery_telemetry()<br/>Error recovery information for analysis
+        SPRPipeline->>User: spr_partial_results[available_output, error_context]<br/>Partial results with error transparency
+    end
+
+    Note over User,OTEL: Information Theory Summary:<br/>Original Entropy: H(original) = source text information content<br/>Compression Bound: H(compressed) ≥ H(essential) = irreducible information<br/>Expansion Gain: ΔH(expansion) = H(expanded) - H(compressed)<br/>Fidelity Constraint: I(expanded;original) ≤ H(original)<br/>Quality Measure: Q = [I(expanded;original)/H(original)] × [Compression_Ratio⁻¹]
