@@ -370,9 +370,9 @@ defmodule TraceTestHelpers do
   Asserts that HTTP headers contain trace information.
   """
   def assert_trace_headers(headers, expected_trace_id) when is_list(headers) do
-    trace_header = Enum.find(headers, fn {name, _value} -> name == "X-Trace-ID" end)
+    trace_header = Enum.find(headers, fn {name, _value} -> name == "x-trace-id" end)
     
-    assert trace_header != nil, "Expected X-Trace-ID header to be present"
+    assert trace_header != nil, "Expected x-trace-id header to be present"
     
     {_name, trace_id_value} = trace_header
     assert trace_id_value == expected_trace_id,

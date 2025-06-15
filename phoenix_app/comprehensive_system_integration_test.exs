@@ -5,7 +5,8 @@
 
 Mix.install([
   {:jason, "~> 1.4"},
-  {:reactor, "~> 0.15.4"}
+  {:reactor, "~> 0.15.4"},
+  {:req, "~> 0.4.0"}
 ])
 
 # Load all existing reactor modules
@@ -15,6 +16,9 @@ Code.require_file("lib/self_sustaining/workflows/coordination_reactor.ex", __DIR
 Code.require_file("lib/self_sustaining/workflows/optimized_coordination_reactor.ex", __DIR__)
 Code.require_file("lib/self_sustaining/workflows/api_orchestration_reactor.ex", __DIR__)
 Code.require_file("lib/self_sustaining/enhanced_reactor_runner.ex", __DIR__)
+
+# Load required reactor steps (mock version for testing)
+Code.require_file("mock_n8n_workflow_step.exs", __DIR__)
 
 defmodule ComprehensiveSystemIntegrationTest do
   @moduledoc """
@@ -396,6 +400,7 @@ defmodule ComprehensiveSystemIntegrationTest do
   defp test_enhanced_runner_with_aps(trace_id) do
     aps_data = %{
       name: "Enhanced Runner APS Test",
+      description: "Testing enhanced runner integration with APS workflow",
       roles: ["PM_Agent"],
       activities: [%{name: "Test", tasks: ["Enhanced runner validation"]}],
       scenarios: []
@@ -458,6 +463,7 @@ defmodule ComprehensiveSystemIntegrationTest do
     # Step 1: APS workflow
     aps_result = test_aps_agent_workflow(%{
       name: "Trace Test",
+      description: "End-to-end trace validation test",
       roles: ["PM_Agent"],
       activities: [],
       scenarios: []
@@ -476,7 +482,7 @@ defmodule ComprehensiveSystemIntegrationTest do
     ]
   end
 
-  defp validate_trace_propagation(trace_results, master_trace) do
+  defp validate_trace_propagation(trace_results, trace_id) do
     # Analyze trace consistency across reactor executions
     reactors_traced = length(trace_results)
     

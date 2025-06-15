@@ -10,7 +10,7 @@ defmodule WebTraceIntegrationTest do
   alias SelfSustainingWeb.Plugs.TraceHeaderPlug
   
   describe "TraceHeaderPlug" do
-    test "extracts trace ID from X-Trace-ID header" do
+    test "extracts trace ID from x-trace-id header" do
       trace_id = "test-trace-123"
       
       conn = conn(:get, "/", "")

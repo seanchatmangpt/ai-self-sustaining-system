@@ -1,0 +1,12 @@
+[
+  {
+    "worktree_name": "xavos-system",
+    "branch_name": "xavos-main",
+    "worktree_path": "/Users/sac/dev/ai-self-sustaining-system/worktrees/xavos-system",
+    "created_at": "2025-06-15T20:02:46.7808Z",
+    "trace_id": "f7a006808b7edd6078c648a78aa08035",
+    "status": "active",
+    "agents": [],
+    "coordination_dir": "/Users/sac/dev/ai-self-sustaining-system/worktrees/xavos-system/agent_coordination"
+  }
+]

@@ -316,7 +316,7 @@ defmodule FullPipelineTraceTest do
   
   defp generate_trace_headers(trace_id) do
     [
-      {"X-Trace-ID", to_string(trace_id)},
+      {"x-trace-id", to_string(trace_id)},
       {"X-Pipeline-Trace", to_string(trace_id)},
       {"X-OTel-Trace-Context", "#{trace_id}-span-#{System.unique_integer()}"}
     ]

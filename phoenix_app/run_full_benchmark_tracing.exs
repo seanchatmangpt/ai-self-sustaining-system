@@ -81,7 +81,7 @@ defmodule FullBenchmarkTracing do
       master_trace_id: master_trace_id,
       phase: phase_name,
       trace_headers: %{
-        "X-Trace-ID" => master_trace_id,
+        "x-trace-id" => master_trace_id,
         "X-OTel-Context" => "active"
       }
     })
@@ -117,7 +117,7 @@ defmodule FullBenchmarkTracing do
       phase: phase_name,
       input_data: input_data,
       trace_headers: %{
-        "X-Trace-ID" => master_trace_id,
+        "x-trace-id" => master_trace_id,
         "X-OTel-Context" => "active"
       },
       nodes: [

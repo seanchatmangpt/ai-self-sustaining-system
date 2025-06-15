@@ -143,7 +143,7 @@ defmodule N8nTraceIntegrationTest do
     end
     
     # Verify expected headers are present
-    expected_headers = ["X-Trace-ID"]
+    expected_headers = ["x-trace-id"]
     
     header_names = Enum.map(trace_headers, fn {name, _value} -> name end)
     
@@ -154,7 +154,7 @@ defmodule N8nTraceIntegrationTest do
     end
     
     # Check trace ID values in headers
-    trace_id_header = Enum.find(trace_headers, fn {name, _} -> name == "X-Trace-ID" end)
+    trace_id_header = Enum.find(trace_headers, fn {name, _} -> name == "x-trace-id" end)
     
     if trace_id_header do
       {_name, header_trace_id} = trace_id_header
@@ -237,7 +237,7 @@ defmodule N8nTraceIntegrationTest do
     
     # Add trace ID if available
     headers = if trace_id = Map.get(context, :trace_id) do
-      [{"X-Trace-ID", to_string(trace_id)} | headers]
+      [{"x-trace-id", to_string(trace_id)} | headers]
     else
       headers
     end

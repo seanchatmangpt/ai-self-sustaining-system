@@ -1,0 +1,18 @@
+{
+  "trace_id": "f7a006808b7edd6078c648a78aa08035",
+  "span_id": "ce91ad59a04c3bd1",
+  "operation": "s2s.worktree.create",
+  "worktree": "xavos-system", 
+  "status": "success",
+  "timestamp": "2025-06-15T20:02:46.8198Z",
+  "service": {
+    "name": "s2s-worktree-management",
+    "version": "1.0.0"
+  },
+  "attributes": {
+  "s2s.worktree_name": "xavos-system",
+  "s2s.branch_name": "xavos-main",
+  "s2s.base_branch": "master",
+  "s2s.worktree_path": "/Users/sac/dev/ai-self-sustaining-system/worktrees/xavos-system"
+}
+}

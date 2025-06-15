@@ -88,8 +88,14 @@ cd ai-self-sustaining-system
 # Run system health check
 ./scripts/check_status.sh
 
+# Verify Claude Desktop integration
+./check_claude_setup.sh
+
 # Test agent coordination
 cd agent_coordination && ./test_coordination_helper.sh
+
+# Run comprehensive integration tests
+./test_integration.sh
 
 # Run Phoenix tests
 cd phoenix_app && mix test
@@ -119,6 +125,12 @@ mix run reactor_simulation_benchmark.exs
 
 # Validate trace ID propagation
 mix run trace_id_integration_test.exs
+
+# Run trace validation suite
+./scripts/trace_validation_suite.sh
+
+# Test trace performance
+./scripts/validate_trace_performance.sh
 ```
 
 ## 🔧 Development
@@ -130,6 +142,15 @@ cd agent_coordination && bats coordination_helper.bats
 
 # Verify work claiming atomicity
 ./test_coordination_helper.sh
+
+# Test OpenTelemetry integration
+./test_otel_integration.sh
+
+# Run agent swarm orchestration
+./agent_swarm_orchestrator.sh
+
+# Demonstrate Claude AI intelligence integration
+./demo_claude_intelligence.sh
 
 # Monitor coordination telemetry
 tail -f telemetry_spans.jsonl
@@ -165,14 +186,36 @@ mix compile --warnings-as-errors
 ## 📁 Key Directories
 
 - **`agent_coordination/`** - Agent coordination files and utilities
+  - `coordination_helper.sh` - Core work claiming and coordination
+  - `agent_swarm_orchestrator.sh` - Multi-agent swarm management
+  - `demo_claude_intelligence.sh` - Claude AI integration demo
+  - `manage_worktrees.sh` - Git worktree development tools
 - **`features/`** - Gherkin BDD specifications (11 feature files)
 - **`phoenix_app/`** - Main Elixir/Phoenix application
+  - `start_livebook_teams.sh` - Livebook Teams analytics integration
+  - `scripts/` - Trace validation and performance testing tools
 - **`phoenix_app/lib/self_sustaining/reactor_middleware/`** - Reactor middleware
 - **`phoenix_app/lib/self_sustaining/workflows/`** - Reactor workflow definitions
 - **`n8n_workflows/`** - n8n workflow configurations
 - **`scripts/`** - System management scripts
+  - `setup.sh`, `start_system.sh`, `check_status.sh`, `monitor.sh`
 
 ## 🔬 Advanced Features
+
+### Livebook Teams Integration
+```bash
+# Start Livebook Teams for real-time analytics
+cd phoenix_app && ./start_livebook_teams.sh
+# Access at http://localhost:8080 with token authentication
+```
+
+### Git Worktree Management for Development
+```bash
+# Manage multiple development environments
+cd agent_coordination && ./manage_worktrees.sh list
+./manage_worktrees.sh create feature_branch
+./manage_worktrees.sh cleanup
+```
 
 ### Trace ID and Correlation ID Access
 ```elixir
@@ -243,6 +286,12 @@ cd phoenix_app && mix run reactor_simulation_benchmark.exs
 
 # Check telemetry middleware
 mix run test_telemetry_middleware_direct.exs
+
+# Validate trace implementation
+./scripts/validate_trace_implementation.sh
+
+# Detect trace antipatterns
+./scripts/detect_trace_antipatterns.sh
 ```
 
 **Database Connection Issues:**
