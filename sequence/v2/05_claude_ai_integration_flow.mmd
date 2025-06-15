@@ -1,0 +1,171 @@
+sequenceDiagram
+    participant User as System User[H(U)]
+    participant CoordSystem as Coordination System[Φ(coord)]
+    participant ClaudeClient as Claude Client[I(request;context)]
+    participant ClaudeAPI as Claude API[H(AI)]
+    participant ContextProcessor as Context Processor[H(context)]
+    participant ResponseProcessor as Response Processor[I(response;structured)]
+    participant JSONValidator as JSON Validator[H(valid|response)]
+    participant TelemetryEmitter as Telemetry Emitter[H(AI_telemetry)]
+    participant OTEL as OpenTelemetry[H(trace)]
+    participant DecisionEngine as Decision Engine[I(decision;analysis)]
+    participant CoordHelper as coordination_helper.sh[Φ(shell→AI)]
+    participant StreamProcessor as Stream Processor[∂H/∂t]
+
+    Note over User,StreamProcessor: Claude AI Integration: Intelligence Amplification<br/>Information Gain: ΔI = H(AI_enhanced_decision) - H(original_context)<br/>Intelligence Coefficient: α = I(output;AI_processing) / I(input;context)
+
+    %% Phase 1: Context Preparation and Request Formation
+    User->>+CoordSystem: request_ai_analysis(coordination_context)<br/>H(request) = H(context) + H(analysis_type) + H(parameters)
+    CoordSystem->>+ContextProcessor: prepare_claude_context(coordination_data)<br/>I(context;coordination_state) = contextual information extraction
+
+    %% Context Enrichment Process
+    ContextProcessor->>ContextProcessor: extract_agent_status_information()<br/>H(agent_context) = ∑ᵢ H(agent_i_state)
+    ContextProcessor->>ContextProcessor: gather_work_queue_metrics()<br/>H(queue_context) = H(pending) + H(in_progress) + H(completed)
+    ContextProcessor->>ContextProcessor: collect_performance_history()<br/>H(history) = temporal information about system behavior
+    ContextProcessor->>ContextProcessor: analyze_coordination_patterns()<br/>I(patterns;coordination_events) = pattern recognition information
+    
+    %% System State Compilation
+    ContextProcessor->>ContextProcessor: compile_system_health_snapshot()<br/>H(health) = H(performance) + H(errors) + H(capacity)
+    ContextProcessor->>ContextProcessor: format_for_ai_consumption()<br/>H(formatted) = H(raw_data) + H(structure) - H(noise)
+    ContextProcessor-->>-CoordSystem: context_prepared[structured_context]<br/>I(structured;raw) = information organization value
+
+    %% Phase 2: AI Request Dispatch and Processing
+    CoordSystem->>+ClaudeClient: dispatch_ai_request(context, analysis_type)<br/>Φ(AI_request) = information flow rate to AI
+    ClaudeClient->>ClaudeClient: generate_trace_id_for_ai_request()<br/>H(trace_id) = 128 bits unique identifier
+    ClaudeClient->>ClaudeClient: prepare_request_headers()<br/>H(headers) = authentication + metadata information
+    ClaudeClient->>ClaudeClient: validate_request_format()<br/>I(valid_format;API_spec) = format compliance verification
+
+    %% Telemetry Emission for AI Request
+    ClaudeClient->>+TelemetryEmitter: emit_ai_request_telemetry()<br/>H(request_telemetry) = H(context_size) + H(timestamp) + H(parameters)
+    TelemetryEmitter->>+OTEL: record_ai_interaction_span()<br/>H(span) = H(operation) + H(attributes) + H(timing)
+    OTEL-->>-TelemetryEmitter: span_recorded[span_id]<br/>I(span;ai_operation) = observability information
+    TelemetryEmitter-->>-ClaudeClient: telemetry_emitted[trace_context]<br/>H(trace_context) = distributed tracing information
+
+    %% Phase 3: Claude API Interaction - Intelligence Processing
+    ClaudeClient->>+ClaudeAPI: POST /v1/messages<br/>Request: {context, analysis_request}<br/>H(AI_input) = H(context) + H(query)
+    Note right of ClaudeAPI: AI Processing Information:<br/>Input Entropy: H(context + query)<br/>Processing Complexity: C(AI) = f(context_size, analysis_depth)<br/>Intelligence Amplification: A = H(insights)/H(input)<br/>Response Quality: Q = relevance × accuracy × completeness
+
+    %% AI Analysis Processing
+    ClaudeAPI->>ClaudeAPI: analyze_coordination_context()<br/>H(analysis) = AI processing of coordination state
+    ClaudeAPI->>ClaudeAPI: generate_intelligent_insights()<br/>ΔI(insights) = I(analysis_output) - I(context_input) > 0
+    ClaudeAPI->>ClaudeAPI: formulate_recommendations()<br/>H(recommendations) = actionable intelligence generation
+    ClaudeAPI->>ClaudeAPI: structure_response_format()<br/>I(structured;unstructured) = response organization value
+
+    %% Different AI Analysis Types (Parallel Processing)
+    alt Health Analysis Request
+        ClaudeAPI->>ClaudeAPI: analyze_system_health_indicators()<br/>H(health_analysis) = comprehensive health assessment
+        ClaudeAPI->>ClaudeAPI: identify_performance_bottlenecks()<br/>I(bottlenecks;performance_data) = problem identification
+        ClaudeAPI->>ClaudeAPI: recommend_health_improvements()<br/>H(health_recommendations) = improvement suggestions
+    else Priority Analysis Request
+        ClaudeAPI->>ClaudeAPI: analyze_work_item_priorities()<br/>H(priority_analysis) = priority assessment intelligence
+        ClaudeAPI->>ClaudeAPI: evaluate_business_value_alignment()<br/>I(priority;business_value) = value-priority correlation
+        ClaudeAPI->>ClaudeAPI: suggest_priority_optimizations()<br/>H(priority_recommendations) = optimization suggestions
+    else Assignment Optimization Request
+        ClaudeAPI->>ClaudeAPI: analyze_agent_capabilities_matching()<br/>I(agents;work_types) = capability-work matching information
+        ClaudeAPI->>ClaudeAPI: optimize_workload_distribution()<br/>H(optimized_distribution) = load balancing intelligence
+        ClaudeAPI->>ClaudeAPI: predict_assignment_outcomes()<br/>I(outcomes;assignments) = predictive assignment intelligence
+    else Stream Analysis Request
+        ClaudeAPI->>ClaudeAPI: setup_streaming_response_mode()<br/>∂H/∂t = continuous intelligence stream
+        ClaudeAPI->>ClaudeAPI: initialize_real_time_analysis()<br/>H(stream) = continuous analysis information
+    end
+
+    ClaudeAPI-->>-ClaudeClient: ai_response[structured_analysis, confidence_scores]<br/>H(AI_response) = H(insights) + H(confidence) + H(metadata)
+
+    %% Phase 4: Response Processing and Validation
+    ClaudeClient->>+ResponseProcessor: process_ai_response(raw_response)<br/>I(processed;raw) = response enhancement information
+    ResponseProcessor->>ResponseProcessor: extract_response_content()<br/>H(content) = core AI analysis information
+    ResponseProcessor->>ResponseProcessor: parse_confidence_indicators()<br/>H(confidence) = AI certainty quantification
+    ResponseProcessor->>ResponseProcessor: identify_actionable_items()<br/>I(actionable;analysis) = action extraction from analysis
+
+    %% JSON Validation and Structure Verification
+    ResponseProcessor->>+JSONValidator: validate_response_structure()<br/>I(valid_structure;schema) = structural compliance verification
+    JSONValidator->>JSONValidator: verify_json_schema_compliance()<br/>H(schema_valid) = 0 (deterministic validation)
+    JSONValidator->>JSONValidator: validate_required_fields()<br/>I(complete;required_fields) = completeness verification
+    JSONValidator->>JSONValidator: check_data_type_consistency()<br/>H(type_errors) = 0 (type safety verification)
+    JSONValidator-->>-ResponseProcessor: validation_complete[structure_verified]<br/>I(verified;unverified) = validation value
+
+    %% Response Enhancement and Contextualization
+    ResponseProcessor->>ResponseProcessor: enhance_with_system_context()<br/>ΔH(enhanced) = H(AI_response) + H(system_context) - H(overlap)
+    ResponseProcessor->>ResponseProcessor: calculate_implementation_priorities()<br/>Priority = f(impact, effort, urgency, AI_confidence)
+    ResponseProcessor->>ResponseProcessor: generate_execution_timeline()<br/>H(timeline) = temporal planning information
+    ResponseProcessor-->>-ClaudeClient: response_processed[enhanced_response]<br/>I(enhanced;raw_AI) = processing value addition
+
+    %% Phase 5: Decision Integration and Action Planning
+    ClaudeClient->>+DecisionEngine: integrate_ai_insights(processed_response)<br/>I(decisions;AI_insights) = decision-insight correlation
+    DecisionEngine->>DecisionEngine: correlate_with_current_system_state()<br/>I(AI_insights;current_state) = insight-state mutual information
+    DecisionEngine->>DecisionEngine: evaluate_recommendation_feasibility()<br/>Feasibility = f(resource_availability, constraints, priorities)
+    DecisionEngine->>DecisionEngine: prioritize_recommended_actions()<br/>Action_Priority = AI_confidence × Impact × Urgency / Effort
+    DecisionEngine->>DecisionEngine: generate_implementation_plan()<br/>H(implementation_plan) = structured action sequence
+    DecisionEngine-->>-ClaudeClient: decision_integration_complete[actionable_plan]<br/>I(plan;AI_recommendations) = implementation planning value
+
+    %% Phase 6: Shell Integration and Command Execution
+    ClaudeClient->>+CoordHelper: execute_ai_recommended_actions(action_plan)<br/>Φ(AI→shell) = AI-to-system command flow
+    
+    %% AI-Driven Coordination Commands
+    alt Priority Adjustment Actions
+        CoordHelper->>CoordHelper: claude-optimize-assignments<br/>Execute AI-recommended assignment optimization
+        CoordHelper->>CoordHelper: update_work_item_priorities(ai_recommendations)<br/>H(updated_priorities) = AI-enhanced prioritization
+        CoordHelper->>CoordHelper: rebalance_agent_workloads()<br/>I(balanced;unbalanced) = load balancing improvement
+    else Health Improvement Actions
+        CoordHelper->>CoordHelper: claude-health-analysis --apply-recommendations<br/>Apply AI health improvements
+        CoordHelper->>CoordHelper: implement_performance_optimizations()<br/>ΔPerformance = AI-recommended improvements
+        CoordHelper->>CoordHelper: adjust_coordination_parameters()<br/>H(optimized_params) = AI-tuned system parameters
+    else Real-time Monitoring Actions
+        CoordHelper->>CoordHelper: claude-stream --monitor-coordination<br/>Start AI-powered continuous monitoring
+        CoordHelper->>+StreamProcessor: initialize_ai_stream_processing()<br/>∂H/∂t = continuous AI analysis
+        StreamProcessor->>StreamProcessor: process_continuous_ai_insights()<br/>H(stream_insights) = real-time intelligence
+        StreamProcessor-->>-CoordHelper: stream_processing_active[monitoring_enabled]<br/>I(monitoring;system_state) = continuous observation
+    end
+
+    CoordHelper-->>-ClaudeClient: ai_actions_executed[execution_results]<br/>I(executed;recommended) = implementation success measure
+
+    %% Phase 7: Results Telemetry and Performance Measurement
+    ClaudeClient->>+TelemetryEmitter: emit_ai_integration_results()<br/>H(results_telemetry) = AI integration outcome information
+    TelemetryEmitter->>TelemetryEmitter: measure_ai_value_contribution()<br/>Value = Performance_with_AI - Performance_without_AI
+    TelemetryEmitter->>TelemetryEmitter: calculate_intelligence_amplification()<br/>Amplification = I(enhanced_decisions)/I(original_context)
+    TelemetryEmitter->>TelemetryEmitter: assess_recommendation_accuracy()<br/>Accuracy = I(predicted_outcomes;actual_outcomes)
+    
+    %% AI Performance Metrics Collection
+    TelemetryEmitter->>+OTEL: emit_ai_performance_metrics()<br/>H(AI_metrics) = comprehensive AI integration performance
+    OTEL->>OTEL: record_ai_response_latency()<br/>τ(AI_response) = AI processing time distribution
+    OTEL->>OTEL: track_ai_recommendation_effectiveness()<br/>Effectiveness = Success_Rate × Impact_Magnitude
+    OTEL->>OTEL: monitor_ai_integration_health()<br/>Health = f(availability, accuracy, performance, cost)
+    OTEL-->>-TelemetryEmitter: ai_metrics_recorded[metric_ids]<br/>I(metrics;AI_performance) = performance measurement information
+
+    TelemetryEmitter-->>-ClaudeClient: telemetry_emission_complete[performance_summary]<br/>H(AI_integration_perf) = complete AI integration characterization
+
+    %% Phase 8: Feedback Loop and Learning Integration
+    ClaudeClient->>ClaudeClient: analyze_ai_integration_outcomes()<br/>I(outcomes;predictions) = prediction accuracy measurement
+    ClaudeClient->>ClaudeClient: identify_context_optimization_opportunities()<br/>Optimization = argmax(AI_effectiveness_improvement)
+    ClaudeClient->>ClaudeClient: update_ai_request_strategies()<br/>ΔStrategy = learning from AI interaction outcomes
+    ClaudeClient->>ClaudeClient: refine_context_preparation_methods()<br/>H(refined_context) = improved context information
+
+    ClaudeClient-->>-CoordSystem: ai_integration_complete[enhanced_coordination_state]<br/>I(enhanced;original) = AI value addition to coordination
+    CoordSystem-->>-User: ai_analysis_results[insights, actions_taken, performance_impact]<br/>H(final_results) = complete AI-enhanced coordination outcome
+
+    Note over User,StreamProcessor: AI Integration Success Metrics:<br/>Intelligence Amplification: α = I(AI_enhanced)/I(original_context)<br/>Response Quality: Q = accuracy × relevance × actionability<br/>Performance Impact: ΔP = Performance_after_AI - Performance_before_AI<br/>Cost Efficiency: E = Value_Generated / AI_Processing_Cost<br/>Learning Rate: λ = ∂Accuracy/∂Interactions
+
+    %% Streaming AI Analysis - Continuous Intelligence Flow
+    rect rgb(240, 255, 255)
+        Note over ClaudeClient,StreamProcessor: Continuous AI Analysis Mode<br/>Real-time Intelligence Stream
+        ClaudeClient->>+StreamProcessor: initialize_continuous_ai_stream()<br/>∂H/∂t = continuous intelligence generation
+        loop Continuous Monitoring
+            StreamProcessor->>+ClaudeAPI: stream_coordination_analysis(current_state)<br/>Streaming request for real-time analysis
+            ClaudeAPI-->>-StreamProcessor: streaming_insight[real_time_analysis]<br/>∂I/∂t = continuous insight flow
+            StreamProcessor->>StreamProcessor: process_streaming_insight()<br/>H(stream_insight) = real-time intelligence
+            StreamProcessor->>CoordSystem: apply_real_time_optimization()<br/>Real-time system enhancement
+        end
+        StreamProcessor-->>-ClaudeClient: continuous_stream_active[streaming_metrics]<br/>H(stream_perf) = streaming performance
+    end
+
+    %% Error Handling and Recovery - Intelligence Preservation
+    rect rgb(255, 240, 240)
+        Note over ClaudeClient: AI Integration Error Recovery<br/>Intelligence Preservation Protocol
+        ClaudeClient->>ClaudeClient: detect_ai_integration_failure()<br/>H(error_context) = failure state information
+        ClaudeClient->>ClaudeClient: preserve_context_information()<br/>H(preserved_context) = H(original_context) (no loss)
+        ClaudeClient->>ClaudeClient: implement_fallback_analysis()<br/>H(fallback) = reduced intelligence but preserved functionality
+        ClaudeClient->>OTEL: emit_ai_error_telemetry()<br/>Error information for analysis and improvement
+        ClaudeClient->>CoordSystem: ai_partial_results[available_insights, error_context]<br/>Partial intelligence delivery
+    end
+
+    Note over User,StreamProcessor: Information Theory Analysis:<br/>Context Entropy: H(coordination_context) = system state information<br/>AI Processing Gain: G = H(AI_insights) - H(context_input)<br/>Intelligence Efficiency: η = I(useful_insights)/H(total_AI_output)<br/>Decision Enhancement: δ = I(AI_enhanced_decision;optimal_decision)<br/>System Improvement: Σ = ∫ ΔPerformance(AI_integration) dt

@@ -1,0 +1,130 @@
+sequenceDiagram
+    participant Client as OTLP Client[H(C)]
+    participant Phoenix as Phoenix Endpoint[Φ(C→P)]
+    participant Reactor as Reactor Pipeline[H(R)]
+    participant Ingestion as IngestionStep[I(data;format)]
+    participant Parsing as OTLPParsingStep[H(parsed)]
+    participant Enrichment as EnrichmentSteps[ΔH(enriched)]
+    participant Sampling as SamplingStep[H(sample|total)]
+    participant Batching as BatchingStep[I(batch;individual)]
+    participant Transform as TransformSteps[Φ(format→target)]
+    participant Jaeger as JaegerSink[H(J)]
+    participant Prometheus as PrometheusSink[H(Pr)]
+    participant Elasticsearch as ElasticsearchSink[H(E)]
+    participant Collection as ResultCollection[∑H(outputs)]
+
+    Note over Client,Collection: OpenTelemetry Pipeline: Zero Information Loss<br/>Conservation Law: ∑H(inputs) = ∑H(outputs) + H(compression) - H(enrichment)
+
+    %% OTLP Data Ingestion - Information Entry Point
+    Client->>+Phoenix: POST /api/otlp/v1/traces<br/>H(traces) = -∑ p(span) log₂ p(span)
+    Note right of Client: Trace Data Entropy:<br/>H(spans) = N × log₂(|attributes|)<br/>H(resources) = log₂(|resource_attrs|)<br/>H(instrumentation) = log₂(|libraries|)
+
+    Phoenix->>Phoenix: validate_otlp_format()<br/>I(valid;format) = H(format) - H(format|valid)
+    Phoenix->>Phoenix: extract_trace_context()<br/>H(context) = 128 bits (trace_id) + 64 bits (span_id)
+    Phoenix->>+Reactor: start_telemetry_pipeline(otlp_data)<br/>Φ(data_in) = ∂H/∂t at entry
+
+    %% Stage 1: Ingestion - Information Preservation
+    Reactor->>+Ingestion: ingest_otlp_data(raw_payload)<br/>H(raw) = original entropy
+    Ingestion->>Ingestion: validate_payload_integrity()<br/>H(validated) = H(raw) - H(corruption)
+    Ingestion->>Ingestion: decompress_if_needed()<br/>H(decompressed) = H(compressed) + H(compression_metadata)
+    Ingestion-->>-Reactor: ingestion_complete[data_size, checksum]<br/>I(data;checksum) = verification information
+
+    %% Stage 2: OTLP Parsing - Information Structuring  
+    Reactor->>+Parsing: parse_otlp_structure(raw_data)<br/>H(structured) ≥ H(raw) (structure adds information)
+    Parsing->>Parsing: extract_resource_attributes()<br/>H(resources) = ∑ H(attribute_i)
+    Parsing->>Parsing: parse_instrumentation_scopes()<br/>H(scopes) = N_scopes × log₂(|scope_attrs|)
+    Parsing->>Parsing: structure_span_hierarchy()<br/>I(parent;child) = mutual information in trace tree
+    Parsing-->>-Reactor: parsing_complete[structured_spans]<br/>H(parsed) = H(spans) + H(structure)
+
+    %% Stage 3: Multi-Phase Enrichment - Information Amplification
+    Reactor->>+Enrichment: enrich_telemetry_data(parsed_spans)<br/>ΔH(enrichment) > 0 (information addition)
+    
+    %% Environment Enrichment
+    Enrichment->>Enrichment: add_environment_context()<br/>H(env) = log₂(|env_vars| × |deployment_info|)
+    Note right of Enrichment: Environment Information:<br/>H(deployment) = log₂(|environments|)<br/>H(version) = log₂(|versions|)<br/>H(instance) = log₂(|instances|)
+    
+    %% Service Enrichment  
+    Enrichment->>Enrichment: enrich_service_metadata()<br/>H(service) = H(name) + H(version) + H(attributes)
+    Enrichment->>Enrichment: add_dependency_graph()<br/>I(service_A;service_B) = call relationship information
+    
+    %% Resource Enrichment
+    Enrichment->>Enrichment: augment_resource_data()<br/>H(augmented) = H(original) + H(computed_attributes)
+    Enrichment-->>-Reactor: enrichment_complete[enriched_spans]<br/>ΔH = H(enriched) - H(original) > 0
+
+    %% Stage 4: Intelligent Sampling - Information Selection
+    Reactor->>+Sampling: apply_sampling_strategy(enriched_data)<br/>H(sample|population) ≤ H(population)
+    Sampling->>Sampling: calculate_sampling_probability()<br/>P(sample) = f(priority, error_rate, latency)
+    Sampling->>Sampling: apply_head_based_sampling()<br/>H(head_sample) = P(head) × H(total)
+    Sampling->>Sampling: apply_tail_based_sampling()<br/>H(tail_sample|context) conditional entropy
+    Sampling->>Sampling: preserve_error_traces()<br/>H(errors) = full entropy (no sampling loss)
+    Sampling-->>-Reactor: sampling_complete[sampled_spans, sample_rate]<br/>I(sample;total) = preserved information
+
+    %% Stage 5: Intelligent Batching - Information Optimization
+    Reactor->>+Batching: batch_telemetry_data(sampled_spans)<br/>I(batch;time) = temporal correlation
+    Batching->>Batching: group_by_service_operation()<br/>I(service;operation) = service-operation mutual information
+    Batching->>Batching: optimize_batch_size()<br/>Batch_size = argmax(I(batch)/cost(batch))
+    Batching->>Batching: add_batch_metadata()<br/>H(batch) = H(spans) + H(batch_metadata)
+    Batching-->>-Reactor: batching_complete[batched_data]<br/>H(batched) = ∑H(individual_batches)
+
+    %% Stage 6-8: Parallel Transform Steps - Information Format Conversion
+    par Jaeger Transform
+        Reactor->>+Transform: transform_to_jaeger_format(batched_data)<br/>Φ(OTLP→Jaeger)
+        Transform->>Transform: map_otlp_to_jaeger_schema()<br/>H(jaeger) = H(otlp) + H(schema_mapping)
+        Transform->>Transform: convert_attribute_formats()<br/>I(jaeger_attrs;otlp_attrs) = 1 (bijective)
+        Transform->>Transform: preserve_trace_relationships()<br/>I(parent;child)_jaeger = I(parent;child)_otlp
+        Transform-->>-Reactor: jaeger_transform_complete[jaeger_data]<br/>H(J_formatted) = H(original)
+    and Prometheus Transform
+        Reactor->>+Transform: transform_to_prometheus_format(batched_data)<br/>Φ(OTLP→Prometheus)
+        Transform->>Transform: extract_metrics_from_spans()<br/>H(metrics) = f(span_attributes, operations)
+        Transform->>Transform: aggregate_by_time_windows()<br/>I(metric;time_window) = temporal aggregation info
+        Transform->>Transform: apply_metric_labels()<br/>H(labeled_metrics) = H(values) + H(labels)
+        Transform-->>-Reactor: prometheus_transform_complete[metrics_data]<br/>H(Pr_formatted) = H(aggregated)
+    and Elasticsearch Transform  
+        Reactor->>+Transform: transform_to_elasticsearch_format(batched_data)<br/>Φ(OTLP→Elasticsearch)
+        Transform->>Transform: structure_for_search_indexing()<br/>H(searchable) = H(original) + H(index_structure)
+        Transform->>Transform: flatten_nested_attributes()<br/>H(flattened) = H(nested) (structure preservation)
+        Transform->>Transform: add_elasticsearch_metadata()<br/>H(es_doc) = H(span) + H(es_metadata)
+        Transform-->>-Reactor: elasticsearch_transform_complete[es_data]<br/>H(E_formatted) = H(original) + H(search_optimization)
+    end
+
+    %% Stage 9: Parallel Sink Operations - Information Persistence
+    par Jaeger Storage
+        Reactor->>+Jaeger: store_jaeger_traces(jaeger_data)<br/>I(stored;sent) = 1 (perfect fidelity)
+        Jaeger->>Jaeger: validate_trace_completeness()<br/>H(complete_trace) = ∑H(constituent_spans)
+        Jaeger->>Jaeger: index_for_query_performance()<br/>H(indexed) = H(data) + H(index_metadata)
+        Jaeger-->>-Reactor: jaeger_storage_complete[trace_ids, query_urls]<br/>I(queryable;original) = full retrievability
+    and Prometheus Storage
+        Reactor->>+Prometheus: store_prometheus_metrics(metrics_data)<br/>I(metrics;original_spans) = aggregation information
+        Prometheus->>Prometheus: validate_metric_consistency()<br/>H(consistent) = H(metrics) - H(conflicts)
+        Prometheus->>Prometheus: store_with_retention_policy()<br/>H(retained) = H(total) × retention_function(t)
+        Prometheus-->>-Reactor: prometheus_storage_complete[metric_names, endpoints]<br/>I(queryable;aggregated) = full metric retrievability
+    and Elasticsearch Storage
+        Reactor->>+Elasticsearch: store_elasticsearch_docs(es_data)<br/>I(searchable;original) = search information preservation
+        Elasticsearch->>Elasticsearch: index_document_structure()<br/>H(searchable) = H(data) + H(search_indices)
+        Elasticsearch->>Elasticsearch: validate_search_functionality()<br/>I(findable;stored) = search effectiveness
+        Elasticsearch-->>-Reactor: elasticsearch_storage_complete[index_names, search_endpoints]<br/>I(discoverable;original) = full search retrievability
+    end
+
+    %% Stage 10: Result Collection - Information Aggregation
+    Reactor->>+Collection: collect_pipeline_results(all_outputs)<br/>H(results) = ∑H(sink_outputs)
+    Collection->>Collection: validate_information_conservation()<br/>∑H(outputs) + H(compression) ≥ H(inputs)
+    Collection->>Collection: calculate_processing_metrics()<br/>H(metrics) = H(performance) + H(quality) + H(errors)
+    Collection->>Collection: generate_pipeline_telemetry()<br/>H(meta_telemetry) = information about information processing
+    Collection-->>-Reactor: collection_complete[results_summary]<br/>I(summary;detailed_results) = compression with key preservation
+
+    Reactor-->>-Phoenix: pipeline_complete[processing_summary, trace_id]<br/>I(summary;original_request) = request-response correlation
+    Phoenix-->>-Client: 200 OK[processing_confirmation]<br/>H(confirmation) = log₂(success_probability⁻¹)
+
+    Note over Client,Collection: Information Conservation Verification:<br/>Input Entropy: H(original_traces) = ∑ᵢ H(span_i)<br/>Output Entropy: H(jaeger) + H(prometheus) + H(elasticsearch)<br/>Enrichment: +ΔH(environment + service + resource)<br/>Compression: -ΔH(sampling + aggregation)<br/>Conservation: H(output) + H(compression) ≥ H(input) ✓
+
+    %% Error Handling - Information Recovery and Preservation
+    rect rgb(255, 240, 240)
+        Note over Reactor: Error Recovery Protocol<br/>Information Loss Prevention
+        Reactor->>Reactor: detect_pipeline_failure()<br/>H(error_context) = full failure state information
+        Reactor->>Reactor: preserve_input_data()<br/>H(preserved) = H(original) (no loss during error)
+        Reactor->>OTEL: emit_pipeline_error_telemetry()<br/>Meta-telemetry about telemetry failure
+        Reactor->>Reactor: execute_graceful_degradation()<br/>Reduce H(output) but preserve critical information
+        Reactor->>Phoenix: pipeline_partial_success[preserved_data, error_context]<br/>Information feedback with error details
+    end
+
+    Note over Client,Collection: Pipeline Performance Metrics:<br/>Throughput: Φ(data) = ∂H/∂t spans/second<br/>Latency: τ(pipeline) = time for information transit<br/>Fidelity: I(output;input)/H(input) = information preservation ratio<br/>Efficiency: [H(output) - H(compression)]/[Energy × Time]

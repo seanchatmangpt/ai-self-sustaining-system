@@ -1,0 +1,141 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "AI Self-Sustaining Minimal - Container View"
+        direction TB
+        
+        %% External Users and Systems
+        DEVELOPER[👤 Developer<br/>Reference User]
+        TESTER[🧪 System Tester<br/>QA Engineer]
+        POSTGRES_MIN[🗄️ PostgreSQL<br/>Minimal Database]
+        MAIN_PHOENIX[🔥 Main Phoenix App<br/>Full System]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector]
+        
+        %% Minimal System Container Boundary
+        subgraph MINIMAL_SYSTEM["📦 AI Self-Sustaining Minimal Reference Implementation"]
+            direction TB
+            
+            %% Core Phoenix Application
+            MINIMAL_ENDPOINT[🌐 Minimal Phoenix Endpoint<br/>Web Server<br/>- HTTP/WebSocket handling<br/>- Simplified routing<br/>- Essential endpoints<br/>- Reference implementation]
+            
+            MINIMAL_ROUTER[🎯 Minimal Router<br/>Request Routing<br/>- Essential routes<br/>- Basic pipeline<br/>- Reference patterns<br/>- Simplified structure]
+            
+            MINIMAL_LIVEVIEW[📱 Minimal LiveView<br/>Basic UI Components<br/>- Reference components<br/>- Essential interactions<br/>- Simplified templates<br/>- Core functionality]
+            
+            %% Ash Framework Core
+            ASH_MINIMAL[⚡ Ash Framework<br/>Core Implementation<br/>- Essential resources<br/>- Basic actions<br/>- Reference patterns<br/>- Minimal configuration]
+            
+            ASH_POSTGRES_MIN[🗄️ Ash PostgreSQL<br/>Data Layer<br/>- Database adapter<br/>- Essential migrations<br/>- Reference schema<br/>- Basic queries]
+            
+            ASH_PHOENIX_MIN[🔥 Ash Phoenix<br/>Web Integration<br/>- Form helpers<br/>- Basic components<br/>- Reference patterns<br/>- Essential features]
+            
+            ASH_JSON_API[📡 Ash JSON API<br/>API Layer<br/>- REST endpoints<br/>- JSON serialization<br/>- API documentation<br/>- Reference implementation]
+            
+            %% Business Logic
+            AI_COORDINATION[🤖 AI Coordination<br/>Core Logic<br/>- Essential coordination<br/>- Reference workflows<br/>- Basic automation<br/>- Minimal complexity]
+            
+            TELEMETRY_MINIMAL[📊 Telemetry<br/>Observability<br/>- Essential metrics<br/>- Basic monitoring<br/>- Reference patterns<br/>- Core instrumentation]
+            
+            %% Database and Repository
+            MINIMAL_REPO[🗄️ Minimal Repository<br/>Data Access<br/>- Database connections<br/>- Essential queries<br/>- Reference patterns<br/>- Basic operations]
+            
+            %% OpenTelemetry Integration
+            OTEL_MINIMAL[📊 OpenTelemetry<br/>Minimal Integration<br/>- Essential tracing<br/>- Basic metrics<br/>- Reference implementation<br/>- Core observability]
+            
+            %% Reactor Integration
+            REACTOR_MINIMAL[⚡ Reactor<br/>Minimal Workflows<br/>- Essential processes<br/>- Reference patterns<br/>- Basic orchestration<br/>- Simplified flows]
+            
+            %% Asset Management
+            ASSETS_MINIMAL[🎨 Assets<br/>Basic Frontend<br/>- Essential CSS<br/>- Basic JavaScript<br/>- Reference styling<br/>- Minimal complexity]
+            
+            %% Testing and Validation
+            TEST_MINIMAL[🧪 Test Suite<br/>Reference Tests<br/>- Essential test cases<br/>- Integration tests<br/>- Performance validation<br/>- Quality assurance]
+            
+            BENCHMARK_MINIMAL[⚡ Benchmark Suite<br/>Performance Testing<br/>- Performance baselines<br/>- Load testing<br/>- Reference metrics<br/>- Optimization validation]
+            
+            %% Coordination Integration
+            COORD_INTEGRATION[🤝 Coordination<br/>Integration<br/>- coordination_helper.sh<br/>- Work claiming<br/>- Reference patterns<br/>- Essential coordination]
+            
+            %% Configuration Management
+            CONFIG_MINIMAL[⚙️ Configuration<br/>Management<br/>- Environment config<br/>- Runtime settings<br/>- Reference patterns<br/>- Essential setup]
+            
+            %% Validation Scripts
+            VALIDATION_SUITE[✅ Validation Suite<br/>System Validation<br/>- End-to-end testing<br/>- Integration validation<br/>- Performance testing<br/>- Reference validation]
+            
+            PUBSUB_VALIDATION[📡 PubSub Validation<br/>Communication Testing<br/>- Message validation<br/>- Event handling<br/>- Real-time testing<br/>- Reference patterns]
+            
+            %% XAVOS Integration
+            XAVOS_INTEGRATION[🚀 XAVOS Integration<br/>System Coordination<br/>- XAVOS monitoring<br/>- Integration testing<br/>- Reference patterns<br/>- System validation]
+            
+            %% Internal Relationships
+            MINIMAL_ENDPOINT -->|routes to| MINIMAL_ROUTER
+            MINIMAL_ENDPOINT -.->|serves| MINIMAL_LIVEVIEW
+            MINIMAL_ENDPOINT -.->|serves| ASSETS_MINIMAL
+            
+            MINIMAL_ROUTER -.->|integrates| ASH_PHOENIX_MIN
+            MINIMAL_ROUTER -.->|exposes| ASH_JSON_API
+            
+            MINIMAL_LIVEVIEW -.->|powered by| ASH_PHOENIX_MIN
+            MINIMAL_LIVEVIEW -.->|observed by| OTEL_MINIMAL
+            
+            ASH_MINIMAL -.->|data via| ASH_POSTGRES_MIN
+            ASH_MINIMAL -.->|web via| ASH_PHOENIX_MIN
+            ASH_MINIMAL -.->|api via| ASH_JSON_API
+            
+            ASH_POSTGRES_MIN -.->|connects to| MINIMAL_REPO
+            MINIMAL_REPO -.->|monitored by| OTEL_MINIMAL
+            
+            AI_COORDINATION -.->|uses| ASH_MINIMAL
+            AI_COORDINATION -.->|coordinates via| COORD_INTEGRATION
+            AI_COORDINATION -.->|workflows via| REACTOR_MINIMAL
+            
+            TELEMETRY_MINIMAL -.->|integrates| OTEL_MINIMAL
+            TELEMETRY_MINIMAL -.->|monitors| AI_COORDINATION
+            
+            TEST_MINIMAL -.->|validates| ASH_MINIMAL
+            TEST_MINIMAL -.->|tests| AI_COORDINATION
+            
+            BENCHMARK_MINIMAL -.->|tests performance of| ASH_MINIMAL
+            BENCHMARK_MINIMAL -.->|validates| REACTOR_MINIMAL
+            
+            VALIDATION_SUITE -.->|validates| PUBSUB_VALIDATION
+            VALIDATION_SUITE -.->|tests| XAVOS_INTEGRATION
+            
+            CONFIG_MINIMAL -.->|configures| ASH_MINIMAL
+            CONFIG_MINIMAL -.->|sets up| OTEL_MINIMAL
+        end
+        
+        %% External Connections
+        DEVELOPER -->|develops with| MINIMAL_ENDPOINT
+        DEVELOPER -->|references| ASH_MINIMAL
+        DEVELOPER -->|tests via| TEST_MINIMAL
+        
+        TESTER -->|validates via| VALIDATION_SUITE
+        TESTER -->|benchmarks via| BENCHMARK_MINIMAL
+        
+        POSTGRES_MIN <-->|data operations| MINIMAL_REPO
+        
+        MAIN_PHOENIX -.->|references patterns from| ASH_MINIMAL
+        MAIN_PHOENIX -.->|compares with| AI_COORDINATION
+        
+        OTEL_COLLECTOR <-->|traces/metrics| OTEL_MINIMAL
+        
+        %% Performance and Reference Annotations
+        MINIMAL_SYSTEM -.->|"65.65MB memory efficiency"| BENCHMARK_MINIMAL
+        AI_COORDINATION -.->|"Reference implementation"| MAIN_PHOENIX
+        TEST_MINIMAL -.->|"Comprehensive validation"| VALIDATION_SUITE
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef ashContainer fill:#4C566A,stroke:#A3BE8C,stroke-width:2px,color:#ECEFF4
+    classDef testingContainer fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class MINIMAL_SYSTEM systemBoundary
+    class MINIMAL_ENDPOINT,MINIMAL_ROUTER,MINIMAL_LIVEVIEW,AI_COORDINATION,TELEMETRY_MINIMAL,MINIMAL_REPO,REACTOR_MINIMAL,ASSETS_MINIMAL,COORD_INTEGRATION,CONFIG_MINIMAL container
+    class ASH_MINIMAL,ASH_POSTGRES_MIN,ASH_PHOENIX_MIN,ASH_JSON_API,OTEL_MINIMAL ashContainer
+    class TEST_MINIMAL,BENCHMARK_MINIMAL,VALIDATION_SUITE,PUBSUB_VALIDATION,XAVOS_INTEGRATION testingContainer
+    class POSTGRES_MIN,MAIN_PHOENIX,OTEL_COLLECTOR external
+    class DEVELOPER,TESTER user

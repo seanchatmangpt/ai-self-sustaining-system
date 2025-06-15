@@ -1,0 +1,145 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "Agent Coordination System - Component Diagram"
+        direction TB
+        
+        %% External Systems
+        SCRUM_MASTER[👥 Scrum Master]
+        CLAUDE_API[🧠 Claude API]
+        OTEL_COLLECTOR[📡 OpenTelemetry Collector]
+        
+        %% Main Container Boundary
+        subgraph COORD_HELPER["📋 coordination_helper.sh - Core Coordination Container"]
+            direction TB
+            
+            %% Command Dispatcher
+            CMD_DISPATCHER[🎯 Command Dispatcher<br/>Function: Main entry point<br/>- Parses command arguments<br/>- Routes to appropriate functions<br/>- Handles help system<br/>- Validates input parameters]
+            
+            %% Agent ID Management
+            AGENT_ID_GEN[🔢 Agent ID Generator<br/>Function: generate_agent_id()<br/>- Nanosecond timestamp generation<br/>- Mathematical uniqueness guarantee<br/>- Format: agent_\$(date +%s%N)<br/>- Collision prevention]
+            
+            %% Work Management Components
+            WORK_CLAIMER[🎯 Work Claimer<br/>Function: claim_work()<br/>- Atomic work claiming<br/>- JSON structure creation<br/>- File locking mechanism<br/>- Conflict detection]
+            
+            PROGRESS_UPDATER[📈 Progress Updater<br/>Function: update_progress()<br/>- Progress percentage tracking<br/>- Status management<br/>- Timestamp updates<br/>- Telemetry integration]
+            
+            WORK_COMPLETER[✅ Work Completer<br/>Function: complete_work()<br/>- Work completion handling<br/>- Velocity point calculation<br/>- Result recording<br/>- Cleanup operations]
+            
+            %% Agent Registration
+            AGENT_REGISTRAR[🤖 Agent Registrar<br/>Function: register_agent_in_team()<br/>- Team assignment<br/>- Capacity management<br/>- Specialization tracking<br/>- Performance metrics]
+            
+            %% File Locking System
+            LOCK_MANAGER[🔒 Lock Manager<br/>Component: Atomic file operations<br/>- File lock acquisition<br/>- Deadlock prevention<br/>- Transaction safety<br/>- Concurrent access control]
+            
+            %% JSON Processing
+            JSON_PROCESSOR[📄 JSON Processor<br/>Component: Data management<br/>- JSON parsing and generation<br/>- jq integration<br/>- Fallback mechanisms<br/>- Schema validation]
+            
+            %% OpenTelemetry Integration
+            OTEL_TRACER[🔍 OpenTelemetry Tracer<br/>Functions: Tracing system<br/>- generate_trace_id()<br/>- generate_span_id()<br/>- create_otel_context()<br/>- log_telemetry_span()]
+            
+            TRACE_CONTEXT[📊 Trace Context Manager<br/>Component: Context management<br/>- Context propagation<br/>- Span correlation<br/>- Parent-child relationships<br/>- Distributed tracing]
+            
+            %% Claude Intelligence Integration
+            CLAUDE_PRIORITY_ANALYZER[🧠 Claude Priority Analyzer<br/>Function: claude_analyze_work_priorities()<br/>- Structured JSON analysis<br/>- Priority recommendations<br/>- Confidence scoring<br/>- Fallback analysis]
+            
+            CLAUDE_TEAM_OPTIMIZER[👥 Claude Team Optimizer<br/>Function: claude_suggest_team_formation()<br/>- Team formation analysis<br/>- Skill gap identification<br/>- Load balancing recommendations<br/>- Cross-team coordination]
+            
+            CLAUDE_HEALTH_MONITOR[🏥 Claude Health Monitor<br/>Function: claude_analyze_system_health()<br/>- System health assessment<br/>- Performance analysis<br/>- Bottleneck detection<br/>- Improvement recommendations]
+            
+            CLAUDE_WORK_ADVISOR[💡 Claude Work Advisor<br/>Function: claude_recommend_work_claim()<br/>- Work claiming strategy<br/>- Agent-work matching<br/>- Priority optimization<br/>- Risk assessment]
+            
+            %% Streaming and Real-time Analysis
+            CLAUDE_STREAM_PROCESSOR[🔄 Claude Stream Processor<br/>Function: claude_realtime_coordination_stream()<br/>- Real-time insights<br/>- Continuous monitoring<br/>- Live recommendations<br/>- Stream processing]
+            
+            CLAUDE_PIPE_ANALYZER[🔍 Claude Pipe Analyzer<br/>Function: claude_pipe_analyzer()<br/>- Unix-style data piping<br/>- Instant analysis<br/>- Multiple analysis types<br/>- Structured output]
+            
+            %% Scrum at Scale Components
+            SAS_PI_PLANNER[🎯 PI Planner<br/>Function: run_pi_planning()<br/>- Program Increment planning<br/>- Objective setting<br/>- Capacity planning<br/>- Commitment establishment]
+            
+            SAS_SCRUM_COORDINATOR[🤝 Scrum of Scrums<br/>Function: scrum_of_scrums()<br/>- Cross-team coordination<br/>- Impediment tracking<br/>- Dependency management<br/>- Progress synchronization]
+            
+            SAS_SYSTEM_DEMO[🎬 System Demo<br/>Function: run_system_demo()<br/>- Integrated solution demo<br/>- PI increment showcase<br/>- Business value demonstration<br/>- Stakeholder engagement]
+            
+            SAS_INSPECT_ADAPT[🔍 Inspect & Adapt<br/>Function: inspect_and_adapt()<br/>- Problem-solving workshop<br/>- Process improvement<br/>- Action planning<br/>- Continuous enhancement]
+            
+            %% Value Stream Management
+            VALUE_STREAM_MAPPER[🗺️ Value Stream Mapper<br/>Function: value_stream_mapping()<br/>- Current state analysis<br/>- Future state vision<br/>- Improvement identification<br/>- Flow optimization]
+            
+            PORTFOLIO_MANAGER[📊 Portfolio Manager<br/>Function: portfolio_kanban()<br/>- Epic flow management<br/>- Investment decisions<br/>- Portfolio alignment<br/>- Value delivery]
+            
+            %% Team Velocity and Metrics
+            VELOCITY_TRACKER[📈 Velocity Tracker<br/>Function: update_team_velocity()<br/>- Velocity point tracking<br/>- Sprint progress monitoring<br/>- Team performance metrics<br/>- Business value calculation]
+            
+            DASHBOARD_GENERATOR[📊 Dashboard Generator<br/>Function: show_scrum_dashboard()<br/>- Real-time dashboards<br/>- Metrics visualization<br/>- Status reporting<br/>- Performance insights]
+            
+            %% Component Relationships
+            CMD_DISPATCHER -->|routes to| WORK_CLAIMER
+            CMD_DISPATCHER -->|routes to| PROGRESS_UPDATER
+            CMD_DISPATCHER -->|routes to| WORK_COMPLETER
+            CMD_DISPATCHER -->|routes to| AGENT_REGISTRAR
+            CMD_DISPATCHER -->|routes to| CLAUDE_PRIORITY_ANALYZER
+            CMD_DISPATCHER -->|routes to| SAS_PI_PLANNER
+            
+            WORK_CLAIMER -.->|uses| AGENT_ID_GEN
+            WORK_CLAIMER -.->|uses| LOCK_MANAGER
+            WORK_CLAIMER -.->|uses| JSON_PROCESSOR
+            WORK_CLAIMER -.->|traces via| OTEL_TRACER
+            
+            PROGRESS_UPDATER -.->|uses| JSON_PROCESSOR
+            PROGRESS_UPDATER -.->|traces via| OTEL_TRACER
+            PROGRESS_UPDATER -.->|manages context via| TRACE_CONTEXT
+            
+            WORK_COMPLETER -.->|updates| VELOCITY_TRACKER
+            WORK_COMPLETER -.->|uses| JSON_PROCESSOR
+            WORK_COMPLETER -.->|releases via| LOCK_MANAGER
+            
+            AGENT_REGISTRAR -.->|uses| JSON_PROCESSOR
+            AGENT_REGISTRAR -.->|uses| AGENT_ID_GEN
+            
+            CLAUDE_PRIORITY_ANALYZER -.->|reads via| JSON_PROCESSOR
+            CLAUDE_PRIORITY_ANALYZER -.->|fallback to| CLAUDE_PIPE_ANALYZER
+            
+            CLAUDE_TEAM_OPTIMIZER -.->|analyzes via| CLAUDE_PIPE_ANALYZER
+            CLAUDE_HEALTH_MONITOR -.->|streams via| CLAUDE_STREAM_PROCESSOR
+            
+            CLAUDE_WORK_ADVISOR -.->|recommends to| WORK_CLAIMER
+            
+            SAS_PI_PLANNER -.->|coordinates with| SAS_SCRUM_COORDINATOR
+            SAS_SYSTEM_DEMO -.->|feeds| SAS_INSPECT_ADAPT
+            
+            VALUE_STREAM_MAPPER -.->|informs| PORTFOLIO_MANAGER
+            
+            VELOCITY_TRACKER -.->|feeds| DASHBOARD_GENERATOR
+            
+            OTEL_TRACER -.->|manages| TRACE_CONTEXT
+        end
+        
+        %% External Connections
+        SCRUM_MASTER -->|executes S@S ceremonies| SAS_PI_PLANNER
+        SCRUM_MASTER -->|analyzes via| CLAUDE_PRIORITY_ANALYZER
+        
+        CLAUDE_API <-->|intelligence requests| CLAUDE_PRIORITY_ANALYZER
+        CLAUDE_API <-->|streaming analysis| CLAUDE_STREAM_PROCESSOR
+        
+        OTEL_COLLECTOR <-->|traces| TRACE_CONTEXT
+        
+        %% Data Flow Annotations
+        WORK_CLAIMER -.->|"atomic claim → work_claims.json"| JSON_PROCESSOR
+        CLAUDE_PRIORITY_ANALYZER -.->|"structured analysis → recommendations"| CLAUDE_TEAM_OPTIMIZER
+        OTEL_TRACER -.->|"trace_id, span_id → telemetry_spans.jsonl"| TRACE_CONTEXT
+    end
+
+    %% Styling
+    classDef component fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef coreComponent fill:#4C566A,stroke:#EBCB8B,stroke-width:2px,color:#ECEFF4
+    classDef claudeComponent fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef sasComponent fill:#8FBCBB,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef containerBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class COORD_HELPER containerBoundary
+    class CMD_DISPATCHER,AGENT_ID_GEN,LOCK_MANAGER,JSON_PROCESSOR,OTEL_TRACER,TRACE_CONTEXT,VELOCITY_TRACKER,DASHBOARD_GENERATOR coreComponent
+    class WORK_CLAIMER,PROGRESS_UPDATER,WORK_COMPLETER,AGENT_REGISTRAR component
+    class CLAUDE_PRIORITY_ANALYZER,CLAUDE_TEAM_OPTIMIZER,CLAUDE_HEALTH_MONITOR,CLAUDE_WORK_ADVISOR,CLAUDE_STREAM_PROCESSOR,CLAUDE_PIPE_ANALYZER claudeComponent
+    class SAS_PI_PLANNER,SAS_SCRUM_COORDINATOR,SAS_SYSTEM_DEMO,SAS_INSPECT_ADAPT,VALUE_STREAM_MAPPER,PORTFOLIO_MANAGER sasComponent
+    class SCRUM_MASTER,CLAUDE_API,OTEL_COLLECTOR external

@@ -1,0 +1,105 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "AI Self-Sustaining System Ecosystem"
+        direction TB
+        
+        %% External Users and Systems
+        DEV[👤 Developer<br/>System Operators]
+        SCRUM[👥 Scrum Master<br/>Product Owner]
+        ADMIN[⚙️ System Admin<br/>DevOps Engineer]
+        STAKEHOLDER[📊 Business Stakeholder<br/>Decision Maker]
+        
+        %% External Systems
+        GITHUB[🔧 GitHub<br/>Version Control]
+        DOCKER[🐳 Docker<br/>Containerization]
+        POSTGRES[🗄️ PostgreSQL<br/>Database]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector]
+        EXTERNAL_APIs[🌐 External APIs<br/>Third-party Services]
+        
+        %% Core System Boundary
+        subgraph CORE_SYSTEM["🤖 AI Self-Sustaining System"]
+            direction TB
+            
+            %% Primary Subsystems
+            AGENT_COORD[🎯 Agent Coordination<br/>Subsystem<br/>- coordination_helper.sh<br/>- JSON work claims<br/>- Nanosecond precision IDs]
+            
+            PHOENIX_APP[🔥 Phoenix Application<br/>Subsystem<br/>- Main web interface<br/>- Ash Framework<br/>- LiveView components]
+            
+            XAVOS[🚀 XAVOS System<br/>Extended Autonomous<br/>Virtual Operations<br/>- Port 4002<br/>- Isolated worktree]
+            
+            MINIMAL_REF[📦 Minimal Reference<br/>Implementation<br/>- ai_self_sustaining_minimal<br/>- Core capabilities<br/>- Reference architecture]
+            
+            REACTOR_ENGINE[⚡ Reactor Engine<br/>Workflow Orchestration<br/>- Pipeline execution<br/>- Process automation<br/>- Flow control]
+            
+            TELEMETRY_SYS[📊 Telemetry System<br/>OpenTelemetry Integration<br/>- Distributed tracing<br/>- Performance monitoring<br/>- System observability]
+            
+            N8N_INTEGRATION[🔄 N8N Integration<br/>Workflow Automation<br/>- External workflows<br/>- API orchestration<br/>- Process automation]
+            
+            APS_ENGINE[📋 APS Engine<br/>Adaptive Process<br/>Specification<br/>- Workflow requirements<br/>- Process definitions]
+            
+            WORKTREE_MGT[🌳 Worktree Management<br/>Git Coordination<br/>- Isolated development<br/>- Environment registry<br/>- Cross-worktree locks]
+            
+            SHARED_COORD[🤝 Shared Coordination<br/>Cross-System Locks<br/>- Global state management<br/>- Resource coordination<br/>- Conflict resolution]
+            
+            CLAUDE_AI[🧠 Claude AI Integration<br/>Intelligent Analysis<br/>- Priority analysis<br/>- Team optimization<br/>- Health monitoring]
+            
+            %% Internal Connections
+            AGENT_COORD -.->|coordinates| PHOENIX_APP
+            AGENT_COORD -.->|manages| XAVOS
+            AGENT_COORD -.->|orchestrates| REACTOR_ENGINE
+            AGENT_COORD -->|telemetry| TELEMETRY_SYS
+            AGENT_COORD -->|intelligence| CLAUDE_AI
+            
+            PHOENIX_APP -.->|references| MINIMAL_REF
+            PHOENIX_APP -->|traces to| TELEMETRY_SYS
+            PHOENIX_APP -.->|workflows| N8N_INTEGRATION
+            
+            XAVOS -.->|shares config| WORKTREE_MGT
+            XAVOS -->|observability| TELEMETRY_SYS
+            
+            REACTOR_ENGINE -.->|processes| APS_ENGINE
+            REACTOR_ENGINE -->|integrates| N8N_INTEGRATION
+            REACTOR_ENGINE -->|traces| TELEMETRY_SYS
+            
+            WORKTREE_MGT -.->|synchronizes| SHARED_COORD
+            SHARED_COORD -.->|global locks| AGENT_COORD
+            
+            CLAUDE_AI -.->|analyzes| TELEMETRY_SYS
+            CLAUDE_AI -.->|optimizes| AGENT_COORD
+        end
+        
+        %% External Connections
+        DEV -->|develops on| CORE_SYSTEM
+        DEV -->|commits to| GITHUB
+        
+        SCRUM -->|coordinates via| AGENT_COORD
+        SCRUM -->|monitors through| PHOENIX_APP
+        
+        ADMIN -->|manages| CORE_SYSTEM
+        ADMIN -->|deploys with| DOCKER
+        
+        STAKEHOLDER -->|views dashboards| PHOENIX_APP
+        STAKEHOLDER -->|reviews metrics| TELEMETRY_SYS
+        
+        GITHUB -.->|source control| CORE_SYSTEM
+        POSTGRES -->|data persistence| PHOENIX_APP
+        POSTGRES -->|data persistence| XAVOS
+        
+        DOCKER -.->|containerizes| CORE_SYSTEM
+        
+        OTEL_COLLECTOR <-->|traces/metrics| TELEMETRY_SYS
+        
+        EXTERNAL_APIs <-->|integrations| N8N_INTEGRATION
+        EXTERNAL_APIs <-->|services| PHOENIX_APP
+    end
+
+    %% Styling
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    classDef subsystem fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    
+    class CORE_SYSTEM systemBoundary
+    class AGENT_COORD,PHOENIX_APP,XAVOS,MINIMAL_REF,REACTOR_ENGINE,TELEMETRY_SYS,N8N_INTEGRATION,APS_ENGINE,WORKTREE_MGT,SHARED_COORD,CLAUDE_AI subsystem
+    class GITHUB,DOCKER,POSTGRES,OTEL_COLLECTOR,EXTERNAL_APIs external
+    class DEV,SCRUM,ADMIN,STAKEHOLDER user

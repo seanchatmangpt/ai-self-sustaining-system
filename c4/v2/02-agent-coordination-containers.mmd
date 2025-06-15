@@ -1,0 +1,111 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "Agent Coordination Subsystem - Container View"
+        direction TB
+        
+        %% External Systems
+        SCRUM_MASTER[👥 Scrum Master<br/>Product Owner]
+        DEVELOPER[👤 Developer<br/>System Operator]
+        CLAUDE_API[🧠 Claude API<br/>AI Intelligence Service]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector]
+        
+        %% Agent Coordination Container Boundary
+        subgraph AGENT_COORD_SYSTEM["🎯 Agent Coordination System"]
+            direction TB
+            
+            %% Core Coordination Shell Script
+            COORD_HELPER[📋 coordination_helper.sh<br/>Shell Script<br/>- Nanosecond agent IDs<br/>- Atomic work claiming<br/>- JSON operations<br/>- OpenTelemetry integration]
+            
+            %% Data Stores (JSON Files)
+            WORK_CLAIMS[📄 work_claims.json<br/>JSON Data Store<br/>- Active work items<br/>- Agent assignments<br/>- Progress tracking<br/>- Telemetry context]
+            
+            AGENT_STATUS[📄 agent_status.json<br/>JSON Data Store<br/>- Agent registrations<br/>- Team assignments<br/>- Capacity metrics<br/>- Performance data]
+            
+            COORD_LOG[📄 coordination_log.json<br/>JSON Data Store<br/>- Completed work<br/>- Velocity tracking<br/>- Historical data<br/>- Sprint metrics]
+            
+            TELEMETRY_SPANS[📄 telemetry_spans.jsonl<br/>JSONL Data Store<br/>- OpenTelemetry spans<br/>- Trace information<br/>- Performance metrics<br/>- Distributed tracing]
+            
+            VELOCITY_LOG[📄 velocity_log.txt<br/>Text Log<br/>- Team velocity points<br/>- Sprint progress<br/>- Business value delivery]
+            
+            %% Agent Orchestration Components
+            AGENT_ORCHESTRATOR[🤖 agent_swarm_orchestrator.sh<br/>Shell Script<br/>- Swarm deployment<br/>- Multi-agent coordination<br/>- Resource allocation<br/>- Health monitoring]
+            
+            %% Claude Intelligence Components
+            CLAUDE_ANALYZER[🧠 Claude Intelligence<br/>Analysis Components<br/>- Priority analysis<br/>- Team optimization<br/>- Health assessment<br/>- Work recommendations]
+            
+            %% Scrum at Scale Components
+            SAS_CEREMONIES[🎯 Scrum at Scale<br/>Ceremony Components<br/>- PI Planning<br/>- System Demo<br/>- Inspect & Adapt<br/>- ART Sync]
+            
+            %% File Locking System
+            LOCK_SYSTEM[🔒 File Locking System<br/>Atomic Operations<br/>- Zero-conflict guarantees<br/>- Concurrent access control<br/>- Transaction safety<br/>- Deadlock prevention]
+            
+            %% OpenTelemetry Integration
+            OTEL_INTEGRATION[📊 OpenTelemetry<br/>Integration Layer<br/>- Trace ID generation<br/>- Span creation<br/>- Context propagation<br/>- Metrics collection]
+            
+            %% Worktree Management
+            WORKTREE_ENV[🌳 Worktree Environment<br/>Manager<br/>- Environment registry<br/>- Cross-worktree coordination<br/>- Isolation management<br/>- Configuration overlay]
+            
+            %% Test and Validation
+            TEST_SUITE[🧪 Test Suite<br/>BATS Testing<br/>- coordination_helper.bats<br/>- Integration tests<br/>- Validation scripts<br/>- Performance tests]
+            
+            %% Internal Relationships
+            COORD_HELPER -->|writes/reads| WORK_CLAIMS
+            COORD_HELPER -->|writes/reads| AGENT_STATUS
+            COORD_HELPER -->|writes/reads| COORD_LOG
+            COORD_HELPER -->|writes| TELEMETRY_SPANS
+            COORD_HELPER -->|appends| VELOCITY_LOG
+            
+            COORD_HELPER -.->|uses| LOCK_SYSTEM
+            COORD_HELPER -.->|integrates| OTEL_INTEGRATION
+            COORD_HELPER -.->|coordinates| CLAUDE_ANALYZER
+            COORD_HELPER -.->|facilitates| SAS_CEREMONIES
+            
+            AGENT_ORCHESTRATOR -.->|orchestrates| COORD_HELPER
+            AGENT_ORCHESTRATOR -->|manages| WORKTREE_ENV
+            
+            CLAUDE_ANALYZER -->|reads| WORK_CLAIMS
+            CLAUDE_ANALYZER -->|reads| AGENT_STATUS
+            CLAUDE_ANALYZER -->|reads| COORD_LOG
+            CLAUDE_ANALYZER -->|writes analysis| WORK_CLAIMS
+            
+            SAS_CEREMONIES -->|reads metrics| COORD_LOG
+            SAS_CEREMONIES -->|reads velocity| VELOCITY_LOG
+            SAS_CEREMONIES -.->|facilitates via| COORD_HELPER
+            
+            OTEL_INTEGRATION -->|exports spans| TELEMETRY_SPANS
+            OTEL_INTEGRATION -.->|generates IDs for| COORD_HELPER
+            
+            TEST_SUITE -.->|validates| COORD_HELPER
+            TEST_SUITE -.->|tests| LOCK_SYSTEM
+        end
+        
+        %% External Connections
+        SCRUM_MASTER -->|executes commands| COORD_HELPER
+        SCRUM_MASTER -->|facilitates via| SAS_CEREMONIES
+        
+        DEVELOPER -->|claims work via| COORD_HELPER
+        DEVELOPER -->|monitors through| AGENT_STATUS
+        
+        CLAUDE_API <-->|intelligence requests| CLAUDE_ANALYZER
+        
+        OTEL_COLLECTOR <-->|receives traces| OTEL_INTEGRATION
+        
+        %% Data Flow Annotations
+        COORD_HELPER -.->|"claim(type, desc, priority, team)"| WORK_CLAIMS
+        COORD_HELPER -.->|"progress(id, percent, status)"| WORK_CLAIMS
+        COORD_HELPER -.->|"complete(id, result, points)"| COORD_LOG
+        COORD_HELPER -.->|"register(agent, team, capacity)"| AGENT_STATUS
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef dataStore fill:#4C566A,stroke:#D08770,stroke-width:2px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class AGENT_COORD_SYSTEM systemBoundary
+    class COORD_HELPER,AGENT_ORCHESTRATOR,CLAUDE_ANALYZER,SAS_CEREMONIES,LOCK_SYSTEM,OTEL_INTEGRATION,WORKTREE_ENV,TEST_SUITE container
+    class WORK_CLAIMS,AGENT_STATUS,COORD_LOG,TELEMETRY_SPANS,VELOCITY_LOG dataStore
+    class CLAUDE_API,OTEL_COLLECTOR external
+    class SCRUM_MASTER,DEVELOPER user

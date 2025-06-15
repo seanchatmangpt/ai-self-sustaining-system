@@ -1,0 +1,140 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "Reactor Engine Subsystem - Container View"
+        direction TB
+        
+        %% External Systems and Users
+        WORKFLOW_DESIGNER[👤 Workflow Designer<br/>Process Engineer]
+        SYSTEM_OPERATOR[⚙️ System Operator<br/>DevOps Engineer]
+        N8N_SYSTEM[🔄 N8N System<br/>External Workflow Engine]
+        PHOENIX_APP[🔥 Phoenix Application<br/>Main System]
+        AGENT_COORD[🎯 Agent Coordination<br/>Work Management]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector]
+        
+        %% Reactor Engine Container Boundary
+        subgraph REACTOR_SYSTEM["⚡ Reactor Engine - Workflow Orchestration System"]
+            direction TB
+            
+            %% Core Reactor Framework
+            REACTOR_CORE[⚡ Reactor Core<br/>Framework Engine<br/>- Step definitions<br/>- Flow control<br/>- Error handling<br/>- State management]
+            
+            REACTOR_RUNNER[🏃 Reactor Runner<br/>Execution Engine<br/>- Workflow execution<br/>- Process scheduling<br/>- Resource allocation<br/>- Performance optimization]
+            
+            %% Workflow Definition and Management
+            WORKFLOW_REGISTRY[📋 Workflow Registry<br/>Process Definitions<br/>- Workflow templates<br/>- Step configurations<br/>- Dependency mapping<br/>- Version control]
+            
+            STEP_LIBRARY[📚 Step Library<br/>Component Repository<br/>- Reusable steps<br/>- Custom operations<br/>- Built-in functions<br/>- Extension points]
+            
+            %% Execution and Coordination
+            PROCESS_ORCHESTRATOR[🎭 Process Orchestrator<br/>Execution Coordinator<br/>- Parallel execution<br/>- Dependency resolution<br/>- Resource coordination<br/>- Load balancing]
+            
+            COMPENSATION_ENGINE[🔄 Compensation Engine<br/>Error Recovery<br/>- Rollback operations<br/>- Failure handling<br/>- State restoration<br/>- Retry logic]
+            
+            %% N8N Integration Layer
+            N8N_ADAPTER[🔄 N8N Adapter<br/>External Integration<br/>- N8N API client<br/>- Workflow translation<br/>- Status synchronization<br/>- Event forwarding]
+            
+            N8N_WEBHOOK_HANDLER[📡 N8N Webhook Handler<br/>Event Processing<br/>- Webhook endpoints<br/>- Event parsing<br/>- Trigger processing<br/>- Response handling]
+            
+            REACTOR_N8N_BRIDGE[🌉 Reactor-N8N Bridge<br/>Protocol Translation<br/>- Format conversion<br/>- Protocol adaptation<br/>- Data transformation<br/>- Context mapping]
+            
+            %% File Coordination System
+            FILE_COORDINATOR[📁 File Coordinator<br/>Resource Management<br/>- File operations<br/>- Lock management<br/>- Access control<br/>- Atomic operations]
+            
+            ATOMIC_OPERATIONS[🔒 Atomic Operations<br/>Transaction Safety<br/>- ACID compliance<br/>- Consistency guarantees<br/>- Isolation control<br/>- Durability assurance]
+            
+            %% Performance and Optimization
+            PERFORMANCE_OPTIMIZER[⚡ Performance Optimizer<br/>Execution Tuning<br/>- Resource optimization<br/>- Execution planning<br/>- Bottleneck detection<br/>- Auto-scaling]
+            
+            MEMORY_MANAGER[💾 Memory Manager<br/>Resource Control<br/>- Memory allocation<br/>- Garbage collection<br/>- Resource pooling<br/>- Leak detection]
+            
+            %% Type Safety and Validation
+            TYPE_SAFETY_ENGINE[🛡️ Type Safety Engine<br/>Validation System<br/>- Type checking<br/>- Schema validation<br/>- Input verification<br/>- Output validation]
+            
+            DATA_VALIDATOR[✅ Data Validator<br/>Quality Assurance<br/>- Data integrity<br/>- Format validation<br/>- Business rules<br/>- Constraint checking]
+            
+            %% Telemetry and Monitoring
+            REACTOR_TELEMETRY[📊 Reactor Telemetry<br/>Observability<br/>- Execution metrics<br/>- Performance tracking<br/>- Error monitoring<br/>- Business metrics]
+            
+            TRACE_INTEGRATION[🔍 Trace Integration<br/>Distributed Tracing<br/>- Span creation<br/>- Context propagation<br/>- Correlation IDs<br/>- Performance analysis]
+            
+            %% Testing and Validation
+            REACTOR_TEST_SUITE[🧪 Reactor Test Suite<br/>Quality Assurance<br/>- Unit testing<br/>- Integration testing<br/>- Performance testing<br/>- Regression testing]
+            
+            SIMULATION_ENGINE[🎮 Simulation Engine<br/>Testing Framework<br/>- Workflow simulation<br/>- Load testing<br/>- Scenario testing<br/>- Behavior validation]
+            
+            %% SPR Pipeline Integration
+            SPR_COMPRESSION[📦 SPR Compression<br/>Self-Improving Reactor<br/>- Process compression<br/>- Pattern extraction<br/>- Optimization rules<br/>- Knowledge capture]
+            
+            SPR_DECOMPRESSION[📂 SPR Decompression<br/>Process Expansion<br/>- Pattern application<br/>- Rule deployment<br/>- Process reconstruction<br/>- Context restoration]
+            
+            %% Internal Relationships
+            REACTOR_CORE -.->|executes via| REACTOR_RUNNER
+            REACTOR_CORE -.->|uses| WORKFLOW_REGISTRY
+            REACTOR_CORE -.->|draws from| STEP_LIBRARY
+            
+            REACTOR_RUNNER -.->|coordinates via| PROCESS_ORCHESTRATOR
+            REACTOR_RUNNER -.->|handles errors via| COMPENSATION_ENGINE
+            REACTOR_RUNNER -.->|optimized by| PERFORMANCE_OPTIMIZER
+            REACTOR_RUNNER -.->|managed by| MEMORY_MANAGER
+            
+            PROCESS_ORCHESTRATOR -.->|coordinates| FILE_COORDINATOR
+            PROCESS_ORCHESTRATOR -.->|ensures| ATOMIC_OPERATIONS
+            
+            COMPENSATION_ENGINE -.->|validates via| TYPE_SAFETY_ENGINE
+            COMPENSATION_ENGINE -.->|checks via| DATA_VALIDATOR
+            
+            N8N_ADAPTER -.->|handles via| N8N_WEBHOOK_HANDLER
+            N8N_ADAPTER -.->|translates via| REACTOR_N8N_BRIDGE
+            
+            REACTOR_RUNNER -.->|integrates| N8N_ADAPTER
+            REACTOR_RUNNER -.->|traced by| TRACE_INTEGRATION
+            
+            REACTOR_TELEMETRY -.->|integrates| TRACE_INTEGRATION
+            REACTOR_TELEMETRY -.->|monitors| PERFORMANCE_OPTIMIZER
+            
+            REACTOR_TEST_SUITE -.->|simulates via| SIMULATION_ENGINE
+            REACTOR_TEST_SUITE -.->|validates| TYPE_SAFETY_ENGINE
+            
+            SPR_COMPRESSION -.->|decompresses via| SPR_DECOMPRESSION
+            SPR_COMPRESSION -.->|optimizes| REACTOR_CORE
+        end
+        
+        %% External Connections
+        WORKFLOW_DESIGNER -->|defines workflows| WORKFLOW_REGISTRY
+        WORKFLOW_DESIGNER -->|creates steps| STEP_LIBRARY
+        
+        SYSTEM_OPERATOR -->|monitors via| REACTOR_TELEMETRY
+        SYSTEM_OPERATOR -->|tests via| REACTOR_TEST_SUITE
+        
+        N8N_SYSTEM <-->|integrates via| N8N_ADAPTER
+        N8N_SYSTEM -->|sends webhooks to| N8N_WEBHOOK_HANDLER
+        
+        PHOENIX_APP -.->|workflows via| REACTOR_CORE
+        PHOENIX_APP <-->|coordination| PROCESS_ORCHESTRATOR
+        
+        AGENT_COORD -.->|work orchestration| PROCESS_ORCHESTRATOR
+        AGENT_COORD -.->|file coordination| FILE_COORDINATOR
+        
+        OTEL_COLLECTOR <-->|traces/metrics| TRACE_INTEGRATION
+        
+        %% Data Flow Annotations
+        REACTOR_CORE -.->|"execute(workflow, params) → result"| REACTOR_RUNNER
+        PROCESS_ORCHESTRATOR -.->|"coordinate(steps) → execution plan"| REACTOR_RUNNER
+        N8N_ADAPTER -.->|"webhook(event) → reactor step"| REACTOR_N8N_BRIDGE
+        PERFORMANCE_OPTIMIZER -.->|"optimize(execution) → improved performance"| REACTOR_RUNNER
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef coreContainer fill:#4C566A,stroke:#EBCB8B,stroke-width:2px,color:#ECEFF4
+    classDef integrationContainer fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class REACTOR_SYSTEM systemBoundary
+    class REACTOR_CORE,REACTOR_RUNNER,PROCESS_ORCHESTRATOR,COMPENSATION_ENGINE,PERFORMANCE_OPTIMIZER,MEMORY_MANAGER,TYPE_SAFETY_ENGINE,DATA_VALIDATOR,REACTOR_TELEMETRY,TRACE_INTEGRATION,SPR_COMPRESSION,SPR_DECOMPRESSION coreContainer
+    class WORKFLOW_REGISTRY,STEP_LIBRARY,FILE_COORDINATOR,ATOMIC_OPERATIONS,REACTOR_TEST_SUITE,SIMULATION_ENGINE container
+    class N8N_ADAPTER,N8N_WEBHOOK_HANDLER,REACTOR_N8N_BRIDGE integrationContainer
+    class N8N_SYSTEM,PHOENIX_APP,AGENT_COORD,OTEL_COLLECTOR external
+    class WORKFLOW_DESIGNER,SYSTEM_OPERATOR user

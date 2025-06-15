@@ -1,0 +1,140 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "AI Self-Sustaining System - Integration & Data Flow"
+        direction TB
+        
+        %% External Systems
+        USER[👤 User/Developer]
+        STAKEHOLDER[📊 Stakeholder]
+        CLAUDE_API[🧠 Claude API]
+        GITHUB[📂 GitHub]
+        POSTGRES[🗄️ PostgreSQL]
+        OTEL_COLLECTOR[📡 OpenTelemetry Collector]
+        N8N[🔄 N8N Workflows]
+        
+        %% Core System Integration
+        subgraph CORE_INTEGRATION["🤖 AI Self-Sustaining System - Integration Layer"]
+            direction TB
+            
+            %% Agent Coordination Hub
+            AGENT_HUB[🎯 Agent Coordination Hub<br/>coordination_helper.sh<br/>- Central orchestration<br/>- Work distribution<br/>- S@S ceremonies<br/>- Claude intelligence]
+            
+            %% Phoenix Application Cluster
+            PHOENIX_CLUSTER[🔥 Phoenix Application Cluster<br/>- Main web interface<br/>- Ash Framework ecosystem<br/>- LiveView real-time UI<br/>- Business logic processing]
+            
+            %% XAVOS Autonomous System
+            XAVOS_AUTONOMOUS[🚀 XAVOS Autonomous System<br/>Port 4002<br/>- AI-driven development<br/>- Isolated worktree<br/>- Advanced authentication<br/>- Vue.js frontend]
+            
+            %% Minimal Reference Implementation
+            MINIMAL_REF[📦 Minimal Reference<br/>- Core patterns<br/>- Essential functionality<br/>- Performance baseline<br/>- Reference architecture]
+            
+            %% Reactor Workflow Engine
+            REACTOR_WORKFLOW[⚡ Reactor Workflow Engine<br/>- Process orchestration<br/>- N8N integration<br/>- Compensation handling<br/>- Performance optimization]
+            
+            %% Telemetry Data Platform
+            TELEMETRY_PLATFORM[📊 Telemetry Data Platform<br/>- OpenTelemetry integration<br/>- Distributed tracing<br/>- Performance monitoring<br/>- Autonomous optimization]
+            
+            %% Worktree Coordination System
+            WORKTREE_COORD[🌳 Worktree Coordination<br/>- Environment isolation<br/>- Cross-system locks<br/>- Resource management<br/>- Configuration overlay]
+            
+            %% Shared State Management
+            SHARED_STATE[🤝 Shared State Management<br/>- Global coordination<br/>- Cross-system locks<br/>- State consistency<br/>- Conflict resolution]
+            
+            %% Data Flow Integration Points
+            
+            %% Work Coordination Flows
+            AGENT_HUB ==>|"Work Claims"| PHOENIX_CLUSTER
+            AGENT_HUB ==>|"Orchestration Commands"| XAVOS_AUTONOMOUS
+            AGENT_HUB ==>|"Reference Patterns"| MINIMAL_REF
+            AGENT_HUB ==>|"Workflow Triggers"| REACTOR_WORKFLOW
+            
+            %% Intelligence and Analysis Flows
+            AGENT_HUB <==>|"Priority Analysis"| CLAUDE_API
+            AGENT_HUB ==>|"Health Metrics"| TELEMETRY_PLATFORM
+            AGENT_HUB ==>|"Coordination Events"| SHARED_STATE
+            
+            %% Phoenix Application Integration
+            PHOENIX_CLUSTER <==>|"Database Operations"| POSTGRES
+            PHOENIX_CLUSTER ==>|"Trace Data"| TELEMETRY_PLATFORM
+            PHOENIX_CLUSTER <==>|"Workflow Integration"| REACTOR_WORKFLOW
+            PHOENIX_CLUSTER ==>|"Configuration Sync"| WORKTREE_COORD
+            
+            %% XAVOS System Integration
+            XAVOS_AUTONOMOUS <==>|"Isolated Database"| POSTGRES
+            XAVOS_AUTONOMOUS ==>|"Autonomous Metrics"| TELEMETRY_PLATFORM
+            XAVOS_AUTONOMOUS <==>|"Environment Management"| WORKTREE_COORD
+            XAVOS_AUTONOMOUS ==>|"AI Workflow Data"| SHARED_STATE
+            
+            %% Reactor Engine Integration
+            REACTOR_WORKFLOW <==>|"External Workflows"| N8N
+            REACTOR_WORKFLOW ==>|"Process Metrics"| TELEMETRY_PLATFORM
+            REACTOR_WORKFLOW ==>|"File Coordination"| SHARED_STATE
+            REACTOR_WORKFLOW <==>|"Reference Patterns"| MINIMAL_REF
+            
+            %% Telemetry Platform Integration
+            TELEMETRY_PLATFORM <==>|"Trace Export"| OTEL_COLLECTOR
+            TELEMETRY_PLATFORM ==>|"Performance Data"| AGENT_HUB
+            TELEMETRY_PLATFORM ==>|"System Health"| WORKTREE_COORD
+            
+            %% Worktree and State Management
+            WORKTREE_COORD <==>|"Git Operations"| GITHUB
+            WORKTREE_COORD <==>|"Global State"| SHARED_STATE
+            
+            %% Cross-System Data Flows
+            
+            %% Intelligence Flow
+            CLAUDE_API -.->|"Analysis Results"| AGENT_HUB
+            AGENT_HUB -.->|"Work Optimization"| PHOENIX_CLUSTER
+            PHOENIX_CLUSTER -.->|"User Feedback"| AGENT_HUB
+            
+            %% Performance Flow
+            TELEMETRY_PLATFORM -.->|"Performance Insights"| XAVOS_AUTONOMOUS
+            XAVOS_AUTONOMOUS -.->|"Optimization Signals"| REACTOR_WORKFLOW
+            REACTOR_WORKFLOW -.->|"Process Improvements"| AGENT_HUB
+            
+            %% Coordination Flow
+            SHARED_STATE -.->|"Global Events"| WORKTREE_COORD
+            WORKTREE_COORD -.->|"Environment Events"| AGENT_HUB
+            AGENT_HUB -.->|"Coordination Decisions"| SHARED_STATE
+            
+            %% Quality Flow
+            MINIMAL_REF -.->|"Reference Metrics"| TELEMETRY_PLATFORM
+            TELEMETRY_PLATFORM -.->|"Quality Insights"| PHOENIX_CLUSTER
+            PHOENIX_CLUSTER -.->|"Quality Validation"| MINIMAL_REF
+        end
+        
+        %% External System Integration
+        USER ==>|"Development Requests"| AGENT_HUB
+        USER <==>|"Web Interface"| PHOENIX_CLUSTER
+        USER <==>|"Admin Interface"| XAVOS_AUTONOMOUS
+        
+        STAKEHOLDER <==>|"Dashboards"| PHOENIX_CLUSTER
+        STAKEHOLDER <==>|"Analytics"| TELEMETRY_PLATFORM
+        
+        GITHUB <==>|"Source Control"| WORKTREE_COORD
+        POSTGRES <==>|"Data Persistence"| PHOENIX_CLUSTER
+        POSTGRES <==>|"XAVOS Data"| XAVOS_AUTONOMOUS
+        
+        OTEL_COLLECTOR <==>|"Observability Data"| TELEMETRY_PLATFORM
+        N8N <==>|"External Workflows"| REACTOR_WORKFLOW
+        
+        %% Critical Data Flow Annotations
+        AGENT_HUB -.->|"Nanosecond IDs → Zero Conflicts"| SHARED_STATE
+        TELEMETRY_PLATFORM -.->|"148 ops/hour coordination"| AGENT_HUB
+        XAVOS_AUTONOMOUS -.->|"Isolated development → 2/10 success"| WORKTREE_COORD
+        MINIMAL_REF -.->|"65.65MB efficiency → Reference"| PHOENIX_CLUSTER
+        REACTOR_WORKFLOW -.->|"SPR compression → Self-improvement"| AGENT_HUB
+    end
+
+    %% Styling
+    classDef subsystem fill:#3B4252,stroke:#81A1C1,stroke-width:3px,color:#ECEFF4
+    classDef coreSubsystem fill:#4C566A,stroke:#EBCB8B,stroke-width:3px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:4px,color:#ECEFF4
+    
+    class CORE_INTEGRATION systemBoundary
+    class AGENT_HUB coreSubsystem
+    class PHOENIX_CLUSTER,XAVOS_AUTONOMOUS,MINIMAL_REF,REACTOR_WORKFLOW,TELEMETRY_PLATFORM,WORKTREE_COORD,SHARED_STATE subsystem
+    class CLAUDE_API,GITHUB,POSTGRES,OTEL_COLLECTOR,N8N external
+    class USER,STAKEHOLDER user

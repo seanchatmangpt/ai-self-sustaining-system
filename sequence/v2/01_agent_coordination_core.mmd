@@ -1,0 +1,88 @@
+sequenceDiagram
+    participant Agent as Agent[H(A)=log₂(N)]
+    participant CoordHelper as coordination_helper.sh[Φ(A→C)]
+    participant WorkClaimsFile as work_claims.json[I(W;A)]
+    participant AgentStatusFile as agent_status.json[H(S|A)]
+    participant CoordLogFile as coordination_log.json[H(L)]
+    participant OTEL as OpenTelemetry[H(T)]
+    participant Claude as Claude AI[I(C;A)]
+    participant FileSystem as FileSystem[C=max(I)]
+
+    Note over Agent,FileSystem: Agent Coordination Core Flow<br/>Information Conservation: ∑H(inputs) = ∑H(outputs) + H(noise)
+
+    %% Agent Registration Phase - Information Injection H(A)
+    Agent->>+CoordHelper: register(agent_id, metadata)<br/>H(reg) = log₂(|agents| × |metadata|)
+    CoordHelper->>CoordHelper: generate_trace_id()<br/>H(trace) = 128 bits uniform
+    CoordHelper->>CoordHelper: create_otel_context(operation="register")<br/>I(op;trace) = H(op) + H(trace) - H(op,trace)
+    
+    %% File System Operations - Information Persistence
+    CoordHelper->>+FileSystem: acquire_file_lock(agent_status.json)<br/>Φ(lock) = δ(t) × P(success)
+    FileSystem-->>-CoordHelper: lock_acquired[τ=nanosecond_timestamp]<br/>H(lock|time) = 0 (deterministic)
+    
+    CoordHelper->>+AgentStatusFile: read_current_state()<br/>H(state) = -∑ p(agent) log₂ p(agent)
+    AgentStatusFile-->>-CoordHelper: current_agents[entropy=H(S)]
+    
+    CoordHelper->>CoordHelper: validate_unique_agent_id()<br/>I(new;existing) = 0 (mutual exclusion)
+    CoordHelper->>+AgentStatusFile: append_agent_record()<br/>ΔH = log₂(N+1) - log₂(N)
+    AgentStatusFile-->>-CoordHelper: write_confirmed[checksum]<br/>H(confirm|write) = -log₂(P(success))
+    
+    %% Telemetry Emission - Information Broadcast
+    CoordHelper->>+OTEL: emit_telemetry_span()<br/>H(telemetry) = H(operation) + H(duration) + H(metadata)
+    OTEL->>OTEL: process_span_data()<br/>I(span;system) = H(span) - H(span|system)
+    OTEL-->>-CoordHelper: span_processed[span_id]<br/>H(confirmation) = 64 bits
+    
+    %% File System Release - Information Integrity
+    CoordHelper->>+FileSystem: release_file_lock()<br/>Φ(unlock) = -δ(t) × P(release)
+    FileSystem-->>-CoordHelper: lock_released<br/>H(release) = 0 (guaranteed)
+    
+    CoordHelper-->>-Agent: registration_complete[agent_id, trace_id]<br/>I(response;request) = H(response) ∩ H(request)
+
+    Note over Agent,FileSystem: Information Conservation Check:<br/>H(initial) + H(registration) = H(final_state) + H(telemetry)<br/>Entropy Balance: ΔS_system = ΔS_files + ΔS_telemetry ≥ 0
+
+    %% Work Claiming Phase - Information Transfer
+    Agent->>+CoordHelper: claim_work(work_type, priority)<br/>H(claim) = H(type) + H(priority) + H(agent_context)
+    CoordHelper->>CoordHelper: generate_work_item_id()<br/>H(work_id) = 64 bits uniform entropy
+    
+    %% Claude AI Intelligence Integration - Information Amplification
+    CoordHelper->>+Claude: analyze_agent_capabilities(agent_metadata)<br/>Φ(A→C) = rate of information transfer
+    Claude->>Claude: process_capability_context()<br/>H(analysis) > H(input) (intelligence amplification)
+    Claude-->>-CoordHelper: capability_assessment[confidence, recommendations]<br/>I(assessment;agent) = mutual information
+    
+    %% Work Assignment Algorithm - Information Optimization
+    CoordHelper->>+WorkClaimsFile: read_available_work()<br/>H(available) = -∑ p(work) log₂ p(work)
+    WorkClaimsFile-->>-CoordHelper: work_queue[priority_ordered]<br/>I(queue;priority) = H(queue) - H(queue|priority)
+    
+    CoordHelper->>CoordHelper: calculate_assignment_score()<br/>Score = -∑ p(match) log₂ p(match)
+    CoordHelper->>CoordHelper: apply_load_balancing()<br/>H(load) minimized across agents
+    
+    %% Atomic Work Assignment - Information Transaction
+    CoordHelper->>+FileSystem: acquire_file_lock(work_claims.json)<br/>Exclusive access for atomic update
+    FileSystem-->>-CoordHelper: lock_acquired[atomic_timestamp]
+    
+    CoordHelper->>+WorkClaimsFile: update_work_assignment()<br/>ΔI = I(work;agent_new) - I(work;agent_old)
+    WorkClaimsFile-->>-CoordHelper: assignment_recorded[work_id, agent_id]<br/>H(assignment) = log₂(|agents| × |work|)
+    
+    CoordHelper->>+FileSystem: release_file_lock()<br/>Transaction complete
+    FileSystem-->>-CoordHelper: lock_released
+    
+    %% Coordination Logging - Information Archival
+    CoordHelper->>+CoordLogFile: append_coordination_event()<br/>H(log) += H(event)
+    CoordLogFile-->>-CoordHelper: event_logged[timestamp, hash]<br/>I(log;event) = H(event)
+    
+    %% Final Telemetry - Information Closure
+    CoordHelper->>+OTEL: emit_coordination_metrics()<br/>H(metrics) = ∑ H(individual_metrics)
+    OTEL->>OTEL: aggregate_coordination_data()<br/>I(aggregate;components) ≤ ∑ I(component;system)
+    OTEL-->>-CoordHelper: metrics_recorded
+    
+    CoordHelper-->>-Agent: work_assigned[work_id, details, trace_id]<br/>I(assignment;request) = H(assignment) given H(request)
+
+    Note over Agent,FileSystem: Coordination Complete<br/>Information Flow: Φ(Agent→System) = ∂I/∂t<br/>Entropy Production: σ = ∑ᵢ Jᵢ × ∇(μᵢ/T) ≥ 0<br/>Channel Capacity: C = max I(input;output) achieved
+
+    %% Error Handling - Information Recovery
+    rect rgb(255, 240, 240)
+        Note over CoordHelper: Error Recovery Protocol<br/>Information Loss Mitigation
+        CoordHelper->>CoordHelper: detect_coordination_failure()<br/>H(error) = unexpected information
+        CoordHelper->>OTEL: emit_error_telemetry()<br/>Preserve error information
+        CoordHelper->>CoordHelper: execute_exponential_backoff()<br/>Reduce information collision probability
+        CoordHelper->>Agent: coordination_retry_required[error_context]<br/>Information feedback loop
+    end

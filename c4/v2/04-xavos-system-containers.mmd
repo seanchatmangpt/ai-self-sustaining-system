@@ -1,0 +1,136 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "XAVOS System - Container View"
+        direction TB
+        
+        %% External Users and Systems
+        AI_DEVELOPER[🤖 AI Developer<br/>Autonomous Agent]
+        SYSTEM_ADMIN[⚙️ System Admin<br/>DevOps Engineer]
+        POSTGRES_XAVOS[🗄️ PostgreSQL<br/>XAVOS Database]
+        PARENT_COORD[🎯 Parent Coordination<br/>Main Agent System]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector]
+        
+        %% XAVOS Container Boundary
+        subgraph XAVOS_SYSTEM["🚀 XAVOS (eXtended Autonomous Virtual Operations System)"]
+            direction TB
+            
+            %% Core Phoenix Application (Port 4002)
+            XAVOS_ENDPOINT[🌐 XAVOS Phoenix Endpoint<br/>Web Server (Port 4002)<br/>- HTTP/WebSocket handling<br/>- LiveView connections<br/>- API endpoints<br/>- Admin interfaces]
+            
+            %% Complete Ash Framework Ecosystem (25+ packages)
+            ASH_CORE[⚡ Ash Core Framework<br/>Complete Ecosystem<br/>- 25+ Ash packages<br/>- Resource definitions<br/>- Action processing<br/>- Policy enforcement]
+            
+            ASH_ADMIN[🔧 Ash Admin<br/>Admin Interface<br/>- Resource management<br/>- Data visualization<br/>- Admin operations<br/>- System configuration]
+            
+            ASH_COORDINATION[🤝 Ash S@S Coordination<br/>Scrum at Scale Panel<br/>- Team coordination<br/>- Sprint management<br/>- Velocity tracking<br/>- Ceremony facilitation]
+            
+            %% CMS and Content Management
+            BEACON_CMS[📝 Beacon CMS<br/>Content Management<br/>- Page management<br/>- Content editing<br/>- Template system<br/>- Publishing workflow]
+            
+            %% AI-Driven Development Workflows
+            AI_WORKFLOW_ENGINE[🧠 AI Workflow Engine<br/>Autonomous Development<br/>- Code generation<br/>- Test automation<br/>- Deployment orchestration<br/>- Quality assurance]
+            
+            TRACE_FLOW_REACTORS[⚡ Trace Flow Reactors<br/>Process Automation<br/>- Workflow execution<br/>- Process monitoring<br/>- Error handling<br/>- Performance optimization]
+            
+            %% Advanced Authentication System
+            ADVANCED_AUTH[🔐 Advanced Authentication<br/>Security System<br/>- Multi-factor auth<br/>- Role-based access<br/>- Session management<br/>- Security policies]
+            
+            %% Frontend Components
+            VUE_FRONTEND[🎨 Vue.js Frontend<br/>Interactive UI<br/>- Trace visualization<br/>- Real-time dashboards<br/>- Component library<br/>- User interactions]
+            
+            PHOENIX_DASHBOARD[📊 Phoenix Dashboard<br/>System Monitoring<br/>- Performance metrics<br/>- System health<br/>- Resource utilization<br/>- Alert management]
+            
+            %% Database and Data Management
+            XAVOS_REPO[🗄️ XAVOS Repository<br/>Data Access Layer<br/>- Database connections<br/>- Migration management<br/>- Query optimization<br/>- Transaction handling]
+            
+            ASH_POSTGRES_XAVOS[🗄️ Ash PostgreSQL<br/>XAVOS Data Layer<br/>- Resource persistence<br/>- Database adapter<br/>- Query translation<br/>- Schema management]
+            
+            %% Deployment and Management
+            DEPLOY_COMPLETE[🚀 Complete Deployment<br/>System (627 lines)<br/>- Full system deployment<br/>- Configuration management<br/>- Service orchestration<br/>- Health monitoring]
+            
+            DEPLOY_REALISTIC[⚙️ Realistic Deployment<br/>Alternative System<br/>- Simplified deployment<br/>- Environment-specific config<br/>- Service coordination<br/>- Monitoring integration]
+            
+            EXACT_COMMANDS[📋 Exact Command<br/>Sequences<br/>- Precise operations<br/>- Command automation<br/>- Error handling<br/>- Execution tracking]
+            
+            %% Worktree Isolation
+            WORKTREE_ISOLATION[🌳 Worktree Isolation<br/>Development Environment<br/>- Isolated git worktree<br/>- Environment separation<br/>- Configuration overlay<br/>- Dependency management]
+            
+            %% OpenTelemetry Integration
+            XAVOS_TELEMETRY[📊 XAVOS Telemetry<br/>Observability System<br/>- Distributed tracing<br/>- Performance monitoring<br/>- Business metrics<br/>- Alert generation]
+            
+            %% Integration and Testing
+            INTEGRATION_MONITOR[🔍 Integration Monitor<br/>System Validation<br/>- End-to-end testing<br/>- Performance validation<br/>- Integration health<br/>- Regression detection]
+            
+            BENCHMARK_SUITE[⚡ Benchmark Suite<br/>Performance Testing<br/>- Load testing<br/>- Performance analysis<br/>- Scalability testing<br/>- Optimization recommendations]
+            
+            %% Internal Relationships
+            XAVOS_ENDPOINT -->|routes to| ASH_CORE
+            XAVOS_ENDPOINT -.->|serves| VUE_FRONTEND
+            XAVOS_ENDPOINT -.->|hosts| ASH_ADMIN
+            XAVOS_ENDPOINT -.->|provides| PHOENIX_DASHBOARD
+            
+            ASH_CORE -.->|data via| ASH_POSTGRES_XAVOS
+            ASH_CORE -.->|admin via| ASH_ADMIN
+            ASH_CORE -.->|coordination via| ASH_COORDINATION
+            ASH_CORE -.->|auth via| ADVANCED_AUTH
+            
+            ASH_ADMIN -.->|manages| BEACON_CMS
+            ASH_COORDINATION -.->|orchestrates| AI_WORKFLOW_ENGINE
+            
+            AI_WORKFLOW_ENGINE -.->|executes via| TRACE_FLOW_REACTORS
+            AI_WORKFLOW_ENGINE -.->|monitored by| XAVOS_TELEMETRY
+            
+            TRACE_FLOW_REACTORS -.->|visualized in| VUE_FRONTEND
+            TRACE_FLOW_REACTORS -.->|tracked by| XAVOS_TELEMETRY
+            
+            ASH_POSTGRES_XAVOS -.->|connects to| XAVOS_REPO
+            XAVOS_REPO -.->|monitored by| XAVOS_TELEMETRY
+            
+            DEPLOY_COMPLETE -.->|orchestrates| DEPLOY_REALISTIC
+            DEPLOY_COMPLETE -.->|executes| EXACT_COMMANDS
+            
+            WORKTREE_ISOLATION -.->|isolates| ASH_CORE
+            WORKTREE_ISOLATION -.->|manages env for| DEPLOY_COMPLETE
+            
+            INTEGRATION_MONITOR -.->|validates| AI_WORKFLOW_ENGINE
+            INTEGRATION_MONITOR -.->|tests| TRACE_FLOW_REACTORS
+            
+            BENCHMARK_SUITE -.->|tests performance of| ASH_CORE
+            BENCHMARK_SUITE -.->|validates| AI_WORKFLOW_ENGINE
+        end
+        
+        %% External Connections
+        AI_DEVELOPER -->|autonomous access| XAVOS_ENDPOINT
+        AI_DEVELOPER -->|workflow execution| AI_WORKFLOW_ENGINE
+        
+        SYSTEM_ADMIN -->|admin access| ASH_ADMIN
+        SYSTEM_ADMIN -->|monitoring via| PHOENIX_DASHBOARD
+        SYSTEM_ADMIN -->|deployment via| DEPLOY_COMPLETE
+        
+        POSTGRES_XAVOS <-->|database operations| XAVOS_REPO
+        
+        PARENT_COORD -.->|coordinates with| ASH_COORDINATION
+        PARENT_COORD -.->|monitors| INTEGRATION_MONITOR
+        
+        OTEL_COLLECTOR <-->|traces/metrics| XAVOS_TELEMETRY
+        
+        %% Deployment Risk and Status Annotations
+        DEPLOY_COMPLETE -.->|"⚠️ 2/10 success rate"| DEPLOY_REALISTIC
+        ASH_CORE -.->|"25+ packages complexity"| ASH_POSTGRES_XAVOS
+        WORKTREE_ISOLATION -.->|"isolated development"| PARENT_COORD
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef ashContainer fill:#4C566A,stroke:#A3BE8C,stroke-width:2px,color:#ECEFF4
+    classDef aiContainer fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class XAVOS_SYSTEM systemBoundary
+    class XAVOS_ENDPOINT,VUE_FRONTEND,PHOENIX_DASHBOARD,XAVOS_REPO,DEPLOY_COMPLETE,DEPLOY_REALISTIC,EXACT_COMMANDS,WORKTREE_ISOLATION,XAVOS_TELEMETRY,INTEGRATION_MONITOR,BENCHMARK_SUITE,BEACON_CMS,ADVANCED_AUTH container
+    class ASH_CORE,ASH_ADMIN,ASH_COORDINATION,ASH_POSTGRES_XAVOS ashContainer
+    class AI_WORKFLOW_ENGINE,TRACE_FLOW_REACTORS aiContainer
+    class POSTGRES_XAVOS,PARENT_COORD,OTEL_COLLECTOR external
+    class AI_DEVELOPER,SYSTEM_ADMIN user

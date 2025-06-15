@@ -1,0 +1,158 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "OpenTelemetry & Telemetry System - Container View"
+        direction TB
+        
+        %% External Systems and Users
+        SYSTEM_OPERATOR[⚙️ System Operator<br/>DevOps Engineer]
+        DEVELOPER[👤 Developer<br/>System Engineer]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector (External)]
+        PROMETHEUS[📊 Prometheus<br/>Metrics Storage]
+        JAEGER[🔍 Jaeger<br/>Trace Storage]
+        GRAFANA[📈 Grafana<br/>Visualization]
+        PHOENIX_APP[🔥 Phoenix Application<br/>Main System]
+        AGENT_COORD[🎯 Agent Coordination<br/>Work Management]
+        REACTOR_ENGINE[⚡ Reactor Engine<br/>Workflow System]
+        XAVOS_SYSTEM[🚀 XAVOS System<br/>Autonomous Operations]
+        
+        %% Telemetry System Container Boundary
+        subgraph TELEMETRY_SYSTEM["📊 OpenTelemetry & Telemetry System"]
+            direction TB
+            
+            %% Core OpenTelemetry Components
+            OTEL_API[📡 OpenTelemetry API<br/>Core Interface<br/>- Tracer provider<br/>- Meter provider<br/>- Logger provider<br/>- Context management]
+            
+            OTEL_SDK[🔧 OpenTelemetry SDK<br/>Implementation<br/>- Span processing<br/>- Metric aggregation<br/>- Sampling strategies<br/>- Resource detection]
+            
+            %% Instrumentation Libraries
+            OTEL_PHOENIX[🔥 OpenTelemetry Phoenix<br/>Web Instrumentation<br/>- HTTP request tracing<br/>- Controller spans<br/>- Pipeline monitoring<br/>- Error tracking]
+            
+            OTEL_ECTO[🗄️ OpenTelemetry Ecto<br/>Database Instrumentation<br/>- Query tracing<br/>- Connection monitoring<br/>- Performance metrics<br/>- Slow query detection]
+            
+            OTEL_LIVEVIEW[📱 OpenTelemetry LiveView<br/>UI Instrumentation<br/>- User interaction tracing<br/>- Component performance<br/>- Real-time metrics<br/>- Session tracking]
+            
+            OTEL_COWBOY[🤠 OpenTelemetry Cowboy<br/>HTTP Server Instrumentation<br/>- Connection tracing<br/>- Request lifecycle<br/>- WebSocket monitoring<br/>- Performance analysis]
+            
+            OTEL_PROCESS_PROPAGATOR[🔄 Process Propagator<br/>Context Propagation<br/>- Cross-process context<br/>- Async task tracing<br/>- Distributed correlation<br/>- Context inheritance]
+            
+            %% Telemetry Integration Layer
+            TELEMETRY_MIDDLEWARE[⚙️ Telemetry Middleware<br/>Integration Layer<br/>- Event aggregation<br/>- Metric collection<br/>- Custom instrumentation<br/>- Business metrics]
+            
+            AGENT_TELEMETRY[🤖 Agent Coordination<br/>Telemetry<br/>- Work claim tracing<br/>- Agent performance<br/>- Coordination metrics<br/>- S@S ceremony tracking]
+            
+            REACTOR_TELEMETRY[⚡ Reactor Engine<br/>Telemetry<br/>- Workflow execution<br/>- Step performance<br/>- Error tracking<br/>- Resource utilization]
+            
+            XAVOS_TELEMETRY[🚀 XAVOS System<br/>Telemetry<br/>- Autonomous operations<br/>- AI workflow metrics<br/>- System health<br/>- Performance optimization]
+            
+            %% Trace Management
+            TRACE_MANAGER[🔍 Trace Manager<br/>Trace Coordination<br/>- Trace ID generation<br/>- Span correlation<br/>- Context propagation<br/>- Trace sampling]
+            
+            SPAN_PROCESSOR[🔄 Span Processor<br/>Trace Processing<br/>- Span enrichment<br/>- Attribute addition<br/>- Sampling decisions<br/>- Export batching]
+            
+            TRACE_EXPORTER[📤 Trace Exporter<br/>Data Export<br/>- OTLP protocol<br/>- Jaeger export<br/>- Zipkin export<br/>- Custom exporters]
+            
+            %% Metrics System
+            METRICS_COLLECTOR[📊 Metrics Collector<br/>Metrics Aggregation<br/>- Counter metrics<br/>- Gauge metrics<br/>- Histogram metrics<br/>- Summary metrics]
+            
+            METRICS_PROCESSOR[⚡ Metrics Processor<br/>Metrics Processing<br/>- Aggregation rules<br/>- Filtering logic<br/>- Transformation<br/>- Delta calculation]
+            
+            METRICS_EXPORTER[📈 Metrics Exporter<br/>Metrics Export<br/>- Prometheus format<br/>- OTLP metrics<br/>- Custom formats<br/>- Push/Pull models]
+            
+            %% Performance Analysis
+            PERFORMANCE_ANALYZER[⚡ Performance Analyzer<br/>Analysis Engine<br/>- Bottleneck detection<br/>- Performance trends<br/>- SLA monitoring<br/>- Anomaly detection]
+            
+            AUTONOMOUS_OPTIMIZER[🧠 Autonomous Optimizer<br/>Self-Optimization<br/>- Performance tuning<br/>- Resource optimization<br/>- Predictive scaling<br/>- Auto-remediation]
+            
+            %% Data Storage and Buffering
+            TELEMETRY_BUFFER[💾 Telemetry Buffer<br/>Data Buffering<br/>- In-memory cache<br/>- Batch processing<br/>- Overflow handling<br/>- Reliability guarantees]
+            
+            SPAN_STORAGE[🗄️ Span Storage<br/>Local Storage<br/>- Temporary span storage<br/>- Correlation data<br/>- Context preservation<br/>- Query optimization]
+            
+            %% Configuration and Management
+            TELEMETRY_CONFIG[⚙️ Telemetry Configuration<br/>System Configuration<br/>- Sampling configuration<br/>- Export settings<br/>- Instrumentation config<br/>- Runtime tuning]
+            
+            HEALTH_MONITOR[🏥 Health Monitor<br/>System Health<br/>- Component health<br/>- Telemetry pipeline health<br/>- Data quality monitoring<br/>- Alert generation]
+            
+            %% Validation and Testing
+            TRACE_VALIDATOR[✅ Trace Validator<br/>Data Validation<br/>- Trace completeness<br/>- Span validation<br/>- Context verification<br/>- Quality assurance]
+            
+            TELEMETRY_TESTING[🧪 Telemetry Testing<br/>Testing Framework<br/>- Instrumentation testing<br/>- End-to-end validation<br/>- Performance testing<br/>- Regression testing]
+            
+            %% Internal Relationships
+            OTEL_API -.->|implemented by| OTEL_SDK
+            
+            OTEL_SDK -.->|configures| OTEL_PHOENIX
+            OTEL_SDK -.->|configures| OTEL_ECTO
+            OTEL_SDK -.->|configures| OTEL_LIVEVIEW
+            OTEL_SDK -.->|configures| OTEL_COWBOY
+            OTEL_SDK -.->|uses| OTEL_PROCESS_PROPAGATOR
+            
+            TELEMETRY_MIDDLEWARE -.->|aggregates| AGENT_TELEMETRY
+            TELEMETRY_MIDDLEWARE -.->|aggregates| REACTOR_TELEMETRY
+            TELEMETRY_MIDDLEWARE -.->|aggregates| XAVOS_TELEMETRY
+            
+            TRACE_MANAGER -.->|processes via| SPAN_PROCESSOR
+            SPAN_PROCESSOR -.->|exports via| TRACE_EXPORTER
+            TRACE_MANAGER -.->|propagates via| OTEL_PROCESS_PROPAGATOR
+            
+            METRICS_COLLECTOR -.->|processes via| METRICS_PROCESSOR
+            METRICS_PROCESSOR -.->|exports via| METRICS_EXPORTER
+            
+            PERFORMANCE_ANALYZER -.->|feeds| AUTONOMOUS_OPTIMIZER
+            PERFORMANCE_ANALYZER -.->|analyzes| TELEMETRY_BUFFER
+            
+            TELEMETRY_BUFFER -.->|stores| SPAN_STORAGE
+            TELEMETRY_BUFFER -.->|manages| TELEMETRY_CONFIG
+            
+            HEALTH_MONITOR -.->|validates via| TRACE_VALIDATOR
+            HEALTH_MONITOR -.->|tests via| TELEMETRY_TESTING
+            
+            OTEL_SDK -.->|manages| TRACE_MANAGER
+            OTEL_SDK -.->|manages| METRICS_COLLECTOR
+            OTEL_SDK -.->|buffers in| TELEMETRY_BUFFER
+        end
+        
+        %% External Connections
+        SYSTEM_OPERATOR -->|configures| TELEMETRY_CONFIG
+        SYSTEM_OPERATOR -->|monitors via| HEALTH_MONITOR
+        
+        DEVELOPER -->|instruments via| OTEL_API
+        DEVELOPER -->|validates via| TELEMETRY_TESTING
+        
+        OTEL_COLLECTOR <-->|OTLP protocol| TRACE_EXPORTER
+        OTEL_COLLECTOR <-->|OTLP metrics| METRICS_EXPORTER
+        
+        PROMETHEUS <-->|metrics pull| METRICS_EXPORTER
+        JAEGER <-->|trace data| TRACE_EXPORTER
+        GRAFANA -->|visualization queries| PROMETHEUS
+        GRAFANA -->|trace queries| JAEGER
+        
+        PHOENIX_APP -->|generates spans| OTEL_PHOENIX
+        PHOENIX_APP -->|database traces| OTEL_ECTO
+        PHOENIX_APP -->|UI traces| OTEL_LIVEVIEW
+        
+        AGENT_COORD -->|coordination telemetry| AGENT_TELEMETRY
+        REACTOR_ENGINE -->|workflow telemetry| REACTOR_TELEMETRY
+        XAVOS_SYSTEM -->|system telemetry| XAVOS_TELEMETRY
+        
+        %% Data Flow Annotations
+        OTEL_PHOENIX -.->|"HTTP spans → trace export"| TRACE_EXPORTER
+        AGENT_TELEMETRY -.->|"coordination metrics → monitoring"| PERFORMANCE_ANALYZER
+        AUTONOMOUS_OPTIMIZER -.->|"optimization signals → system tuning"| TELEMETRY_CONFIG
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef otelContainer fill:#4C566A,stroke:#EBCB8B,stroke-width:2px,color:#ECEFF4
+    classDef processingContainer fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef storageContainer fill:#434C5E,stroke:#D08770,stroke-width:2px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class TELEMETRY_SYSTEM systemBoundary
+    class OTEL_API,OTEL_SDK,OTEL_PHOENIX,OTEL_ECTO,OTEL_LIVEVIEW,OTEL_COWBOY,OTEL_PROCESS_PROPAGATOR otelContainer
+    class TELEMETRY_MIDDLEWARE,AGENT_TELEMETRY,REACTOR_TELEMETRY,XAVOS_TELEMETRY,TRACE_MANAGER,SPAN_PROCESSOR,METRICS_COLLECTOR,METRICS_PROCESSOR,PERFORMANCE_ANALYZER,AUTONOMOUS_OPTIMIZER processingContainer
+    class TRACE_EXPORTER,METRICS_EXPORTER,TELEMETRY_BUFFER,SPAN_STORAGE,TELEMETRY_CONFIG,HEALTH_MONITOR,TRACE_VALIDATOR,TELEMETRY_TESTING container
+    class OTEL_COLLECTOR,PROMETHEUS,JAEGER,GRAFANA,PHOENIX_APP,AGENT_COORD,REACTOR_ENGINE,XAVOS_SYSTEM external
+    class SYSTEM_OPERATOR,DEVELOPER user

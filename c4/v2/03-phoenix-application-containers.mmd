@@ -1,0 +1,136 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "Phoenix Application Subsystem - Container View"
+        direction TB
+        
+        %% External Users and Systems
+        WEB_USER[👤 Web User<br/>Developer/Admin]
+        STAKEHOLDER[📊 Business User<br/>Stakeholder]
+        POSTGRES_DB[🗄️ PostgreSQL<br/>Database]
+        OTEL_COLLECTOR[📡 OpenTelemetry<br/>Collector]
+        N8N_API[🔄 N8N API<br/>Workflow Engine]
+        EXTERNAL_APIs[🌐 External APIs<br/>Third-party Services]
+        
+        %% Phoenix Application Container Boundary
+        subgraph PHOENIX_SYSTEM["🔥 Phoenix Application System"]
+            direction TB
+            
+            %% Web Layer
+            PHOENIX_ENDPOINT[🌐 Phoenix Endpoint<br/>Web Server<br/>- HTTP/WebSocket handling<br/>- LiveView connections<br/>- Static asset serving<br/>- Request routing]
+            
+            LIVEVIEW_INTERFACE[📱 LiveView Interface<br/>Real-time UI<br/>- Interactive dashboards<br/>- Real-time updates<br/>- WebSocket connections<br/>- Component system]
+            
+            %% Application Layer - Core Phoenix
+            PHOENIX_ROUTER[🎯 Phoenix Router<br/>Request Routing<br/>- Route definitions<br/>- Pipeline configuration<br/>- Plug integration<br/>- Authentication routes]
+            
+            %% Application Layer - Ash Framework
+            ASH_FRAMEWORK[⚡ Ash Framework<br/>Core Engine<br/>- Resource definitions<br/>- Action processing<br/>- Policy enforcement<br/>- Query optimization]
+            
+            ASH_POSTGRES[🗄️ Ash PostgreSQL<br/>Data Layer<br/>- Database adapter<br/>- Migration management<br/>- Query translation<br/>- Connection pooling]
+            
+            ASH_PHOENIX[🔥 Ash Phoenix<br/>Web Integration<br/>- Form helpers<br/>- LiveView components<br/>- Resource routing<br/>- Error handling]
+            
+            ASH_AUTH[🔐 Ash Authentication<br/>Auth System<br/>- User management<br/>- Session handling<br/>- Token validation<br/>- Permission system]
+            
+            ASH_AUTH_PHOENIX[🔐 Ash Auth Phoenix<br/>Web Auth Components<br/>- Login forms<br/>- Auth LiveViews<br/>- Session management<br/>- Route protection]
+            
+            ASH_OBAN[⚙️ Ash Oban<br/>Background Jobs<br/>- Job scheduling<br/>- Worker processes<br/>- Queue management<br/>- Error handling]
+            
+            ASH_AI[🧠 Ash AI<br/>AI Integration<br/>- Model connections<br/>- Prompt management<br/>- Response processing<br/>- AI workflow integration]
+            
+            %% Business Logic Layer
+            AI_DOMAIN[🤖 AI Domain<br/>Business Logic<br/>- Self-sustaining processes<br/>- Workflow orchestration<br/>- Business rules<br/>- Domain events]
+            
+            WORKFLOWS[🔄 Workflows<br/>Process Engine<br/>- Workflow definitions<br/>- State management<br/>- Process automation<br/>- Integration orchestration]
+            
+            %% Telemetry and Monitoring
+            TELEMETRY_SYSTEM[📊 Telemetry System<br/>Observability<br/>- Metrics collection<br/>- Performance monitoring<br/>- Health checks<br/>- Alert generation]
+            
+            AUTONOMOUS_HEALTH[🏥 Autonomous Health<br/>Monitor<br/>- System health tracking<br/>- Anomaly detection<br/>- Self-healing triggers<br/>- Performance optimization]
+            
+            TRACE_OPTIMIZER[⚡ Autonomous Trace<br/>Optimizer<br/>- Trace analysis<br/>- Performance optimization<br/>- Bottleneck detection<br/>- Auto-tuning]
+            
+            %% OpenTelemetry Integration
+            OTEL_PHOENIX[📡 OpenTelemetry Phoenix<br/>Tracing Integration<br/>- Request tracing<br/>- Span creation<br/>- Context propagation<br/>- Performance metrics]
+            
+            OTEL_ECTO[📊 OpenTelemetry Ecto<br/>Database Tracing<br/>- Query tracing<br/>- Database metrics<br/>- Connection monitoring<br/>- Performance analysis]
+            
+            OTEL_LIVEVIEW[📱 OpenTelemetry LiveView<br/>UI Tracing<br/>- User interaction tracing<br/>- Component performance<br/>- Real-time metrics<br/>- User experience monitoring]
+            
+            %% Data Access Layer
+            REPO[🗄️ Repo<br/>Database Access<br/>- Connection management<br/>- Transaction handling<br/>- Query execution<br/>- Migration control]
+            
+            %% External Integration Layer
+            N8N_CLIENT[🔄 N8N Client<br/>Workflow Integration<br/>- Workflow triggers<br/>- API communication<br/>- Process coordination<br/>- Status monitoring]
+            
+            EXTERNAL_INTEGRATIONS[🌐 External Integrations<br/>API Clients<br/>- Third-party APIs<br/>- Service communication<br/>- Data synchronization<br/>- Error handling]
+            
+            %% Asset Management
+            ASSET_PIPELINE[🎨 Asset Pipeline<br/>Frontend Assets<br/>- CSS compilation<br/>- JavaScript bundling<br/>- Asset optimization<br/>- Static file serving]
+            
+            %% Internal Relationships
+            PHOENIX_ENDPOINT -->|routes to| PHOENIX_ROUTER
+            PHOENIX_ENDPOINT -.->|serves| LIVEVIEW_INTERFACE
+            PHOENIX_ENDPOINT -.->|serves| ASSET_PIPELINE
+            
+            PHOENIX_ROUTER -.->|integrates| ASH_PHOENIX
+            PHOENIX_ROUTER -.->|auth via| ASH_AUTH_PHOENIX
+            
+            LIVEVIEW_INTERFACE -.->|powered by| ASH_PHOENIX
+            LIVEVIEW_INTERFACE -.->|monitored by| OTEL_LIVEVIEW
+            
+            ASH_FRAMEWORK -.->|data via| ASH_POSTGRES
+            ASH_FRAMEWORK -.->|auth via| ASH_AUTH
+            ASH_FRAMEWORK -.->|jobs via| ASH_OBAN
+            ASH_FRAMEWORK -.->|AI via| ASH_AI
+            ASH_FRAMEWORK -.->|web via| ASH_PHOENIX
+            
+            ASH_POSTGRES -.->|connects to| REPO
+            REPO -.->|monitored by| OTEL_ECTO
+            
+            AI_DOMAIN -.->|uses| ASH_FRAMEWORK
+            AI_DOMAIN -.->|orchestrates| WORKFLOWS
+            AI_DOMAIN -.->|monitored by| TELEMETRY_SYSTEM
+            
+            WORKFLOWS -.->|integrates| N8N_CLIENT
+            WORKFLOWS -.->|uses external| EXTERNAL_INTEGRATIONS
+            
+            TELEMETRY_SYSTEM -.->|feeds| AUTONOMOUS_HEALTH
+            TELEMETRY_SYSTEM -.->|feeds| TRACE_OPTIMIZER
+            TELEMETRY_SYSTEM -.->|integrates| OTEL_PHOENIX
+            
+            OTEL_PHOENIX -.->|traces| OTEL_ECTO
+            OTEL_PHOENIX -.->|traces| OTEL_LIVEVIEW
+        end
+        
+        %% External Connections
+        WEB_USER -->|HTTP/WebSocket| PHOENIX_ENDPOINT
+        STAKEHOLDER -->|dashboard access| LIVEVIEW_INTERFACE
+        
+        POSTGRES_DB <-->|SQL queries| REPO
+        
+        OTEL_COLLECTOR <-->|traces/metrics| OTEL_PHOENIX
+        
+        N8N_API <-->|workflow API| N8N_CLIENT
+        
+        EXTERNAL_APIs <-->|integrations| EXTERNAL_INTEGRATIONS
+        
+        %% Data Flow Annotations
+        PHOENIX_ENDPOINT -.->|"HTTP requests → routing"| PHOENIX_ROUTER
+        LIVEVIEW_INTERFACE -.->|"real-time updates via WebSocket"| PHOENIX_ENDPOINT
+        ASH_FRAMEWORK -.->|"business logic → data persistence"| ASH_POSTGRES
+        TELEMETRY_SYSTEM -.->|"metrics → optimization"| TRACE_OPTIMIZER
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef ashContainer fill:#4C566A,stroke:#A3BE8C,stroke-width:2px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class PHOENIX_SYSTEM systemBoundary
+    class PHOENIX_ENDPOINT,LIVEVIEW_INTERFACE,PHOENIX_ROUTER,AI_DOMAIN,WORKFLOWS,TELEMETRY_SYSTEM,AUTONOMOUS_HEALTH,TRACE_OPTIMIZER,REPO,N8N_CLIENT,EXTERNAL_INTEGRATIONS,ASSET_PIPELINE container
+    class ASH_FRAMEWORK,ASH_POSTGRES,ASH_PHOENIX,ASH_AUTH,ASH_AUTH_PHOENIX,ASH_OBAN,ASH_AI,OTEL_PHOENIX,OTEL_ECTO,OTEL_LIVEVIEW ashContainer
+    class POSTGRES_DB,OTEL_COLLECTOR,N8N_API,EXTERNAL_APIs external
+    class WEB_USER,STAKEHOLDER user

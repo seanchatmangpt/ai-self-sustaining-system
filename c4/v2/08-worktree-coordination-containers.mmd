@@ -1,0 +1,141 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "Worktree Management & Shared Coordination - Container View"
+        direction TB
+        
+        %% External Users and Systems
+        DEVELOPER[👤 Developer<br/>System Engineer]
+        DEVOPS[⚙️ DevOps Engineer<br/>System Administrator]
+        GIT_REPO[📂 Git Repository<br/>Source Control]
+        MAIN_SYSTEM[🎯 Main System<br/>Primary Worktree]
+        PHOENIX_NEXUS[🔥 Phoenix AI Nexus<br/>Worktree]
+        XAVOS_WORKTREE[🚀 XAVOS Worktree<br/>Isolated System]
+        
+        %% Worktree Management Container Boundary
+        subgraph WORKTREE_SYSTEM["🌳 Worktree Management & Shared Coordination System"]
+            direction TB
+            
+            %% Core Worktree Management
+            WORKTREE_MANAGER[🌳 Worktree Manager<br/>Environment Coordinator<br/>- Worktree creation<br/>- Environment isolation<br/>- Configuration management<br/>- Lifecycle coordination]
+            
+            ENVIRONMENT_REGISTRY[📋 Environment Registry<br/>Registration System<br/>- Worktree registration<br/>- Port allocation<br/>- Resource tracking<br/>- Service discovery]
+            
+            WORKTREE_ENV_MANAGER[⚙️ Worktree Environment<br/>Manager<br/>- Environment variables<br/>- Configuration overlay<br/>- Dependency management<br/>- Runtime coordination]
+            
+            %% Shared Coordination Components
+            SHARED_COORD_ENGINE[🤝 Shared Coordination<br/>Engine<br/>- Cross-worktree coordination<br/>- Global state management<br/>- Resource arbitration<br/>- Conflict resolution]
+            
+            CROSS_WORKTREE_LOCKS[🔒 Cross-Worktree<br/>Locking System<br/>- Global file locks<br/>- Resource locks<br/>- Deadlock prevention<br/>- Lock hierarchy]
+            
+            SHARED_TELEMETRY[📊 Shared Telemetry<br/>Aggregation<br/>- Cross-system metrics<br/>- Unified observability<br/>- Performance correlation<br/>- Global monitoring]
+            
+            %% Configuration Management
+            CONFIG_OVERLAY[📄 Configuration Overlay<br/>System<br/>- Environment-specific config<br/>- Override management<br/>- Template system<br/>- Validation rules]
+            
+            WORKTREE_CONFIG[⚙️ Worktree Configuration<br/>Management<br/>- Per-worktree settings<br/>- Inheritance rules<br/>- Conflict resolution<br/>- Dynamic updates]
+            
+            %% Resource Management
+            RESOURCE_ALLOCATOR[📊 Resource Allocator<br/>System<br/>- Port allocation<br/>- Memory management<br/>- CPU scheduling<br/>- Disk space management]
+            
+            DEPENDENCY_RESOLVER[🔗 Dependency Resolver<br/>System<br/>- Package coordination<br/>- Version management<br/>- Conflict resolution<br/>- Isolation enforcement]
+            
+            %% Service Discovery and Coordination
+            SERVICE_REGISTRY[🗂️ Service Registry<br/>Discovery System<br/>- Service registration<br/>- Health monitoring<br/>- Load balancing<br/>- Failover management]
+            
+            COORDINATION_MESH[🌐 Coordination Mesh<br/>Communication Layer<br/>- Inter-worktree communication<br/>- Message routing<br/>- Protocol translation<br/>- Event propagation]
+            
+            %% Deployment and Lifecycle
+            WORKTREE_DEPLOYER[🚀 Worktree Deployer<br/>Deployment System<br/>- Automated deployment<br/>- Environment setup<br/>- Service startup<br/>- Health validation]
+            
+            LIFECYCLE_MANAGER[♻️ Lifecycle Manager<br/>Process Management<br/>- Start/stop coordination<br/>- Graceful shutdown<br/>- Restart policies<br/>- State preservation]
+            
+            %% Monitoring and Health
+            HEALTH_AGGREGATOR[🏥 Health Aggregator<br/>System Health<br/>- Cross-system health<br/>- Anomaly detection<br/>- Alert correlation<br/>- Recovery orchestration]
+            
+            PERFORMANCE_CORRELATOR[⚡ Performance Correlator<br/>Analysis Engine<br/>- Cross-system analysis<br/>- Bottleneck detection<br/>- Resource optimization<br/>- Predictive scaling]
+            
+            %% Data Storage and State
+            WORKTREE_REGISTRY_DB[🗄️ Worktree Registry<br/>Database<br/>- Worktree metadata<br/>- Configuration state<br/>- Resource assignments<br/>- Historical data]
+            
+            SHARED_STATE_STORE[💾 Shared State Store<br/>Global State<br/>- Cross-system state<br/>- Coordination metadata<br/>- Lock information<br/>- Event history]
+            
+            %% Testing and Validation
+            WORKTREE_VALIDATOR[✅ Worktree Validator<br/>Validation System<br/>- Environment validation<br/>- Configuration testing<br/>- Integration validation<br/>- Performance testing]
+            
+            INTEGRATION_TESTER[🧪 Integration Tester<br/>Testing Framework<br/>- Cross-worktree testing<br/>- End-to-end validation<br/>- Performance testing<br/>- Regression testing]
+            
+            %% Management Scripts
+            WORKTREE_SCRIPTS[📜 Management Scripts<br/>Automation Tools<br/>- create_ash_phoenix_worktree.sh<br/>- create_s2s_worktree.sh<br/>- manage_worktrees.sh<br/>- Operational automation]
+            
+            %% Internal Relationships
+            WORKTREE_MANAGER -.->|registers in| ENVIRONMENT_REGISTRY
+            WORKTREE_MANAGER -.->|manages via| WORKTREE_ENV_MANAGER
+            WORKTREE_MANAGER -.->|deploys via| WORKTREE_DEPLOYER
+            
+            ENVIRONMENT_REGISTRY -.->|allocates via| RESOURCE_ALLOCATOR
+            ENVIRONMENT_REGISTRY -.->|stores in| WORKTREE_REGISTRY_DB
+            ENVIRONMENT_REGISTRY -.->|discovers via| SERVICE_REGISTRY
+            
+            SHARED_COORD_ENGINE -.->|uses| CROSS_WORKTREE_LOCKS
+            SHARED_COORD_ENGINE -.->|coordinates via| COORDINATION_MESH
+            SHARED_COORD_ENGINE -.->|stores in| SHARED_STATE_STORE
+            
+            WORKTREE_ENV_MANAGER -.->|overlays via| CONFIG_OVERLAY
+            WORKTREE_ENV_MANAGER -.->|configures via| WORKTREE_CONFIG
+            WORKTREE_ENV_MANAGER -.->|resolves via| DEPENDENCY_RESOLVER
+            
+            WORKTREE_DEPLOYER -.->|manages via| LIFECYCLE_MANAGER
+            WORKTREE_DEPLOYER -.->|validates via| WORKTREE_VALIDATOR
+            
+            SERVICE_REGISTRY -.->|coordinates via| COORDINATION_MESH
+            SERVICE_REGISTRY -.->|monitors via| HEALTH_AGGREGATOR
+            
+            SHARED_TELEMETRY -.->|aggregates health| HEALTH_AGGREGATOR
+            SHARED_TELEMETRY -.->|correlates via| PERFORMANCE_CORRELATOR
+            
+            WORKTREE_VALIDATOR -.->|tests via| INTEGRATION_TESTER
+            WORKTREE_SCRIPTS -.->|automates| WORKTREE_MANAGER
+        end
+        
+        %% External Connections
+        DEVELOPER -->|manages via| WORKTREE_MANAGER
+        DEVELOPER -->|uses scripts| WORKTREE_SCRIPTS
+        
+        DEVOPS -->|configures via| CONFIG_OVERLAY
+        DEVOPS -->|monitors via| HEALTH_AGGREGATOR
+        DEVOPS -->|deploys via| WORKTREE_DEPLOYER
+        
+        GIT_REPO -.->|source for| WORKTREE_MANAGER
+        GIT_REPO -.->|branches for| ENVIRONMENT_REGISTRY
+        
+        MAIN_SYSTEM -.->|coordinates via| SHARED_COORD_ENGINE
+        MAIN_SYSTEM -.->|registers in| SERVICE_REGISTRY
+        
+        PHOENIX_NEXUS -.->|isolated via| WORKTREE_ENV_MANAGER
+        PHOENIX_NEXUS -.->|managed by| LIFECYCLE_MANAGER
+        
+        XAVOS_WORKTREE -.->|configured via| CONFIG_OVERLAY
+        XAVOS_WORKTREE -.->|monitored via| SHARED_TELEMETRY
+        
+        %% Worktree Specific Annotations
+        ENVIRONMENT_REGISTRY -.->|"Port 4002 allocated to XAVOS"| XAVOS_WORKTREE
+        WORKTREE_MANAGER -.->|"Isolated development environment"| PHOENIX_NEXUS
+        SHARED_COORD_ENGINE -.->|"Global state consistency"| MAIN_SYSTEM
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef coordinationContainer fill:#4C566A,stroke:#EBCB8B,stroke-width:2px,color:#ECEFF4
+    classDef managementContainer fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef storageContainer fill:#434C5E,stroke:#D08770,stroke-width:2px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class WORKTREE_SYSTEM systemBoundary
+    class SHARED_COORD_ENGINE,CROSS_WORKTREE_LOCKS,SHARED_TELEMETRY,COORDINATION_MESH coordinationContainer
+    class WORKTREE_MANAGER,ENVIRONMENT_REGISTRY,WORKTREE_ENV_MANAGER,CONFIG_OVERLAY,WORKTREE_CONFIG,RESOURCE_ALLOCATOR,DEPENDENCY_RESOLVER,SERVICE_REGISTRY,WORKTREE_DEPLOYER,LIFECYCLE_MANAGER,HEALTH_AGGREGATOR,PERFORMANCE_CORRELATOR,WORKTREE_VALIDATOR,INTEGRATION_TESTER managementContainer
+    class WORKTREE_REGISTRY_DB,SHARED_STATE_STORE storageContainer
+    class WORKTREE_SCRIPTS container
+    class GIT_REPO,MAIN_SYSTEM,PHOENIX_NEXUS,XAVOS_WORKTREE external
+    class DEVELOPER,DEVOPS user

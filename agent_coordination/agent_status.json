@@ -236,5 +236,61 @@
       "average_completion_time": "0m",
       "success_rate": 100.0
     }
+  },
+  {
+    "agent_id": "agent_1750024509685287000",
+    "team": "autonomous_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T21:55:09Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750024564408888000",
+    "team": "autonomous_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T21:56:04Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750024937177819000",
+    "team": "autonomous_ai_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T22:02:17Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750026214076652000",
+    "team": "test_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T22:23:34Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
   }
 ]
