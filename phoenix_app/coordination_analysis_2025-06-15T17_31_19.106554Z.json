@@ -1,0 +1,9 @@
+{
+  "active_agents": 5,
+  "active_work_items": 37,
+  "efficiency_score": 148.0,
+  "recommendations": [
+    "Work overload detected - consider adding more agents"
+  ],
+  "completed_work_items": 0
+}

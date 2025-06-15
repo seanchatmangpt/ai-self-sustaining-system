@@ -87,5 +87,41 @@
     "last_update": "2025-06-15T17:28:22Z",
     "completed_at": "2025-06-15T17:28:22Z",
     "result": "success"
+  },
+  {
+    "work_item_id": "work_1750008992323365000",
+    "agent_id": "agent_1750008992320848000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:36:32Z",
+    "estimated_duration": "30m",
+    "work_type": "test_arithmetic_fix_final",
+    "priority": "low",
+    "description": "Final test of the arithmetic overflow fix",
+    "status": "active",
+    "team": "testing_team",
+    "telemetry": {
+      "trace_id": "aa27f3deccdc0f409910e329a214652b",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    }
+  },
+  {
+    "work_item_id": "work_1750009026476362000",
+    "agent_id": "agent_1750009026473537000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:37:06Z",
+    "estimated_duration": "30m",
+    "work_type": "verification_test",
+    "priority": "medium",
+    "description": "Final verification that everything works",
+    "status": "active",
+    "team": "testing_team",
+    "telemetry": {
+      "trace_id": "1017df70c51820c3414c50f43e8967eb",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    }
   }
 ]

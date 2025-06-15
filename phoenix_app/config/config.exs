@@ -88,6 +88,65 @@ config :self_sustaining, :n8n,
   webhook_password: System.get_env("N8N_WEBHOOK_PASSWORD", "webhook_pass"),
   timeout: 30_000
 
+# OpenTelemetry Data Pipeline Configuration
+config :self_sustaining, :otlp_pipeline,
+  # Pipeline execution settings
+  max_concurrent_pipelines: String.to_integer(System.get_env("OTLP_MAX_CONCURRENT_PIPELINES", "5")),
+  pipeline_timeout_ms: String.to_integer(System.get_env("OTLP_PIPELINE_TIMEOUT_MS", "60000")),
+  
+  # Sampling configuration
+  trace_sampling_strategy: String.to_atom(System.get_env("OTLP_TRACE_SAMPLING_STRATEGY", "probabilistic")),
+  trace_sampling_rate: String.to_float(System.get_env("OTLP_TRACE_SAMPLING_RATE", "0.1")),
+  metric_sampling_strategy: String.to_atom(System.get_env("OTLP_METRIC_SAMPLING_STRATEGY", "time_based")),
+  log_sampling_strategy: String.to_atom(System.get_env("OTLP_LOG_SAMPLING_STRATEGY", "severity_based")),
+  
+  # Error sampling (always sample errors by default)
+  error_sampling_rate: String.to_float(System.get_env("OTLP_ERROR_SAMPLING_RATE", "1.0")),
+  
+  # Backend configuration
+  jaeger_endpoint: System.get_env("JAEGER_ENDPOINT", "http://localhost:14268/api/traces"),
+  jaeger_batch_size: String.to_integer(System.get_env("JAEGER_BATCH_SIZE", "100")),
+  jaeger_timeout_ms: String.to_integer(System.get_env("JAEGER_TIMEOUT_MS", "10000")),
+  jaeger_retry_attempts: String.to_integer(System.get_env("JAEGER_RETRY_ATTEMPTS", "3")),
+  
+  prometheus_endpoint: System.get_env("PROMETHEUS_ENDPOINT", "http://localhost:9090/api/v1/write"),
+  prometheus_batch_size: String.to_integer(System.get_env("PROMETHEUS_BATCH_SIZE", "1000")),
+  prometheus_timeout_ms: String.to_integer(System.get_env("PROMETHEUS_TIMEOUT_MS", "5000")),
+  prometheus_retry_attempts: String.to_integer(System.get_env("PROMETHEUS_RETRY_ATTEMPTS", "2")),
+  
+  elasticsearch_endpoint: System.get_env("ELASTICSEARCH_ENDPOINT", "http://localhost:9200/_bulk"),
+  elasticsearch_index: System.get_env("ELASTICSEARCH_INDEX", "telemetry"),
+  elasticsearch_batch_size: String.to_integer(System.get_env("ELASTICSEARCH_BATCH_SIZE", "500")),
+  elasticsearch_timeout_ms: String.to_integer(System.get_env("ELASTICSEARCH_TIMEOUT_MS", "15000")),
+  elasticsearch_retry_attempts: String.to_integer(System.get_env("ELASTICSEARCH_RETRY_ATTEMPTS", "3")),
+  
+  # Service discovery and enrichment
+  service_registry: %{
+    # Can be populated with actual service discovery data
+  },
+  deployment_info: %{
+    environment: System.get_env("DEPLOYMENT_ENVIRONMENT", "development"),
+    region: System.get_env("DEPLOYMENT_REGION", "local"),
+    cluster: System.get_env("DEPLOYMENT_CLUSTER", "local"),
+    namespace: System.get_env("DEPLOYMENT_NAMESPACE", "default")
+  },
+  
+  # Data quality thresholds
+  required_fields: ["resourceSpans"],
+  data_validation_enabled: String.to_existing_atom(System.get_env("OTLP_DATA_VALIDATION", "true")),
+  
+  # Performance tuning
+  telemetry_mode: String.to_atom(System.get_env("OTLP_TELEMETRY_MODE", "full")), # full, minimal, disabled
+  compression_enabled: String.to_existing_atom(System.get_env("OTLP_COMPRESSION", "false")),
+  
+  # Integration with existing systems
+  integration: %{
+    agent_coordination_enabled: true,
+    n8n_integration_enabled: true,
+    livebook_integration_enabled: true,
+    self_telemetry_enabled: true
+  }
+
 # Livebook Configuration
 config :livebook,
   # Authentication integration with Phoenix app

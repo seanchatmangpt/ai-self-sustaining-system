@@ -59,7 +59,7 @@ log_telemetry_span() {
   "operation_name": "$span_name",
   "span_kind": "$span_kind",
   "status": "$status",
-  "start_time": "$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)",
+  "start_time": "$(python3 -c "import datetime; print(datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')[:-3]+'Z')")",
   "duration_ms": $duration_ms,
   "service": {
     "name": "$OTEL_SERVICE_NAME",
@@ -101,7 +101,7 @@ claim_work() {
     
     # Create OpenTelemetry trace context for work claiming
     local trace_id=$(create_otel_context "s2s.work.claim")
-    local start_time=$(date +%s%3N)
+    local start_time=$(python3 -c "import time; print(int(time.time() * 1000))")
     
     # Generate unique nanosecond-based IDs
     local agent_id="${AGENT_ID:-$(generate_agent_id)}"
@@ -180,7 +180,7 @@ EOF
         register_agent_in_team "$agent_id" "$team"
         
         # Log successful work claim telemetry
-        local end_time=$(date +%s%3N)
+        local end_time=$(python3 -c "import time; print(int(time.time() * 1000))")
         local duration_ms=$((end_time - start_time))
         local claim_attributes=$(cat <<EOF
 {
@@ -200,7 +200,7 @@ EOF
         return 0
     else
         # Log failed work claim telemetry
-        local end_time=$(date +%s%3N)
+        local end_time=$(python3 -c "import time; print(int(time.time() * 1000))")
         local duration_ms=$((end_time - start_time))
         local conflict_attributes=$(cat <<EOF
 {
@@ -277,7 +277,7 @@ update_progress() {
     
     # Create OpenTelemetry trace context for progress update
     local trace_id=$(create_otel_context "s2s.work.progress")
-    local start_time=$(date +%s%3N)
+    local start_time=$(python3 -c "import time; print(int(time.time() * 1000))")
     
     if [ -z "$work_item_id" ]; then
         echo "❌ ERROR: No work item ID specified"
@@ -311,7 +311,7 @@ update_progress() {
     fi
     
     # Log progress update telemetry
-    local end_time=$(date +%s%3N)
+    local end_time=$(python3 -c "import time; print(int(time.time() * 1000))")
     local duration_ms=$((end_time - start_time))
     local progress_attributes=$(cat <<EOF
 {

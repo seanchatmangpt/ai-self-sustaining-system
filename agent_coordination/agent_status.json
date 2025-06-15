@@ -110,5 +110,33 @@
       "average_completion_time": "0m",
       "success_rate": 100.0
     }
+  },
+  {
+    "agent_id": "agent_1750008992320848000",
+    "team": "testing_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T17:36:32Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750009026473537000",
+    "team": "testing_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T17:37:06Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
   }
 ]

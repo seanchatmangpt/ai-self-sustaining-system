@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-06-15T17:31:19.108042Z",
+  "system_health": {
+    "telemetry": "healthy",
+    "coordination": 148.0,
+    "performance": 100.0,
+    "ai_improvements": "excellent",
+    "overall_score": 105.8
+  },
+  "summary": {
+    "process_count": 107,
+    "recommendations": [
+      "Work overload detected - consider adding more agents",
+      "No significant bottlenecks detected"
+    ],
+    "success_rate": "excellent",
+    "total_agents": 5,
+    "memory_usage_mb": 65.65
+  }
+}
