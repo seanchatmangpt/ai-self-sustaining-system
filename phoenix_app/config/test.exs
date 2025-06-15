@@ -4,7 +4,7 @@ import Config
 config :self_sustaining, SelfSustaining.Repo,
   database: "self_sustaining_test#{System.get_env("MIX_TEST_PARTITION")}",
   username: "sac",
-  password: "",
+  password: "dev_password",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
