@@ -1,0 +1,81 @@
+{
+  "timestamp": "2025-06-15T20:58:04.913074Z",
+  "trace_id": "production_validation_1750021082097041833",
+  "confidence_score": 32,
+  "duration_ms": 2814,
+  "test_results": [
+    {
+      "status": "pass",
+      "test": "Database Connectivity",
+      "weight": 15,
+      "details": "Database ready"
+    },
+    {
+      "status": "fail",
+      "test": "Oban Background Jobs",
+      "weight": 10,
+      "details": "Oban config issue"
+    },
+    {
+      "status": "fail",
+      "test": "Ash Framework",
+      "weight": 12,
+      "details": "Ash domain issues"
+    },
+    {
+      "status": "fail",
+      "test": "Phoenix Application",
+      "weight": 15,
+      "details": "Phoenix config issue"
+    },
+    {
+      "status": "fail",
+      "test": "Reactor Workflows",
+      "weight": 12,
+      "details": "Missing Reactor components"
+    },
+    {
+      "status": "pass",
+      "test": "Claude Code Integration",
+      "weight": 10,
+      "details": "Claude Code functional"
+    },
+    {
+      "status": "fail",
+      "test": "OpenTelemetry Tracing",
+      "weight": 8,
+      "details": "Error: %MatchError{term: {\"\", 1}}"
+    },
+    {
+      "status": "fail",
+      "test": "Agent Coordination",
+      "weight": 8,
+      "details": "Missing coordination files"
+    },
+    {
+      "status": "fail",
+      "test": "N8N Integration",
+      "weight": 5,
+      "details": "N8N config missing"
+    },
+    {
+      "status": "pass",
+      "test": "Performance Benchmarks",
+      "weight": 5,
+      "details": "3 benchmark files available"
+    },
+    {
+      "status": "fail",
+      "test": "Error Handling",
+      "weight": 5,
+      "details": "Missing error handling"
+    },
+    {
+      "status": "pass",
+      "test": "Security Configuration",
+      "weight": 5,
+      "details": "Basic security configs present"
+    }
+  ],
+  "production_ready": false
+}

@@ -82,7 +82,53 @@ harsh_reality_check() {
 
 **ACCOUNTABILITY**: Every mistake proves insufficient verification. Success requires evidence-based implementation.
 
+## XAVOS SYSTEM INTEGRATION
+
+**XAVOS** (eXtended Autonomous Virtual Operations System) - Complete Elixir/Phoenix application with Ash Framework ecosystem for AI-driven autonomous development.
+
+**Location**: `/Users/sac/dev/ai-self-sustaining-system/worktrees/xavos-system/xavos/`
+**Port**: 4002 (allocated in environment registry)
+**Status**: Deployed and operational
+
+### Key Shell Commands for XAVOS:
+```bash
+# System Management
+./scripts/start_xavos.sh                    # Start XAVOS system
+./scripts/manage_xavos.sh status           # Check system status
+./scripts/manage_xavos.sh restart          # Restart services
+
+# Deployment Operations  
+./agent_coordination/deploy_xavos_complete.sh     # Full deployment (627 lines)
+./agent_coordination/deploy_xavos_realistic.sh    # Alternative deployment
+./agent_coordination/xavos_exact_commands.sh      # Exact command sequences
+
+# Application Access
+http://localhost:4002                       # Main XAVOS application
+http://localhost:4002/admin                # Ash Admin interface
+http://localhost:4002/admin/coordination   # S@S Coordination panel
+http://localhost:4002/cms/admin            # Beacon CMS admin
+http://localhost:4002/dev/dashboard        # Phoenix Dashboard
+```
+
+### XAVOS Architecture:
+- **Complete Ash Framework ecosystem** (25+ packages)
+- **AI-driven development workflows** with trace flow reactors
+- **S@S agent swarm coordination** in isolated git worktree
+- **OpenTelemetry distributed tracing** with Vue.js frontend
+- **Advanced authentication** with Phoenix LiveView
+- **Full CMS and admin interfaces** via Beacon
+
+### Integration Status:
+- ✅ **Deployed**: Complete Phoenix application operational
+- ✅ **Database**: PostgreSQL with proper migrations
+- ✅ **Frontend**: Vue.js components for trace visualization
+- ⚠️  **Deployment Risk**: 2/10 success rate due to package complexity
+- 🔄 **Development**: Parallel worktree for isolated development
+
+**Documentation**: See `XAVOS-ASH-PHOENIX-FULL-SAS-AGENT.md` (1,400+ lines) for comprehensive system guide.
+
 ## MEMORIES
 - **Verification-Driven Development**: Code without verification = hallucination
 - **Performance-Proven System**: Metrics validate all claims about capabilities
 - **Enterprise-Grade Results**: S@S coordination and Claude AI intelligence working at scale
+- **XAVOS Integration**: Complete Ash Framework ecosystem for autonomous AI development

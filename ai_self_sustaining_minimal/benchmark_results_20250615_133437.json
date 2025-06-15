@@ -1,0 +1,18 @@
+{
+  "benchmark_timestamp": "2025-06-15T20:35:17Z",
+  "configuration": {
+    "duration": 30,
+    "concurrent_agents": 5,
+    "work_items_per_agent": 2,
+    "otlp_requests": 50
+  },
+  "results": {
+    "total_duration_seconds": 39.914125000,
+    "total_requests": 38,
+    "successful_requests": 38,
+    "failed_requests": 0,
+    "min_response_time": .058424000,
+    "max_response_time": .072417000
+  },
+  "system_health": "operational"
+}
