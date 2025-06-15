@@ -1,0 +1,198 @@
+```mermaid
+flowchart TD
+    %% DSL Source
+    DSL_SOURCE[📜 n8n DSL Source<br/>Elixir Module with DSL]
+    
+    %% Compilation Pipeline
+    subgraph "🔧 Spark DSL Compilation Pipeline"
+        PARSE[📖 Parse DSL<br/>Spark.Dsl.parse/2]
+        VALIDATE[✅ Validate Structure<br/>ValidateWorkflow Transformer]
+        OPTIMIZE[⚡ Optimize Workflow<br/>OptimizeWorkflow Transformer]
+        GENERATE_CONN[🔗 Generate Connections<br/>GenerateConnections Transformer]
+        GENERATE_JSON[📄 Generate JSON<br/>GenerateJson Transformer]
+    end
+    
+    %% DSL Entities
+    subgraph "📋 DSL Entities"
+        WORKFLOW_ENTITY[🏷️ Workflow Entity<br/>name, active, tags]
+        NODE_ENTITIES[🔧 Node Entities<br/>type, parameters, position]
+        CONNECTION_ENTITIES[🔗 Connection Entities<br/>from, to, conditions]
+        TRIGGER_ENTITIES[⚡ Trigger Entities<br/>schedule, webhook, manual]
+        CONDITION_ENTITIES[❓ Condition Entities<br/>logic, branching]
+    end
+    
+    %% Validation Steps
+    subgraph "🔍 Validation Process"
+        CHECK_WORKFLOW[✅ Check Workflow Definition]
+        CHECK_NODES[✅ Validate Node Types]
+        CHECK_CONNECTIONS[✅ Validate Connections]
+        CHECK_CYCLES[✅ Detect Cycles]
+        CHECK_PARAMS[✅ Validate Parameters]
+    end
+    
+    %% Optimization Steps
+    subgraph "⚡ Optimization Process"
+        POSITION_NODES[📍 Auto-Position Nodes]
+        OPTIMIZE_PATHS[🛤️ Optimize Connection Paths]
+        MERGE_NODES[🔄 Merge Redundant Nodes]
+        PARALLEL_DETECT[⚡ Detect Parallel Execution]
+        CACHE_OPTIMIZE[💾 Optimize Caching]
+    end
+    
+    %% JSON Generation
+    subgraph "📄 JSON Generation Process"
+        CREATE_WORKFLOW[🏗️ Create Workflow Structure]
+        CREATE_NODES[🔧 Generate Node JSON]
+        CREATE_CONNECTIONS[🔗 Generate Connection JSON]
+        CREATE_METADATA[📊 Add Metadata]
+        FINAL_JSON[📋 Final n8n JSON]
+    end
+    
+    %% Output Formats
+    subgraph "📤 Output Formats"
+        N8N_JSON[📄 n8n Workflow JSON<br/>Compatible Format]
+        ELIXIR_MODULE[💎 Compiled Elixir Module<br/>With Runtime Functions]
+        VALIDATION_REPORT[📊 Validation Report<br/>Errors & Warnings]
+        METRICS[📈 Compilation Metrics<br/>Performance Data]
+    end
+    
+    %% External Integration
+    subgraph "🌐 External Integration"
+        N8N_API[⚙️ n8n REST API<br/>Workflow Deployment]
+        FILE_EXPORT[📁 File Export<br/>JSON Files]
+        WORKFLOW_MANAGER[📋 Workflow Manager<br/>Batch Operations]
+    end
+    
+    %% Compilation Flow
+    DSL_SOURCE --> PARSE
+    PARSE --> WORKFLOW_ENTITY
+    PARSE --> NODE_ENTITIES
+    PARSE --> CONNECTION_ENTITIES
+    PARSE --> TRIGGER_ENTITIES
+    PARSE --> CONDITION_ENTITIES
+    
+    %% Entity Processing
+    WORKFLOW_ENTITY --> VALIDATE
+    NODE_ENTITIES --> VALIDATE
+    CONNECTION_ENTITIES --> VALIDATE
+    
+    %% Validation Flow
+    VALIDATE --> CHECK_WORKFLOW
+    VALIDATE --> CHECK_NODES
+    VALIDATE --> CHECK_CONNECTIONS
+    VALIDATE --> CHECK_CYCLES
+    VALIDATE --> CHECK_PARAMS
+    
+    %% Optimization Flow
+    CHECK_PARAMS --> OPTIMIZE
+    OPTIMIZE --> POSITION_NODES
+    OPTIMIZE --> OPTIMIZE_PATHS
+    OPTIMIZE --> MERGE_NODES
+    OPTIMIZE --> PARALLEL_DETECT
+    OPTIMIZE --> CACHE_OPTIMIZE
+    
+    %% Connection Generation
+    CACHE_OPTIMIZE --> GENERATE_CONN
+    TRIGGER_ENTITIES --> GENERATE_CONN
+    CONDITION_ENTITIES --> GENERATE_CONN
+    
+    %% JSON Generation Flow
+    GENERATE_CONN --> GENERATE_JSON
+    GENERATE_JSON --> CREATE_WORKFLOW
+    GENERATE_JSON --> CREATE_NODES
+    GENERATE_JSON --> CREATE_CONNECTIONS
+    GENERATE_JSON --> CREATE_METADATA
+    
+    CREATE_WORKFLOW --> FINAL_JSON
+    CREATE_NODES --> FINAL_JSON
+    CREATE_CONNECTIONS --> FINAL_JSON
+    CREATE_METADATA --> FINAL_JSON
+    
+    %% Output Generation
+    FINAL_JSON --> N8N_JSON
+    GENERATE_JSON --> ELIXIR_MODULE
+    CHECK_PARAMS --> VALIDATION_REPORT
+    GENERATE_JSON --> METRICS
+    
+    %% External Integration
+    N8N_JSON --> N8N_API
+    N8N_JSON --> FILE_EXPORT
+    ELIXIR_MODULE --> WORKFLOW_MANAGER
+    
+    %% Error Handling
+    subgraph "🚨 Error Handling"
+        SYNTAX_ERROR[❌ Syntax Errors<br/>Invalid DSL]
+        VALIDATION_ERROR[❌ Validation Errors<br/>Invalid Structure]
+        COMPILATION_ERROR[❌ Compilation Errors<br/>Generation Failed]
+        RUNTIME_ERROR[❌ Runtime Errors<br/>Execution Issues]
+    end
+    
+    PARSE -.->|Errors| SYNTAX_ERROR
+    VALIDATE -.->|Errors| VALIDATION_ERROR
+    GENERATE_JSON -.->|Errors| COMPILATION_ERROR
+    N8N_API -.->|Errors| RUNTIME_ERROR
+    
+    %% Performance Monitoring
+    subgraph "📊 Performance Monitoring"
+        COMPILE_TIME[⏱️ Compilation Time]
+        MEMORY_USAGE[💾 Memory Usage]
+        JSON_SIZE[📏 JSON Size]
+        COMPLEXITY[🔍 Workflow Complexity]
+    end
+    
+    GENERATE_JSON --> COMPILE_TIME
+    GENERATE_JSON --> MEMORY_USAGE
+    N8N_JSON --> JSON_SIZE
+    VALIDATE --> COMPLEXITY
+    
+    %% Example DSL to JSON
+    subgraph "📝 Example Transformation"
+        EXAMPLE_DSL[💎 Example DSL<br/>
+        workflow do<br/>
+        &nbsp;&nbsp;name "Test"<br/>
+        &nbsp;&nbsp;active true<br/>
+        end<br/>
+        <br/>
+        node :start do<br/>
+        &nbsp;&nbsp;type :manual<br/>
+        end]
+        
+        EXAMPLE_JSON[📄 Generated JSON<br/>
+        {<br/>
+        &nbsp;&nbsp;"name": "Test",<br/>
+        &nbsp;&nbsp;"active": true,<br/>
+        &nbsp;&nbsp;"nodes": [{<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;"name": "start",<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;"type": "n8n-nodes-base.manual"<br/>
+        &nbsp;&nbsp;}]<br/>
+        }]
+    end
+    
+    EXAMPLE_DSL --> PARSE
+    FINAL_JSON --> EXAMPLE_JSON
+    
+    %% Styling
+    classDef source fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef pipeline fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef entity fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef validation fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef optimization fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef generation fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+    classDef output fill:#ede7f6,stroke:#512da8,stroke-width:2px
+    classDef external fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#f44336,stroke-width:2px
+    classDef monitoring fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef example fill:#fff8e1,stroke:#ff8f00,stroke-width:2px
+    
+    class DSL_SOURCE source
+    class PARSE,VALIDATE,OPTIMIZE,GENERATE_CONN,GENERATE_JSON pipeline
+    class WORKFLOW_ENTITY,NODE_ENTITIES,CONNECTION_ENTITIES,TRIGGER_ENTITIES,CONDITION_ENTITIES entity
+    class CHECK_WORKFLOW,CHECK_NODES,CHECK_CONNECTIONS,CHECK_CYCLES,CHECK_PARAMS validation
+    class POSITION_NODES,OPTIMIZE_PATHS,MERGE_NODES,PARALLEL_DETECT,CACHE_OPTIMIZE optimization
+    class CREATE_WORKFLOW,CREATE_NODES,CREATE_CONNECTIONS,CREATE_METADATA,FINAL_JSON generation
+    class N8N_JSON,ELIXIR_MODULE,VALIDATION_REPORT,METRICS output
+    class N8N_API,FILE_EXPORT,WORKFLOW_MANAGER external
+    class SYNTAX_ERROR,VALIDATION_ERROR,COMPILATION_ERROR,RUNTIME_ERROR error
+    class COMPILE_TIME,MEMORY_USAGE,JSON_SIZE,COMPLEXITY monitoring
+    class EXAMPLE_DSL,EXAMPLE_JSON example
+```

@@ -1,0 +1,45 @@
+{
+  "name": "Self-Improvement Master Controller",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule_trigger",
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:4000/api/system/health",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "check_health",
+      "name": "Check System Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Analyze system health and decide on improvements\nconst health = $input.item.json;\nconst improvements = [];\n\n// Check performance metrics\nif (health.avgResponseTime > 500) {\n  improvements.push({\n    type: 'performance',\n    priority: 'high',\n    description: 'Response time exceeds 500ms',\n    action: 'optimize_queries'\n  });\n}\n\n// Check error rate\nif (health.errorRate > 0.05) {\n  improvements.push({\n    type: 'reliability',\n    priority: 'critical',\n    description: 'Error rate above 5%',\n    action: 'analyze_errors'\n  });\n}\n\n// Check test coverage\nif (health.testCoverage < 0.8) {\n  improvements.push({\n    type: 'quality',\n    priority: 'medium',\n    description: 'Test coverage below 80%',\n    action: 'generate_tests'\n  });\n}\n\nreturn {\n  needsImprovement: improvements.length > 0,\n  improvements: improvements,\n  health: health\n};"
+      },
+      "id": "analyze_metrics",
+      "name": "Analyze Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
+    }
+  ]
+}

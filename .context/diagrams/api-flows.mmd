@@ -1,0 +1,125 @@
+```mermaid
+sequenceDiagram
+    participant User as 👤 User
+    participant Browser as 🌐 Browser
+    participant Phoenix as 🔥 Phoenix
+    participant LiveView as 📱 LiveView
+    participant Controller as 🎛️ Controller
+    participant Ash as 🏛️ Ash
+    participant AI as 🤖 AI Engine
+    participant N8n as ⚙️ n8n
+    participant DB as 🗄️ Database
+    participant Claude as 🤖 Claude CLI
+    participant MCP as 🔗 MCP Client
+
+    %% Web Dashboard Flow
+    Note over User, DB: Web Dashboard Access
+    User->>Browser: Navigate to /
+    Browser->>Phoenix: GET /
+    Phoenix->>LiveView: DashboardLive.mount()
+    LiveView->>Ash: Load system status
+    Ash->>DB: Query system metrics
+    DB-->>Ash: Return metrics
+    Ash-->>LiveView: System status data
+    LiveView-->>Browser: Render dashboard
+    Browser-->>User: Display dashboard
+
+    %% Real-time Updates
+    Note over User, DB: Real-time System Updates
+    AI->>Phoenix: PubSub system update
+    Phoenix->>LiveView: Broadcast to dashboard
+    LiveView-->>Browser: Push update via WebSocket
+    Browser-->>User: Live dashboard update
+
+    %% Improvement Trigger Flow
+    Note over User, Claude: AI Improvement Trigger
+    User->>Browser: Click "Trigger Improvement"
+    Browser->>LiveView: trigger_improvement event
+    LiveView->>Ash: AI.SelfImprovementOrchestrator.run_improvement_cycle()
+    Ash->>AI: Start improvement cycle
+    AI->>Claude: Analyze system for improvements
+    Claude-->>AI: Return improvement suggestions
+    AI->>Ash: Create AI.Improvement resources
+    Ash->>DB: Store improvements
+    DB-->>Ash: Confirm storage
+    AI->>Phoenix: PubSub improvement discovered
+    Phoenix->>LiveView: Update improvements list
+    LiveView-->>Browser: Show new improvements
+    Browser-->>User: Display improvements
+
+    %% Workflow Management API
+    Note over User, N8n: Workflow Management
+    User->>Browser: POST /api/workflows/compile_all
+    Browser->>Controller: WorkflowController.compile_all()
+    Controller->>Ash: Workflows.list_workflows()
+    Ash->>DB: Query workflow definitions
+    DB-->>Ash: Return workflows
+    Controller->>N8n: Compile DSL to JSON
+    N8n-->>Controller: Return compiled workflows
+    Controller->>Ash: Update workflow status
+    Ash->>DB: Store compilation results
+    Controller-->>Browser: JSON response
+    Browser-->>User: Show compilation status
+
+    %% n8n Webhook Flow
+    Note over N8n, Phoenix: n8n Webhook Integration
+    N8n->>Phoenix: POST /api/webhooks/n8n/:workflow_id
+    Phoenix->>Controller: WebhookController.n8n_webhook()
+    Controller->>Ash: Process webhook data
+    Ash->>DB: Update workflow execution
+    Controller->>Phoenix: PubSub workflow update
+    Phoenix->>LiveView: Broadcast to workflow view
+    Controller-->>N8n: 200 OK response
+
+    %% MCP Integration Flow
+    Note over MCP, Claude: MCP Tool Access
+    MCP->>Phoenix: POST /mcp
+    Phoenix->>Ash: MCP router
+    Ash->>AI: Execute AI tool
+    AI->>Claude: Run AI analysis
+    Claude-->>AI: Return analysis
+    AI-->>Ash: Tool execution result
+    Ash-->>Phoenix: MCP response
+    Phoenix-->>MCP: Tool result
+
+    %% Health Check Flow
+    Note over User, DB: System Health Monitoring
+    User->>Browser: GET /api/health
+    Browser->>Controller: HealthController.check()
+    Controller->>Ash: Check system components
+    Ash->>DB: Verify database connection
+    DB-->>Ash: Connection status
+    Ash->>AI: Check AI engine status
+    AI-->>Ash: Engine status
+    Ash->>N8n: Check workflow engine
+    N8n-->>Ash: Workflow status
+    Controller-->>Browser: Health status JSON
+    Browser-->>User: Display health status
+
+    %% Error Handling Flow
+    Note over User, Phoenix: Error Recovery
+    Controller->>Controller: Error occurs
+    Controller->>Phoenix: Log error
+    Phoenix->>Ash: Create error record
+    Ash->>DB: Store error details
+    Phoenix->>AI: Analyze error pattern
+    AI->>Claude: Generate recovery suggestions
+    Claude-->>AI: Recovery recommendations
+    AI->>Phoenix: PubSub error alert
+    Phoenix->>LiveView: Show error notification
+    LiveView-->>Browser: Display error alert
+    Browser-->>User: Error notification
+
+    %% Auto-Implementation Flow
+    Note over AI, DB: Auto-Implementation Process
+    AI->>Claude: Generate implementation code
+    Claude-->>AI: Return code changes
+    AI->>Ash: Create enhancement tasks
+    Ash->>DB: Store implementation plan
+    AI->>AI: Auto-implement changes
+    AI->>AI: Generate and run tests
+    AI->>Ash: Update task status
+    Ash->>DB: Store test results
+    AI->>Phoenix: PubSub implementation complete
+    Phoenix->>LiveView: Update task status
+```

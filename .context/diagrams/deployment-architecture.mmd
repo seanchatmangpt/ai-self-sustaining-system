@@ -1,0 +1,223 @@
+```mermaid
+graph TB
+    %% User Layer
+    subgraph "👥 User Layer"
+        ADMIN[👤 System Administrator]
+        DEV[👩‍💻 Developer]
+        AI_AGENT[🤖 AI Agent]
+        CLAUDE_DESKTOP[🤖 Claude Desktop]
+    end
+    
+    %% Load Balancer / Reverse Proxy
+    subgraph "🔀 Load Balancer"
+        NGINX[🌐 Nginx<br/>Reverse Proxy<br/>Port 80/443]
+        SSL[🔒 SSL Termination<br/>TLS 1.3]
+    end
+    
+    %% Application Services
+    subgraph "🏗️ Application Services"
+        direction TB
+        
+        subgraph "Phoenix Application Cluster"
+            PHOENIX1[🔥 Phoenix App 1<br/>:4000]
+            PHOENIX2[🔥 Phoenix App 2<br/>:4001] 
+            PHOENIX3[🔥 Phoenix App 3<br/>:4002]
+        end
+        
+        subgraph "n8n Workflow Engine"
+            N8N_MAIN[⚙️ n8n Main<br/>:5678]
+            N8N_WORKER1[⚙️ n8n Worker 1<br/>:5679]
+            N8N_WORKER2[⚙️ n8n Worker 2<br/>:5680]
+        end
+    end
+    
+    %% AI Services Layer
+    subgraph "🤖 AI Services"
+        CLAUDE_CLI[🤖 Claude Code CLI<br/>Local Process]
+        TIDEWAVE[🌊 Tidewave<br/>Runtime Intelligence<br/>:3000]
+        MCP_PROXY[🔗 MCP Proxy<br/>:4000/mcp]
+        AI_ORCHESTRATOR[🧠 AI Orchestrator<br/>GenServer]
+    end
+    
+    %% Data Layer
+    subgraph "🗄️ Data Layer"
+        POSTGRES_MASTER[🐘 PostgreSQL Master<br/>:5432]
+        POSTGRES_REPLICA[🐘 PostgreSQL Replica<br/>:5433]
+        VECTOR_DB[🧠 Vector Database<br/>pgvector extension]
+        REDIS[⚡ Redis Cache<br/>:6379]
+    end
+    
+    %% Storage Layer
+    subgraph "💾 Storage Layer"
+        APP_STORAGE[📁 Application Storage<br/>/var/lib/app]
+        WORKFLOW_STORAGE[⚙️ Workflow Storage<br/>/var/lib/n8n]
+        BACKUP_STORAGE[💿 Backup Storage<br/>/var/backups]
+        LOG_STORAGE[📝 Log Storage<br/>/var/log]
+    end
+    
+    %% Monitoring & Observability
+    subgraph "📊 Monitoring Stack"
+        PROMETHEUS[📈 Prometheus<br/>:9090]
+        GRAFANA[📊 Grafana<br/>:3001]
+        JAEGER[🔍 Jaeger<br/>:16686]
+        LOKI[📝 Loki<br/>:3100]
+    end
+    
+    %% External Services
+    subgraph "🌐 External Services"
+        GITHUB[🐙 GitHub<br/>Source Control]
+        DOCKER_REGISTRY[🐳 Docker Registry<br/>Container Images]
+        BACKUP_SERVICE[☁️ Cloud Backup<br/>S3/GCS]
+        MONITORING_SERVICE[📡 External Monitoring<br/>Status Page]
+    end
+    
+    %% Network Connections
+    ADMIN --> NGINX
+    DEV --> NGINX
+    AI_AGENT --> MCP_PROXY
+    CLAUDE_DESKTOP --> MCP_PROXY
+    
+    NGINX --> SSL
+    SSL --> PHOENIX1
+    SSL --> PHOENIX2 
+    SSL --> PHOENIX3
+    SSL --> N8N_MAIN
+    SSL --> GRAFANA
+    
+    %% Internal Service Communication
+    PHOENIX1 --> POSTGRES_MASTER
+    PHOENIX2 --> POSTGRES_MASTER
+    PHOENIX3 --> POSTGRES_MASTER
+    
+    POSTGRES_MASTER --> POSTGRES_REPLICA
+    POSTGRES_MASTER --> VECTOR_DB
+    
+    PHOENIX1 --> REDIS
+    PHOENIX2 --> REDIS
+    PHOENIX3 --> REDIS
+    
+    %% AI Service Integration
+    PHOENIX1 --> AI_ORCHESTRATOR
+    AI_ORCHESTRATOR --> CLAUDE_CLI
+    AI_ORCHESTRATOR --> TIDEWAVE
+    MCP_PROXY --> PHOENIX1
+    
+    %% n8n Integration
+    N8N_MAIN --> N8N_WORKER1
+    N8N_MAIN --> N8N_WORKER2
+    N8N_MAIN --> POSTGRES_MASTER
+    PHOENIX1 --> N8N_MAIN
+    
+    %% Storage Connections
+    PHOENIX1 --> APP_STORAGE
+    N8N_MAIN --> WORKFLOW_STORAGE
+    POSTGRES_MASTER --> BACKUP_STORAGE
+    
+    %% Monitoring Connections
+    PHOENIX1 --> PROMETHEUS
+    N8N_MAIN --> PROMETHEUS
+    POSTGRES_MASTER --> PROMETHEUS
+    PROMETHEUS --> GRAFANA
+    PHOENIX1 --> JAEGER
+    LOKI --> LOG_STORAGE
+    
+    %% External Connections
+    PHOENIX1 --> GITHUB
+    BACKUP_STORAGE --> BACKUP_SERVICE
+    GRAFANA --> MONITORING_SERVICE
+    
+    %% Health Checks
+    subgraph "❤️ Health Checks"
+        HEALTH_PHOENIX[✅ Phoenix Health<br/>/api/health]
+        HEALTH_N8N[✅ n8n Health<br/>/healthz]
+        HEALTH_DB[✅ Database Health<br/>Connection Pool]
+        HEALTH_AI[✅ AI Health<br/>Claude CLI Status]
+    end
+    
+    NGINX --> HEALTH_PHOENIX
+    NGINX --> HEALTH_N8N
+    POSTGRES_MASTER --> HEALTH_DB
+    AI_ORCHESTRATOR --> HEALTH_AI
+    
+    %% Deployment Configuration
+    subgraph "🚀 Deployment Config"
+        DOCKER_COMPOSE[🐳 Docker Compose<br/>Multi-container Setup]
+        ENV_CONFIG[⚙️ Environment Config<br/>.env Files]
+        SECRETS[🔐 Secrets Management<br/>Vault/K8s Secrets]
+        CONFIG_MAPS[📋 Configuration Maps<br/>Application Config]
+    end
+    
+    %% Auto-scaling
+    subgraph "📈 Auto-scaling"
+        HPA[📊 Horizontal Pod Autoscaler<br/>CPU/Memory Based]
+        VPA[📏 Vertical Pod Autoscaler<br/>Resource Optimization]
+        CLUSTER_AUTOSCALER[🎯 Cluster Autoscaler<br/>Node Management]
+    end
+    
+    %% Security Layer
+    subgraph "🔐 Security"
+        WAF[🛡️ Web Application Firewall]
+        RATE_LIMITER[⏱️ Rate Limiter]
+        AUTH_SERVICE[🔑 Authentication Service]
+        RBAC[👮 Role-Based Access Control]
+    end
+    
+    NGINX --> WAF
+    WAF --> RATE_LIMITER
+    RATE_LIMITER --> AUTH_SERVICE
+    AUTH_SERVICE --> RBAC
+    
+    %% Backup & Recovery
+    subgraph "💿 Backup & Recovery"
+        DB_BACKUP[🗄️ Database Backup<br/>Automated Daily]
+        APP_BACKUP[📁 Application Backup<br/>Code & Config]
+        DISASTER_RECOVERY[🚨 Disaster Recovery<br/>RTO: 15min, RPO: 1hr]
+    end
+    
+    POSTGRES_MASTER --> DB_BACKUP
+    APP_STORAGE --> APP_BACKUP
+    DB_BACKUP --> DISASTER_RECOVERY
+    APP_BACKUP --> DISASTER_RECOVERY
+    
+    %% Port Mapping
+    subgraph "🔌 Port Configuration"
+        PORTS[📋 Port Mapping<br/>
+        • Nginx: 80, 443<br/>
+        • Phoenix: 4000-4002<br/>
+        • n8n: 5678-5680<br/>
+        • PostgreSQL: 5432-5433<br/>
+        • Redis: 6379<br/>
+        • Prometheus: 9090<br/>
+        • Grafana: 3001<br/>
+        • Tidewave: 3000<br/>
+        • Jaeger: 16686<br/>
+        • Loki: 3100]
+    end
+    
+    %% Styling
+    classDef user fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef proxy fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef app fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef ai fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef storage fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+    classDef monitoring fill:#ede7f6,stroke:#512da8,stroke-width:2px
+    classDef external fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    classDef health fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef config fill:#fff8e1,stroke:#ff8f00,stroke-width:2px
+    classDef security fill:#fafafa,stroke:#424242,stroke-width:2px
+    classDef backup fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
+    
+    class ADMIN,DEV,AI_AGENT,CLAUDE_DESKTOP user
+    class NGINX,SSL proxy
+    class PHOENIX1,PHOENIX2,PHOENIX3,N8N_MAIN,N8N_WORKER1,N8N_WORKER2 app
+    class CLAUDE_CLI,TIDEWAVE,MCP_PROXY,AI_ORCHESTRATOR ai
+    class POSTGRES_MASTER,POSTGRES_REPLICA,VECTOR_DB,REDIS data
+    class APP_STORAGE,WORKFLOW_STORAGE,BACKUP_STORAGE,LOG_STORAGE storage
+    class PROMETHEUS,GRAFANA,JAEGER,LOKI monitoring
+    class GITHUB,DOCKER_REGISTRY,BACKUP_SERVICE,MONITORING_SERVICE external
+    class HEALTH_PHOENIX,HEALTH_N8N,HEALTH_DB,HEALTH_AI health
+    class DOCKER_COMPOSE,ENV_CONFIG,SECRETS,CONFIG_MAPS,HPA,VPA,CLUSTER_AUTOSCALER,PORTS config
+    class WAF,RATE_LIMITER,AUTH_SERVICE,RBAC security
+    class DB_BACKUP,APP_BACKUP,DISASTER_RECOVERY backup
+```

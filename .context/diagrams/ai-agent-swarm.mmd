@@ -1,0 +1,122 @@
+```mermaid
+graph TB
+    %% Master Control Program
+    MCP[🎮 Desktop Commander MCP<br/>File System & Command Controller]
+    
+    %% Agent Swarm
+    subgraph "AI Agent Swarm"
+        PM[👔 PM_Agent<br/>Product Manager]
+        ARCH[🏗️ Architect_Agent<br/>System Designer]
+        DEV[👩‍💻 Developer_Agent<br/>Implementation]
+        QA[🧪 QA_Agent<br/>Quality Assurance]
+        DEVOPS[⚙️ DevOps_Agent<br/>Deployment & Ops]
+    end
+    
+    %% APS Protocol Files
+    subgraph "APS Protocol Files"
+        REQ_APS[📋 [ID]_requirements.aps.yaml<br/>Gherkin scenarios & backlog]
+        ARCH_APS[🏛️ [ID]_architecture.aps.yaml<br/>C4 models & tech stack]
+        CODE_APS[💻 Source code files<br/>.ex, .py, .js + tests]
+        TEST_APS[✅ [ID]_test_results.aps.yaml<br/>Pass/fail & bug reports]
+        DEPLOY_APS[🚀 Deployment artifacts<br/>& telemetry.log]
+    end
+    
+    %% System Components
+    subgraph "AI Self-Sustaining System"
+        PHOENIX[🔥 Phoenix Application<br/>Ash Framework + LiveView]
+        N8N[⚙️ n8n Workflows<br/>Custom DSL Integration]
+        CLAUDE[🤖 Claude Code CLI<br/>AI Integration Layer]
+        TIDEWAVE[🌊 Tidewave MCP<br/>Runtime Intelligence]
+    end
+    
+    %% Workflow Sequence
+    MCP -->|High-level prompt| PM
+    PM -->|APS requirements| REQ_APS
+    PM -->|SEND_MESSAGE| ARCH
+    
+    ARCH -->|Consumes| REQ_APS
+    ARCH -->|Architecture design| ARCH_APS
+    ARCH -->|SEND_MESSAGE| DEV
+    
+    DEV -->|Consumes| ARCH_APS
+    DEV -->|Consumes| REQ_APS
+    DEV -->|Implementation| CODE_APS
+    DEV -->|SEND_MESSAGE| QA
+    
+    QA -->|Validates against| CODE_APS
+    QA -->|Gherkin testing| REQ_APS
+    QA -->|Test results| TEST_APS
+    QA -->|Pass: SEND_MESSAGE| DEVOPS
+    QA -->|Fail: SEND_MESSAGE| DEV
+    
+    DEVOPS -->|Deployment| DEPLOY_APS
+    DEVOPS -->|Telemetry monitoring| DEPLOY_APS
+    DEVOPS -->|Threshold breach| MCP
+    
+    %% MCP Command Interface
+    subgraph "MCP Commands"
+        READ_FILE[📖 READ_FILE<br/>path/to/file.ext]
+        WRITE_FILE[✍️ WRITE_FILE<br/>path content]
+        APPEND_FILE[➕ APPEND_FILE<br/>path content]
+        LIST_FILES[📂 LIST_FILES<br/>directory_path]
+        RUN_TESTS[🧪 RUN_TESTS<br/>test_command]
+        SEND_MESSAGE[📤 SEND_MESSAGE<br/>recipient aps_file]
+    end
+    
+    %% Agent-MCP Interactions
+    PM -.->|Commands| MCP
+    ARCH -.->|Commands| MCP
+    DEV -.->|Commands| MCP
+    QA -.->|Commands| MCP
+    DEVOPS -.->|Commands| MCP
+    
+    MCP -->|File operations| READ_FILE
+    MCP -->|File operations| WRITE_FILE
+    MCP -->|File operations| APPEND_FILE
+    MCP -->|File operations| LIST_FILES
+    MCP -->|Testing| RUN_TESTS
+    MCP -->|Agent coordination| SEND_MESSAGE
+    
+    %% System Integration
+    DEV -->|Implements| PHOENIX
+    DEV -->|Configures| N8N
+    DEV -->|Integrates| CLAUDE
+    DEVOPS -->|Monitors| TIDEWAVE
+    
+    %% Agent Status States
+    subgraph "Agent States"
+        READY[✅ ready<br/>Available for tasks]
+        IN_PROGRESS[⏳ in_progress<br/>Actively working]
+        BLOCKED[🚫 blocked<br/>Needs input]
+        COMPLETED[✅ completed<br/>Task finished]
+    end
+    
+    %% Data Flow
+    PM -.->|Status| READY
+    ARCH -.->|Status| IN_PROGRESS  
+    DEV -.->|Status| BLOCKED
+    QA -.->|Status| COMPLETED
+    
+    %% Error Flow
+    TEST_APS -->|Failures| DEV
+    DEPLOY_APS -->|Issues| QA
+    
+    %% Self-Adaptation Loop
+    DEVOPS -->|Telemetry breach| PM
+    DEPLOY_APS -->|Performance data| REQ_APS
+    
+    %% Styling
+    classDef agent fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef aps fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef system fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef command fill:#fff3e0,stroke:#f57c00,stroke-width:1px
+    classDef state fill:#fce4ec,stroke:#c2185b,stroke-width:1px
+    classDef mcp fill:#ede7f6,stroke:#512da8,stroke-width:3px
+    
+    class PM,ARCH,DEV,QA,DEVOPS agent
+    class REQ_APS,ARCH_APS,CODE_APS,TEST_APS,DEPLOY_APS aps
+    class PHOENIX,N8N,CLAUDE,TIDEWAVE system
+    class READ_FILE,WRITE_FILE,APPEND_FILE,LIST_FILES,RUN_TESTS,SEND_MESSAGE command
+    class READY,IN_PROGRESS,BLOCKED,COMPLETED state
+    class MCP mcp
+```

@@ -1,0 +1,57 @@
+{
+  "mcpServers": {
+    "desktop-commander": {
+      "command": "npx",
+      "args": ["-y", "@wonderwhy-er/desktop-commander"],
+      "env": {
+        "NODE_OPTIONS": "--max-old-space-size=4096",
+        "ALLOWED_DIRECTORIES": "/Users/sac/dev/ai-self-sustaining-system,/Users/sac/dev",
+        "BLOCKED_COMMANDS": "rm -rf /,format,shutdown,reboot,sudo rm"
+      }
+    },
+    "tidewave-phoenix": {
+      "command": "/Users/sac/.mix/escripts/mcp-proxy",
+      "args": ["http://localhost:4000/tidewave/mcp?include_fs_tools=true"],
+      "env": {
+        "SSE_TIMEOUT": "30000",
+        "RECONNECT_ATTEMPTS": "5"
+      }
+    },
+    "ash-ai-development": {
+      "command": "/Users/sac/.mix/escripts/mcp-proxy", 
+      "args": ["http://localhost:4000/mcp/ash"],
+      "env": {
+        "SSE_TIMEOUT": "30000",
+        "RECONNECT_ATTEMPTS": "5"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/sac/dev/ai-self-sustaining-system"
+      ],
+      "env": {
+        "NODE_OPTIONS": "--max-old-space-size=2048"
+      }
+    }
+  },
+  "globalShortcut": null,
+  "updater": {
+    "checkForUpdates": true,
+    "autoDownload": false
+  },
+  "appearance": {
+    "theme": "auto"
+  },
+  "security": {
+    "allowedHosts": [
+      "localhost:4000",
+      "127.0.0.1:4000"
+    ],
+    "trustedDirectories": [
+      "/Users/sac/dev/ai-self-sustaining-system"
+    ]
+  }
+}

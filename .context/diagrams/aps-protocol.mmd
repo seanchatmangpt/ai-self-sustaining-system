@@ -1,0 +1,161 @@
+```mermaid
+sequenceDiagram
+    participant MCP as 🎮 Desktop Commander MCP
+    participant PM as 👔 PM_Agent
+    participant ARCH as 🏗️ Architect_Agent  
+    participant DEV as 👩‍💻 Developer_Agent
+    participant QA as 🧪 QA_Agent
+    participant DEVOPS as ⚙️ DevOps_Agent
+    participant FS as 📁 File System
+    participant SYS as 🖥️ System
+
+    %% Initial Setup
+    Note over MCP, SYS: Agent Swarm Initialization
+    MCP->>MCP: Agent role detection
+    MCP->>PM: Activate PM_Agent
+    MCP->>ARCH: Activate Architect_Agent
+    MCP->>DEV: Activate Developer_Agent
+    MCP->>QA: Activate QA_Agent
+    MCP->>DEVOPS: Activate DevOps_Agent
+
+    %% High-level Task Assignment
+    Note over MCP, SYS: High-Level Task Processing
+    MCP->>PM: High-level prompt: "Implement user authentication"
+    PM->>PM: Analyze requirements
+    PM->>PM: Generate Gherkin scenarios
+    PM->>PM: Create product backlog
+
+    %% APS File Creation
+    PM->>FS: WRITE_FILE: auth_001_requirements.aps.yaml
+    Note right of FS: APS YAML Structure:<br/>process:<br/>  name: "User_Authentication"<br/>  roles: [PM_Agent, Architect_Agent, ...]<br/>  activities: [Requirement_Analysis, ...]<br/>  scenarios: [Successful_Login, ...]
+
+    %% Inter-Agent Communication
+    PM->>MCP: SEND_MESSAGE: Architect_Agent auth_001_requirements.aps.yaml
+    MCP->>ARCH: Notification: Requirements ready
+
+    %% Architecture Phase
+    Note over ARCH, FS: Architecture Design Phase
+    ARCH->>FS: READ_FILE: auth_001_requirements.aps.yaml
+    ARCH->>ARCH: Design system architecture
+    ARCH->>ARCH: Create C4 model diagrams
+    ARCH->>ARCH: Define tech stack
+    ARCH->>FS: WRITE_FILE: auth_001_architecture.aps.yaml
+    Note right of FS: Architecture APS:<br/>architecture:<br/>  style: "Microservices"<br/>  components: [AuthService, UserDB, ...]<br/>  patterns: [JWT, OAuth2, ...]
+
+    ARCH->>MCP: SEND_MESSAGE: Developer_Agent auth_001_architecture.aps.yaml
+    MCP->>DEV: Notification: Architecture ready
+
+    %% Development Phase
+    Note over DEV, SYS: Implementation Phase
+    DEV->>FS: READ_FILE: auth_001_requirements.aps.yaml
+    DEV->>FS: READ_FILE: auth_001_architecture.aps.yaml
+    DEV->>DEV: Generate implementation code
+    DEV->>DEV: Create unit tests
+    DEV->>FS: WRITE_FILE: lib/auth/user.ex
+    DEV->>FS: WRITE_FILE: lib/auth/session.ex
+    DEV->>FS: WRITE_FILE: test/auth/user_test.exs
+    DEV->>SYS: Git commit changes
+
+    DEV->>MCP: SEND_MESSAGE: QA_Agent auth_001_implementation_complete
+    MCP->>QA: Notification: Implementation ready for testing
+
+    %% Testing Phase
+    Note over QA, SYS: Quality Assurance Phase
+    QA->>FS: LIST_FILES: lib/auth/
+    QA->>FS: LIST_FILES: test/auth/
+    QA->>QA: Validate against Gherkin scenarios
+    QA->>SYS: RUN_TESTS: mix test test/auth/
+    SYS-->>QA: Test results: All passed
+
+    QA->>FS: WRITE_FILE: auth_001_test_results.aps.yaml
+    Note right of FS: Test Results APS:<br/>test_results:<br/>  status: "passed"<br/>  coverage: 95%<br/>  scenarios_validated: [Successful_Login, ...]
+
+    alt Tests Pass
+        QA->>MCP: SEND_MESSAGE: DevOps_Agent auth_001_tests_passed
+        MCP->>DEVOPS: Notification: Ready for deployment
+    else Tests Fail
+        QA->>MCP: SEND_MESSAGE: Developer_Agent auth_001_bug_report
+        MCP->>DEV: Notification: Bug fixes needed
+        Note over DEV: Return to Development Phase
+    end
+
+    %% Deployment Phase
+    Note over DEVOPS, SYS: Deployment & Operations Phase
+    DEVOPS->>FS: READ_FILE: auth_001_test_results.aps.yaml
+    DEVOPS->>DEVOPS: Prepare deployment scripts
+    DEVOPS->>SYS: Deploy to staging environment
+    DEVOPS->>SYS: Run integration tests
+    DEVOPS->>SYS: Deploy to production
+    DEVOPS->>SYS: Monitor telemetry
+
+    DEVOPS->>FS: APPEND_FILE: telemetry.log
+    Note right of FS: Telemetry Data:<br/>timestamp: 2024-01-01T10:00:00Z<br/>cpu_usage: 15%<br/>memory_usage: 45%<br/>response_time: 120ms
+
+    %% Self-Adaptation Loop
+    Note over DEVOPS, MCP: Self-Adaptation Trigger
+    alt Telemetry Threshold Breached
+        DEVOPS->>MCP: Telemetry alert: High response time
+        MCP->>PM: High-level prompt: "Optimize authentication performance"
+        Note over PM, DEVOPS: New enhancement cycle begins
+    else Normal Operation
+        DEVOPS->>FS: APPEND_FILE: telemetry.log
+        Note right of DEVOPS: Continue monitoring
+    end
+
+    %% Agent Status Management
+    Note over PM, DEVOPS: Agent Status Tracking & Role Assignment
+    
+    rect rgb(240, 248, 255)
+        Note over PM: Status: "ready"<br/>Available for new tasks<br/>Role: Requirements & Planning
+    end
+    
+    rect rgb(255, 248, 220)
+        Note over ARCH: Status: "in_progress"<br/>Working on architecture<br/>Role: System Design & C4 Models
+    end
+    
+    rect rgb(255, 240, 240)
+        Note over DEV: Status: "blocked"<br/>Waiting for architecture<br/>Role: Code Implementation & Testing
+    end
+    
+    rect rgb(240, 255, 240)
+        Note over QA: Status: "completed"<br/>Testing finished<br/>Role: Validation & Quality Assurance
+    end
+    
+    rect rgb(248, 240, 255)
+        Note over DEVOPS: Status: "monitoring"<br/>Continuous operations<br/>Role: Deployment & Telemetry
+    end
+
+    %% Error Handling
+    Note over MCP, SYS: Error Handling Protocol
+    alt File Operation Error
+        DEV->>FS: WRITE_FILE: invalid/path/file.ex
+        FS-->>DEV: Error: Directory does not exist
+        DEV->>MCP: Report error and request guidance
+        MCP->>DEV: Create directory first
+        DEV->>FS: mkdir -p invalid/path/
+        DEV->>FS: WRITE_FILE: invalid/path/file.ex
+    end
+
+    alt Test Failure
+        QA->>SYS: RUN_TESTS: mix test
+        SYS-->>QA: Test failed: Authentication error
+        QA->>FS: WRITE_FILE: auth_001_bug_report.aps.yaml
+        QA->>MCP: SEND_MESSAGE: Developer_Agent bug_report
+        MCP->>DEV: Fix authentication bug
+    end
+
+    %% Workflow Completion
+    Note over MCP, SYS: Workflow Completion
+    DEVOPS->>MCP: Feature successfully deployed
+    MCP->>MCP: Update session state
+    MCP->>MCP: Archive APS files
+    MCP->>MCP: Generate completion report
+
+    %% APS File Structure Example
+    Note over FS: APS File Structure Example
+    Note right of FS: ```yaml<br/>process:<br/>  name: "User_Authentication"<br/>  description: "Implement secure user login"<br/>  roles:<br/>    - name: "PM_Agent"<br/>      description: "Requirements analysis"<br/>  activities:<br/>    - name: "Requirement_Analysis"<br/>      assignee: "PM_Agent"<br/>      tasks:<br/>        - name: "Generate_Gherkin_Scenarios"<br/>          description: "Create BDD scenarios"<br/>  scenarios:<br/>    - name: "Successful_Login"<br/>      steps:<br/>        - type: "Given"<br/>          description: "User has valid credentials"<br/>        - type: "When"<br/>          description: "User submits login form"<br/>        - type: "Then"<br/>          description: "User is authenticated"<br/>```
+
+    %% Message Bus Format
+    Note over MCP: Message Bus Format
+    Note right of MCP: ```yaml<br/>message:<br/>  from: "PM_Agent"<br/>  to: "Architect_Agent"<br/>  timestamp: "2024-01-01T10:00:00Z"<br/>  subject: "Requirements_Ready"<br/>  content: "User authentication requirements completed"<br/>  artifacts:<br/>    - path: "auth_001_requirements.aps.yaml"<br/>      type: "requirements"<br/>      status: "ready"<br/>```
+```

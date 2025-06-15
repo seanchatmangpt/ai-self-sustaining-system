@@ -1,0 +1,159 @@
+```mermaid
+erDiagram
+    %% AI Domain Tables
+    AI_IMPROVEMENTS {
+        uuid id PK
+        string title
+        text description
+        text rationale
+        text implementation_plan
+        text risk_assessment
+        integer confidence
+        enum impact
+        enum effort
+        enum status
+        string category
+        text_array affected_files
+        text code_changes
+        text test_plan
+        text rollback_plan
+        timestamp inserted_at
+        timestamp updated_at
+        vector embedding
+    }
+    
+    AI_TASKS {
+        uuid id PK
+        string name
+        text description
+        enum type
+        enum status
+        enum priority
+        integer progress
+        jsonb context
+        jsonb result
+        text error
+        jsonb_array logs
+        timestamp started_at
+        timestamp completed_at
+        integer estimated_duration
+        uuid improvement_id FK
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    AI_METRICS {
+        uuid id PK
+        string name
+        float value
+        string unit
+        jsonb metadata
+        timestamp measured_at
+        uuid task_id FK
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    AI_CODE_ANALYSIS {
+        uuid id PK
+        string file_path
+        text analysis_result
+        jsonb suggestions
+        float complexity_score
+        integer lines_of_code
+        string language
+        timestamp analyzed_at
+        uuid improvement_id FK
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    %% Workflow Domain Tables
+    WORKFLOWS {
+        uuid id PK
+        string name
+        text description
+        enum status
+        jsonb workflow_json
+        text source_code
+        string version
+        boolean active
+        string_array tags
+        jsonb metadata
+        timestamp last_deployed_at
+        uuid created_by_improvement_id FK
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    WORKFLOW_EXECUTIONS {
+        uuid id PK
+        uuid workflow_id FK
+        enum status
+        jsonb input_data
+        jsonb output_data
+        text error_message
+        integer duration_ms
+        timestamp started_at
+        timestamp completed_at
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    %% Enhancement Discovery Tables
+    ENHANCEMENT_DISCOVERY {
+        uuid id PK
+        string name
+        text description
+        text implementation_code
+        integer priority
+        enum status
+        float impact_score
+        integer implementation_complexity
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    %% System Health Tables
+    SYSTEM_HEALTH {
+        uuid id PK
+        string component
+        enum status
+        jsonb health_data
+        text error_details
+        timestamp checked_at
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    %% Performance Metrics Tables
+    PERFORMANCE_METRICS {
+        uuid id PK
+        string metric_name
+        float value
+        string unit
+        jsonb dimensions
+        timestamp recorded_at
+        timestamp inserted_at
+        timestamp updated_at
+    }
+    
+    %% Relationships
+    AI_IMPROVEMENTS ||--o{ AI_TASKS : "has"
+    AI_IMPROVEMENTS ||--o{ AI_CODE_ANALYSIS : "analyzes"
+    AI_IMPROVEMENTS ||--o{ WORKFLOWS : "creates"
+    AI_TASKS ||--o{ AI_METRICS : "measures"
+    WORKFLOWS ||--o{ WORKFLOW_EXECUTIONS : "executes"
+    
+    %% Enums and Constraints
+    %% AI_IMPROVEMENTS.impact: low, medium, high, critical
+    %% AI_IMPROVEMENTS.effort: low, medium, high  
+    %% AI_IMPROVEMENTS.status: proposed, approved, rejected, in_progress, completed, failed
+    %% AI_TASKS.type: analysis, optimization, testing, deployment, monitoring
+    %% AI_TASKS.status: pending, running, completed, failed, cancelled
+    %% AI_TASKS.priority: low, medium, high, critical
+    %% WORKFLOWS.status: draft, active, inactive, archived
+    %% WORKFLOW_EXECUTIONS.status: pending, running, completed, failed, cancelled
+    %% ENHANCEMENT_DISCOVERY.status: discovered, implementing, testing, deployed, failed
+    %% SYSTEM_HEALTH.status: healthy, warning, critical, unknown
+```

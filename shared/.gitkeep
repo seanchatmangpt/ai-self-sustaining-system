@@ -1,0 +1,2 @@
+# Shared directory for n8n and Phoenix integration
+# Files placed here are accessible by both n8n workflows and Phoenix application

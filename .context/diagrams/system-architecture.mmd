@@ -1,0 +1,148 @@
+```mermaid
+graph TB
+    %% External Users and Interfaces
+    USER[👤 System Administrator]
+    CLAUDE_DESKTOP[🤖 Claude Desktop<br/>MCP Client]
+    N8N_UI[⚙️ n8n UI<br/>Workflow Editor]
+    
+    %% Load Balancer / Proxy Layer
+    subgraph "Entry Points"
+        PHOENIX_ENDPOINT[🔥 Phoenix Endpoint<br/>:4000]
+        N8N_ENDPOINT[⚙️ n8n Server<br/>:5678]
+        MCP_ENDPOINT[🔗 MCP Endpoint<br/>:4000/mcp]
+    end
+    
+    %% Phoenix Application Layer
+    subgraph "Phoenix Application"
+        ROUTER[🔀 Phoenix Router<br/>Route Management]
+        
+        subgraph "Web Layer"
+            LIVEVIEW[📱 LiveView Components<br/>Real-time UI]
+            CONTROLLERS[🎛️ REST Controllers<br/>API Endpoints]
+            CHANNELS[📡 Phoenix Channels<br/>WebSocket]
+        end
+        
+        subgraph "Business Logic Layer"
+            ASH_DOMAINS[📚 Ash Domains<br/>AI & Workflows]
+            ASH_RESOURCES[🗂️ Ash Resources<br/>Data Models]
+            ASH_ACTIONS[⚡ Ash Actions<br/>Business Logic]
+        end
+    end
+    
+    %% AI Engine Layer
+    subgraph "AI Engine"
+        SELF_IMPROVEMENT[🧠 Self-Improvement<br/>Orchestrator]
+        CLAUDE_INTEGRATION[🤖 Claude Code<br/>CLI Integration]
+        WORKFLOW_GENERATOR[⚙️ Workflow Generator<br/>AI-Powered DSL]
+        AUTO_TESTER[🧪 Auto Tester<br/>Enhancement Testing]
+        META_ENHANCER[🔄 Meta Enhancer<br/>System Self-Improvement]
+    end
+    
+    %% n8n Integration Layer
+    subgraph "n8n Workflow Engine"
+        N8N_DSL[📜 n8n DSL<br/>Spark Framework]
+        WORKFLOW_MANAGER[📋 Workflow Manager<br/>Compilation & Deployment]
+        DSL_TRANSFORMERS[🔧 DSL Transformers<br/>Optimization]
+        N8N_COMPILER[⚙️ n8n Compiler<br/>JSON Generation]
+    end
+    
+    %% Data Layer
+    subgraph "Data Layer"
+        POSTGRES[(🗄️ PostgreSQL<br/>Primary Database)]
+        VECTOR_DB[(🧠 Vector Extensions<br/>Embeddings)]
+        CACHE[(⚡ ETS Cache<br/>In-Memory)]
+        FILE_SYSTEM[(📁 File System<br/>Workflow Storage)]
+    end
+    
+    %% External Services
+    subgraph "External Services"
+        CLAUDE_CLI[🤖 Claude Code CLI<br/>Local AI Processing]
+        N8N_API[⚙️ n8n REST API<br/>Workflow Deployment]
+        TIDEWAVE[🌊 Tidewave<br/>Runtime Intelligence]
+    end
+    
+    %% Monitoring and Observability
+    subgraph "Monitoring"
+        TELEMETRY[📊 Phoenix Telemetry<br/>Metrics Collection]
+        HEALTH_CHECKS[❤️ Health Checks<br/>System Status]
+        PERFORMANCE_MONITOR[📈 Performance Monitor<br/>Real-time Metrics]
+        ALERT_SYSTEM[🚨 Alert System<br/>Threshold Monitoring]
+    end
+    
+    %% Data Flow Connections
+    USER --> PHOENIX_ENDPOINT
+    CLAUDE_DESKTOP --> MCP_ENDPOINT
+    N8N_UI --> N8N_ENDPOINT
+    
+    PHOENIX_ENDPOINT --> ROUTER
+    ROUTER --> LIVEVIEW
+    ROUTER --> CONTROLLERS
+    ROUTER --> CHANNELS
+    
+    LIVEVIEW --> ASH_DOMAINS
+    CONTROLLERS --> ASH_DOMAINS
+    ASH_DOMAINS --> ASH_RESOURCES
+    ASH_RESOURCES --> ASH_ACTIONS
+    
+    %% AI Engine Integration
+    ASH_ACTIONS --> SELF_IMPROVEMENT
+    SELF_IMPROVEMENT --> CLAUDE_INTEGRATION
+    SELF_IMPROVEMENT --> WORKFLOW_GENERATOR
+    SELF_IMPROVEMENT --> AUTO_TESTER
+    SELF_IMPROVEMENT --> META_ENHANCER
+    
+    %% n8n Integration
+    WORKFLOW_GENERATOR --> N8N_DSL
+    N8N_DSL --> WORKFLOW_MANAGER
+    WORKFLOW_MANAGER --> DSL_TRANSFORMERS
+    DSL_TRANSFORMERS --> N8N_COMPILER
+    N8N_COMPILER --> N8N_API
+    
+    %% External Service Connections
+    CLAUDE_INTEGRATION --> CLAUDE_CLI
+    WORKFLOW_MANAGER --> N8N_API
+    ASH_RESOURCES --> TIDEWAVE
+    
+    %% Data Layer Connections
+    ASH_RESOURCES --> POSTGRES
+    ASH_RESOURCES --> VECTOR_DB
+    ASH_ACTIONS --> CACHE
+    WORKFLOW_MANAGER --> FILE_SYSTEM
+    
+    %% Monitoring Connections
+    PHOENIX_ENDPOINT --> TELEMETRY
+    SELF_IMPROVEMENT --> PERFORMANCE_MONITOR
+    HEALTH_CHECKS --> ALERT_SYSTEM
+    TELEMETRY --> PERFORMANCE_MONITOR
+    
+    %% Real-time Data Flows
+    SELF_IMPROVEMENT -.->|PubSub| LIVEVIEW
+    AUTO_TESTER -.->|Results| PERFORMANCE_MONITOR
+    WORKFLOW_GENERATOR -.->|Status| CHANNELS
+    N8N_API -.->|Webhooks| CONTROLLERS
+    
+    %% MCP Integration
+    MCP_ENDPOINT --> ASH_DOMAINS
+    ASH_DOMAINS --> MCP_ENDPOINT
+    
+    %% Agent Swarm Connection Points
+    SELF_IMPROVEMENT -.->|APS Protocol| FILE_SYSTEM
+    META_ENHANCER -.->|Agent Coordination| SELF_IMPROVEMENT
+    
+    %% Styling
+    classDef external fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef phoenix fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef ai fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef n8n fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef data fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef monitoring fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+    classDef services fill:#ede7f6,stroke:#512da8,stroke-width:2px
+    
+    class USER,CLAUDE_DESKTOP,N8N_UI,PHOENIX_ENDPOINT,N8N_ENDPOINT,MCP_ENDPOINT external
+    class ROUTER,LIVEVIEW,CONTROLLERS,CHANNELS,ASH_DOMAINS,ASH_RESOURCES,ASH_ACTIONS phoenix
+    class SELF_IMPROVEMENT,CLAUDE_INTEGRATION,WORKFLOW_GENERATOR,AUTO_TESTER,META_ENHANCER ai
+    class N8N_DSL,WORKFLOW_MANAGER,DSL_TRANSFORMERS,N8N_COMPILER n8n
+    class POSTGRES,VECTOR_DB,CACHE,FILE_SYSTEM data
+    class TELEMETRY,HEALTH_CHECKS,PERFORMANCE_MONITOR,ALERT_SYSTEM monitoring
+    class CLAUDE_CLI,N8N_API,TIDEWAVE services
+```

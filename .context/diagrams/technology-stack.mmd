@@ -1,0 +1,156 @@
+```mermaid
+graph TB
+    %% Presentation Layer
+    subgraph "🎨 Presentation Layer"
+        BROWSER[🌐 Web Browser<br/>Modern JavaScript]
+        LIVEVIEW[📱 Phoenix LiveView<br/>v0.20.2]
+        TAILWIND[🎨 TailwindCSS<br/>Utility-first CSS]
+        ESBUILD[📦 ESBuild<br/>JavaScript Bundler]
+    end
+    
+    %% Application Layer
+    subgraph "🚀 Application Layer"
+        PHOENIX[🔥 Phoenix Framework<br/>v1.7.0]
+        ELIXIR[💎 Elixir Language<br/>v1.14+]
+        ERLANG[⚡ Erlang/OTP<br/>BEAM VM]
+        ASH[🏛️ Ash Framework<br/>v3.0+]
+    end
+    
+    %% Domain Layer
+    subgraph "📚 Domain Layer"
+        ASH_POSTGRES[🗄️ AshPostgres<br/>Database Integration]
+        ASH_PHOENIX[🔥 AshPhoenix<br/>Web Integration]
+        ASH_AI[🧠 AshAI<br/>AI Integration]
+        ASH_OBAN[⚙️ AshOban<br/>Background Jobs]
+        ASH_AUTH[🔐 AshAuthentication<br/>Auth System]
+    end
+    
+    %% AI Integration Layer
+    subgraph "🤖 AI Integration Layer"
+        CLAUDE_CLI[🤖 Claude Code CLI<br/>Local AI Processing]
+        MCP[🔗 Model Context Protocol<br/>AI Tool Integration]
+        EMBEDDINGS[🧠 Vector Embeddings<br/>Semantic Search]
+        TIDEWAVE[🌊 Tidewave<br/>Runtime Intelligence]
+    end
+    
+    %% Workflow Layer
+    subgraph "⚙️ Workflow Layer"
+        N8N[📋 n8n<br/>Workflow Engine]
+        SPARK_DSL[⚡ Spark DSL<br/>Framework]
+        REACTOR[🔄 Reactor<br/>Process Orchestration]
+        CUSTOM_DSL[📜 Custom n8n DSL<br/>Type-safe Workflows]
+    end
+    
+    %% Data Layer
+    subgraph "🗄️ Data Layer"
+        POSTGRESQL[🐘 PostgreSQL<br/>Primary Database]
+        VECTOR_EXT[🧠 pgvector<br/>Vector Storage]
+        ETS_CACHE[⚡ ETS<br/>In-Memory Cache]
+        FILE_SYSTEM[📁 File System<br/>Workflow Storage]
+    end
+    
+    %% Infrastructure Layer
+    subgraph "🏗️ Infrastructure Layer"
+        COWBOY[🤠 Cowboy<br/>HTTP Server]
+        PUBSUB[📡 Phoenix PubSub<br/>Real-time Messaging]
+        TELEMETRY[📊 Telemetry<br/>Metrics & Monitoring]
+        SUPERVISOR[👑 OTP Supervisors<br/>Fault Tolerance]
+    end
+    
+    %% Development Tools
+    subgraph "🛠️ Development Tools"
+        MIX[🔧 Mix<br/>Build Tool]
+        CREDO[📏 Credo<br/>Code Analysis]
+        DIALYZER[🔍 Dialyzer<br/>Type Analysis]
+        EXUNIT[🧪 ExUnit<br/>Testing Framework]
+    end
+    
+    %% External Services
+    subgraph "🌐 External Services"
+        CLAUDE_DESKTOP[🤖 Claude Desktop<br/>MCP Client]
+        N8N_UI[⚙️ n8n UI<br/>Workflow Editor]
+        GITHUB[🐙 GitHub<br/>Version Control]
+        MONITORING[📈 Monitoring<br/>External Tools]
+    end
+    
+    %% Version Information
+    subgraph "📋 Version Matrix"
+        VERSIONS[📊 Technology Versions<br/>
+        • Elixir: ~> 1.14<br/>
+        • Phoenix: ~> 1.7.0<br/>
+        • LiveView: ~> 0.20.2<br/>
+        • Ash: ~> 3.0<br/>
+        • PostgreSQL: Latest<br/>
+        • n8n: Latest<br/>
+        • Node.js: 20.15+]
+    end
+    
+    %% Dependencies Flow
+    BROWSER --> LIVEVIEW
+    LIVEVIEW --> TAILWIND
+    LIVEVIEW --> ESBUILD
+    
+    LIVEVIEW --> PHOENIX
+    PHOENIX --> ELIXIR
+    ELIXIR --> ERLANG
+    PHOENIX --> ASH
+    
+    ASH --> ASH_POSTGRES
+    ASH --> ASH_PHOENIX  
+    ASH --> ASH_AI
+    ASH --> ASH_OBAN
+    ASH --> ASH_AUTH
+    
+    ASH_AI --> CLAUDE_CLI
+    ASH_AI --> MCP
+    ASH_AI --> EMBEDDINGS
+    PHOENIX --> TIDEWAVE
+    
+    ASH --> SPARK_DSL
+    SPARK_DSL --> REACTOR
+    SPARK_DSL --> CUSTOM_DSL
+    CUSTOM_DSL --> N8N
+    
+    ASH_POSTGRES --> POSTGRESQL
+    POSTGRESQL --> VECTOR_EXT
+    ERLANG --> ETS_CACHE
+    CUSTOM_DSL --> FILE_SYSTEM
+    
+    PHOENIX --> COWBOY
+    PHOENIX --> PUBSUB
+    PHOENIX --> TELEMETRY
+    ERLANG --> SUPERVISOR
+    
+    ELIXIR --> MIX
+    MIX --> CREDO
+    MIX --> DIALYZER
+    MIX --> EXUNIT
+    
+    MCP --> CLAUDE_DESKTOP
+    N8N --> N8N_UI
+    MIX --> GITHUB
+    TELEMETRY --> MONITORING
+    
+    %% Styling
+    classDef presentation fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef application fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef domain fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef ai fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef workflow fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef data fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+    classDef infrastructure fill:#ede7f6,stroke:#512da8,stroke-width:2px
+    classDef tools fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    classDef external fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef versions fill:#fff8e1,stroke:#ff8f00,stroke-width:2px
+    
+    class BROWSER,LIVEVIEW,TAILWIND,ESBUILD presentation
+    class PHOENIX,ELIXIR,ERLANG,ASH application
+    class ASH_POSTGRES,ASH_PHOENIX,ASH_AI,ASH_OBAN,ASH_AUTH domain
+    class CLAUDE_CLI,MCP,EMBEDDINGS,TIDEWAVE ai
+    class N8N,SPARK_DSL,REACTOR,CUSTOM_DSL workflow
+    class POSTGRESQL,VECTOR_EXT,ETS_CACHE,FILE_SYSTEM data
+    class COWBOY,PUBSUB,TELEMETRY,SUPERVISOR infrastructure
+    class MIX,CREDO,DIALYZER,EXUNIT tools
+    class CLAUDE_DESKTOP,N8N_UI,GITHUB,MONITORING external
+    class VERSIONS versions
+```

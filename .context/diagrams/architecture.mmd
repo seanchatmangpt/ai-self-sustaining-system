@@ -1,0 +1,121 @@
+```mermaid
+graph TB
+    %% External Interfaces
+    User[👤 User Interface]
+    ClaudeDesktop[🤖 Claude Desktop]
+    Database[(🗄️ PostgreSQL)]
+    N8nUI[⚙️ n8n UI]
+    
+    %% Main Application Layer
+    subgraph "Phoenix Application"
+        Router[🔀 Phoenix Router]
+        LiveView[📱 LiveView Components]
+        Controllers[🎛️ API Controllers]
+        Telemetry[📊 Telemetry]
+    end
+    
+    %% Self-Improvement Engine
+    subgraph "Self-Improvement Engine"
+        Supervisor[👑 Enhancement Supervisor]
+        Discovery[🔍 Enhancement Discovery]
+        Implementer[⚡ Auto Implementer]
+        Tester[🧪 Auto Tester]
+        MetaEnhancer[🔄 Meta Enhancer]
+        FeedbackLoop[🔁 Feedback Loop]
+    end
+    
+    %% AI Integration Layer
+    subgraph "Claude Code Integration"
+        ClaudeServer[🤖 Claude Code Server]
+        TaskBuilder[🔧 Task Builder]
+        ResponseParser[📝 Response Parser]
+        StreamHandler[📡 Stream Handler]
+    end
+    
+    %% n8n Workflow Engine
+    subgraph "n8n Workflow Engine"
+        WorkflowManager[📋 Workflow Manager]
+        ReactorDSL[📜 Reactor DSL]
+        McpProxy[🔗 MCP Proxy]
+        Compiler[⚙️ DSL Compiler]
+    end
+    
+    %% Ash Framework Layer
+    subgraph "Ash Framework Domain"
+        AshResources[📚 Ash Resources]
+        SelfImprovementDomain[🎯 Self-Improvement Domain]
+        WorkflowsDomain[🔄 Workflows Domain]
+        AshAI[🧠 Ash AI Integration]
+    end
+    
+    %% Monitoring and Performance
+    subgraph "Monitoring & Performance"
+        PerformanceMonitor[📈 Performance Monitor]
+        HealthChecks[❤️ Health Checks]
+        MetricsCollector[📊 Metrics Collector]
+        AlertSystem[🚨 Alert System]
+    end
+    
+    %% Data Flow Connections
+    User --> Router
+    ClaudeDesktop --> McpProxy
+    Router --> LiveView
+    Router --> Controllers
+    
+    %% Self-Improvement Flow
+    Supervisor --> Discovery
+    Discovery --> Implementer
+    Implementer --> Tester
+    Tester --> MetaEnhancer
+    MetaEnhancer --> FeedbackLoop
+    FeedbackLoop --> Discovery
+    
+    %% Claude Code Integration Flow
+    Implementer --> ClaudeServer
+    ClaudeServer --> TaskBuilder
+    TaskBuilder --> StreamHandler
+    StreamHandler --> ResponseParser
+    ResponseParser --> AshResources
+    
+    %% n8n Workflow Flow
+    WorkflowManager --> ReactorDSL
+    ReactorDSL --> Compiler
+    Compiler --> N8nUI
+    McpProxy --> WorkflowManager
+    
+    %% Ash Framework Integration
+    Discovery --> SelfImprovementDomain
+    SelfImprovementDomain --> AshResources
+    WorkflowManager --> WorkflowsDomain
+    AshAI --> ClaudeServer
+    
+    %% Monitoring Integration
+    Discovery --> PerformanceMonitor
+    PerformanceMonitor --> MetricsCollector
+    MetricsCollector --> HealthChecks
+    HealthChecks --> AlertSystem
+    AlertSystem --> FeedbackLoop
+    
+    %% Database Connections
+    AshResources --> Database
+    MetricsCollector --> Database
+    SelfImprovementDomain --> Database
+    WorkflowsDomain --> Database
+    
+    %% External Service Connections
+    Controllers --> N8nUI
+    Telemetry --> PerformanceMonitor
+    
+    %% Styling
+    classDef userInterface fill:#e1f5fe
+    classDef aiEngine fill:#f3e5f5
+    classDef infrastructure fill:#e8f5e8
+    classDef monitoring fill:#fff3e0
+    classDef database fill:#fce4ec
+    
+    class User,ClaudeDesktop,N8nUI userInterface
+    class Supervisor,Discovery,Implementer,Tester,MetaEnhancer,FeedbackLoop,ClaudeServer,TaskBuilder,ResponseParser,StreamHandler aiEngine
+    class Router,LiveView,Controllers,Telemetry,WorkflowManager,ReactorDSL,McpProxy,Compiler,AshResources,SelfImprovementDomain,WorkflowsDomain,AshAI infrastructure
+    class PerformanceMonitor,HealthChecks,MetricsCollector,AlertSystem monitoring
+    class Database database
+```

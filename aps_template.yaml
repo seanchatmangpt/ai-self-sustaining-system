@@ -1,0 +1,130 @@
+process:
+  name: "Process_Name_Here"
+  description: "Clear description of the overall process"
+  id: "001_Process_ID"
+  created_at: "2024-12-15T22:00:00Z"
+  updated_at: "2024-12-15T22:00:00Z"
+  status: "pending"
+  
+  roles:
+    - name: "PM_Agent"
+      description: "Product Manager - translates goals into requirements"
+    - name: "Architect_Agent" 
+      description: "System Architect - designs system architecture"
+    - name: "Developer_Agent"
+      description: "Developer - implements code based on specifications"
+    - name: "QA_Agent"
+      description: "Quality Assurance - validates implemented features"
+    - name: "DevOps_Agent"
+      description: "DevOps - manages deployment and monitoring"
+
+  activities:
+    - name: "Requirement_Analysis"
+      assignee: "PM_Agent"
+      status: "pending"
+      tasks:
+        - name: "Generate_Gherkin_Scenarios"
+          description: "Create behavior-driven development scenarios"
+          status: "pending"
+        - name: "Define_Acceptance_Criteria"
+          description: "Establish clear success criteria"
+          status: "pending"
+    
+    - name: "System_Design"
+      assignee: "Architect_Agent"
+      status: "pending"
+      tasks:
+        - name: "Create_C4_Model"
+          description: "Design system architecture using C4 model"
+          status: "pending"
+        - name: "Select_Technology_Stack"
+          description: "Choose appropriate technologies and frameworks"
+          status: "pending"
+    
+    - name: "Implementation"
+      assignee: "Developer_Agent"  
+      status: "pending"
+      tasks:
+        - name: "Code_Implementation"
+          description: "Write source code according to specifications"
+          status: "pending"
+        - name: "Unit_Test_Creation"
+          description: "Create comprehensive unit tests"
+          status: "pending"
+    
+    - name: "Quality_Assurance"
+      assignee: "QA_Agent"
+      status: "pending"
+      tasks:
+        - name: "Execute_Test_Suite"
+          description: "Run all tests and validate Gherkin scenarios"
+          status: "pending"
+        - name: "Bug_Report_Generation"
+          description: "Document any issues found during testing"
+          status: "pending"
+    
+    - name: "Deployment"
+      assignee: "DevOps_Agent"
+      status: "pending"
+      tasks:
+        - name: "Production_Deployment"
+          description: "Deploy to production environment"
+          status: "pending"
+        - name: "Monitoring_Setup"
+          description: "Configure monitoring and telemetry"
+          status: "pending"
+
+  scenarios:
+    - name: "Happy_Path_Scenario"
+      steps:
+        - type: "Given"
+          description: "the system is in a known state"
+        - type: "When"
+          description: "a user performs an action"
+        - type: "Then"
+          description: "the expected outcome occurs"
+        - type: "And"
+          description: "additional verification steps"
+
+  data_structures:
+    - name: "message_bus_format"
+      type: "record"
+      fields:
+        - name: "from"
+          type: "string"
+          description: "Source agent role"
+        - name: "to"
+          type: "string" 
+          description: "Target agent role"
+        - name: "timestamp"
+          type: "string"
+          description: "ISO 8601 timestamp"
+        - name: "content"
+          type: "string"
+          description: "Message content"
+
+  handoff:
+    current_agent: "PM_Agent"
+    next_agent: "Architect_Agent"
+    handoff_criteria:
+      - "Requirements document is complete"
+      - "Gherkin scenarios are validated"
+      - "Acceptance criteria are defined"
+
+  messages:
+    - from: "PM_Agent"
+      to: "Architect_Agent"
+      timestamp: "2024-12-15T22:30:00Z"
+      subject: "Requirements Ready"
+      content: "Requirements analysis complete. Architecture design can begin."
+      artifacts:
+        - path: "001_requirements.aps.yaml"
+          type: "requirements"
+          status: "ready"
+
+  claim:
+    agent_id: "timestamp_role"
+    process_id: "001_Process_ID"
+    claimed_at: "2024-12-15T22:00:00Z"
+    status: "claimed"
+    estimated_completion: "2024-12-15T23:30:00Z"

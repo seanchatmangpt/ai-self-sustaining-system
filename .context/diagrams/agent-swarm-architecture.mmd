@@ -1,0 +1,163 @@
+```mermaid
+graph TB
+    subgraph "🎮 MCP (Desktop Commander)"
+        MCP[Model Context Protocol]
+        RoleAssigner[Agent Role Assignment System]
+        SessionTracker[Session Coordination]
+        
+        MCP --> RoleAssigner
+        MCP --> SessionTracker
+    end
+    
+    subgraph "🤖 Agent Swarm Layer"
+        subgraph "Sequential Pipeline"
+            PM[👔 PM_Agent<br/>Requirements & Planning]
+            ARCH[🏗️ Architect_Agent<br/>System Design]
+            DEV[👩‍💻 Developer_Agent<br/>Implementation]
+            QA[🧪 QA_Agent<br/>Quality Assurance]
+            DEVOPS[⚙️ DevOps_Agent<br/>Deployment & Ops]
+            
+            PM --> ARCH
+            ARCH --> DEV
+            DEV --> QA
+            QA --> DEVOPS
+        end
+        
+        subgraph "Parallel Support Agents"
+            DEV2[👩‍💻 Developer_Agent_2<br/>Parallel Development]
+            DEV3[👩‍💻 Developer_Agent_3<br/>Bug Fixes & Support]
+            QA2[🧪 QA_Agent_2<br/>Continuous Testing]
+            MONITOR[📊 Monitor_Agent<br/>System Health]
+        end
+    end
+    
+    subgraph "📁 APS File System"
+        subgraph "Process Files"
+            REQ[📋 *_requirements.aps.yaml<br/>Gherkin Scenarios<br/>Acceptance Criteria]
+            ARCH_FILE[🏗️ *_architecture.aps.yaml<br/>C4 Models<br/>Tech Stack Decisions]
+            IMPL[💻 *_implementation.aps.yaml<br/>Code Status<br/>Test Results]
+            TEST[🧪 *_test_results.aps.yaml<br/>Validation Status<br/>Bug Reports]
+            DEPLOY[🚀 *_deployment.aps.yaml<br/>Release Notes<br/>Telemetry Data]
+        end
+        
+        subgraph "Coordination Files"
+            ASSIGN[📝 .claude_role_assignment<br/>Active Agents<br/>Session Tracking]
+            STATUS[📊 agent_status.aps.yaml<br/>Current States<br/>Work Claims]
+            MESSAGES[💬 message_bus.aps.yaml<br/>Inter-Agent Communication]
+        end
+    end
+    
+    subgraph "🖥️ Phoenix Application"
+        subgraph "APS Integration Layer"
+            APS_MODULE[SelfSustaining.APS<br/>YAML Parser & Validator]
+            COORDINATOR[Agent Coordinator<br/>GenServer Processes]
+            STATE_MGR[State Manager<br/>Process Tracking]
+        end
+        
+        subgraph "Web Interface"
+            DASHBOARD[📊 Agent Dashboard<br/>Real-time Status]
+            PROCESS_VIEW[📋 Process Viewer<br/>Workflow Tracking]
+            CONTROL[🎛️ Manual Controls<br/>Intervention Tools]
+        end
+        
+        subgraph "Background Processing"
+            OBAN[⚡ Oban Jobs<br/>Async Agent Tasks]
+            TELEMETRY[📈 Telemetry<br/>Performance Metrics]
+            CLEANUP[🧹 Process Cleanup<br/>Archive Management]
+        end
+    end
+    
+    subgraph "🗄️ Data Layer"
+        subgraph "PostgreSQL Database"
+            AGENT_STATES[(Agent States<br/>Status History)]
+            PROCESS_LOG[(Process Logs<br/>Execution History)]
+            METRICS[(Performance Metrics<br/>Telemetry Data)]
+            ARTIFACTS[(Code Artifacts<br/>Generated Files)]
+        end
+    end
+    
+    %% Agent Role Assignment Flow
+    RoleAssigner --> PM
+    RoleAssigner --> ARCH
+    RoleAssigner --> DEV
+    RoleAssigner --> QA
+    RoleAssigner --> DEVOPS
+    RoleAssigner --> DEV2
+    RoleAssigner --> DEV3
+    RoleAssigner --> QA2
+    RoleAssigner --> MONITOR
+    
+    %% APS File Interactions
+    PM --> REQ
+    ARCH --> ARCH_FILE
+    DEV --> IMPL
+    QA --> TEST
+    DEVOPS --> DEPLOY
+    
+    %% All agents interact with coordination files
+    PM -.-> ASSIGN
+    ARCH -.-> ASSIGN
+    DEV -.-> ASSIGN
+    QA -.-> ASSIGN
+    DEVOPS -.-> ASSIGN
+    
+    PM <--> STATUS
+    ARCH <--> STATUS
+    DEV <--> STATUS
+    QA <--> STATUS
+    DEVOPS <--> STATUS
+    
+    %% Inter-agent messaging
+    PM --> MESSAGES
+    ARCH --> MESSAGES
+    DEV --> MESSAGES
+    QA --> MESSAGES
+    DEVOPS --> MESSAGES
+    
+    %% Phoenix Integration
+    APS_MODULE <--> REQ
+    APS_MODULE <--> ARCH_FILE
+    APS_MODULE <--> IMPL
+    APS_MODULE <--> TEST
+    APS_MODULE <--> DEPLOY
+    
+    COORDINATOR <--> STATUS
+    COORDINATOR <--> MESSAGES
+    
+    STATE_MGR <--> ASSIGN
+    STATE_MGR <--> AGENT_STATES
+    
+    %% Web Interface Data
+    DASHBOARD <--> AGENT_STATES
+    PROCESS_VIEW <--> PROCESS_LOG
+    CONTROL <--> STATE_MGR
+    
+    %% Background Processing
+    OBAN <--> COORDINATOR
+    TELEMETRY <--> METRICS
+    CLEANUP <--> ARTIFACTS
+    
+    %% Parallel Development Flows
+    DEV2 -.-> IMPL
+    DEV3 -.-> IMPL
+    QA2 -.-> TEST
+    MONITOR -.-> METRICS
+    
+    %% Feedback Loops
+    DEVOPS -->|Telemetry Thresholds| MCP
+    QA -->|Test Failures| DEV
+    MONITOR -->|Health Issues| PM
+    
+    %% Self-Improvement Loop
+    DEVOPS -->|Enhancement Opportunities| PM
+    
+    classDef agentNode fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef fileNode fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef systemNode fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef dataNode fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    
+    class PM,ARCH,DEV,QA,DEVOPS,DEV2,DEV3,QA2,MONITOR agentNode
+    class REQ,ARCH_FILE,IMPL,TEST,DEPLOY,ASSIGN,STATUS,MESSAGES fileNode
+    class APS_MODULE,COORDINATOR,STATE_MGR,DASHBOARD,PROCESS_VIEW,CONTROL,OBAN,TELEMETRY,CLEANUP systemNode
+    class AGENT_STATES,PROCESS_LOG,METRICS,ARTIFACTS dataNode
+```
