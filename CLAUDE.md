@@ -192,7 +192,38 @@ execute_sprint_work() {
 
 ---
 
-## 4. SCRUM AT SCALE AGENT ROLES WITH NANOSECOND COORDINATION
+## 4. PROJECT STRUCTURE & CONTEXT DIRECTORY (ALWAYS EXISTS)
+
+### MANDATORY CONTEXT DIRECTORY STRUCTURE
+**IMPORTANT: The `.context` directory ALWAYS EXISTS in this project**
+
+```bash
+# CONTEXT DIRECTORY STRUCTURE (CONFIRMED TO EXIST):
+.context/
+├── index.md                               # Main system context documentation
+├── diagrams/                             # System architecture diagrams directory
+├── aps-agent-coordination.md             # Agent coordination documentation
+├── c4-diagrams-index.md                 # C4 architecture diagram index
+├── docs.md                              # Documentation index and overview
+└── enhancement_opportunities_*.md        # Enhancement tracking files
+
+# NEVER assume .context directory doesn't exist
+# ALWAYS update .context/index.md with current system state
+# ALWAYS check .context/ for existing documentation before creating new files
+```
+
+### AUTOMATIC DOCUMENTATION MAINTENANCE
+```bash
+# MANDATORY documentation updates after any work
+# Update .context/index.md with current system state (CONFIRMED EXISTS)
+# Update architecture diagrams in .context/diagrams/ if structural changes made
+# Update API documentation if interface changes made
+# Log improvements and learnings in coordination system
+```
+
+---
+
+## 5. SCRUM AT SCALE AGENT ROLES WITH NANOSECOND COORDINATION
 
 ### a. PM_Agent (Product Owner) - BACKLOG & PI PLANNING MASTER
 - **Primary Function**: Translate business value into prioritized product backlog
@@ -359,7 +390,7 @@ mix ash.codegen --check                       # Verify resource definitions
 
 ---
 
-## 5. SCRUM AT SCALE EVENT AUTOMATION WITH NANOSECOND PRECISION
+## 6. SCRUM AT SCALE EVENT AUTOMATION WITH NANOSECOND PRECISION
 
 ### AUTOMATED PI PLANNING (QUARTERLY)
 ```bash
@@ -403,7 +434,7 @@ system_demo:
 
 ---
 
-## 6. SCRUM AT SCALE METRICS & CONTINUOUS IMPROVEMENT
+## 7. SCRUM AT SCALE METRICS & CONTINUOUS IMPROVEMENT
 
 ### ART-LEVEL METRICS (AUTOMATICALLY TRACKED)
 ```yaml
@@ -446,7 +477,7 @@ optimize_team_velocity_and_capacity()
 
 ---
 
-## 7. AUTONOMOUS OPERATIONS WITH SCRUM AT SCALE INTEGRATION
+## 8. AUTONOMOUS OPERATIONS WITH SCRUM AT SCALE INTEGRATION
 
 ### `/project:auto` WITH NANOSECOND SCRUM AT SCALE
 ```bash
@@ -483,7 +514,7 @@ AGENT_ID="agent_$(date +%s%N)"
 
 ---
 
-## 8. SCRUM AT SCALE QUALITY GATES & DEFINITION OF DONE
+## 9. SCRUM AT SCALE QUALITY GATES & DEFINITION OF DONE
 
 ### ART-LEVEL DEFINITION OF DONE (MANDATORY FOR ALL TEAMS)
 ```yaml
@@ -542,7 +573,7 @@ fi
 
 ---
 
-## 9. FAIL-SAFE PROTOCOLS & EMERGENCY PROCEDURES
+## 10. FAIL-SAFE PROTOCOLS & EMERGENCY PROCEDURES
 
 ### EMERGENCY ART COORDINATION OVERRIDE
 ```bash
@@ -659,7 +690,7 @@ maintain_coordination_continuity_during_restore
 
 ---
 
-## 10. SUCCESS METRICS & MONITORING (AUTOMATIC TRACKING)
+## 11. SUCCESS METRICS & MONITORING (AUTOMATIC TRACKING)
 
 ### PROGRAM INCREMENT (PI) METRICS (AUTOMATICALLY TRACKED)
 ```yaml
@@ -725,7 +756,7 @@ continuous_adaptation_based_on_results()
 
 ---
 
-## 11. ULTIMATE AI AGENT SWARM CONSTITUTION ENFORCEMENT
+## 12. ULTIMATE AI AGENT SWARM CONSTITUTION ENFORCEMENT
 
 ### MANDATORY COMPLIANCE VERIFICATION
 **Every agent MUST verify compliance before any action**:
