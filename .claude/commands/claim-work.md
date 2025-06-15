@@ -37,7 +37,7 @@ Autonomous work claiming using enterprise Scrum at Scale coordination system wit
    # Claim work through enterprise coordination
    claim_optimal_work() {
        local agent_id="auto_$(date +%s%N)"
-       local coordination_dir="/.agent_coordination"
+       local coordination_dir="/agent_coordination"
        
        # Claim highest priority available work
        AGENT_ID="$agent_id" "$coordination_dir/coordination_helper.sh" claim \

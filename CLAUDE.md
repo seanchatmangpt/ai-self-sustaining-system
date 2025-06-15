@@ -74,7 +74,7 @@ implementation_reality_check() {
 ## COORDINATION PROTOCOL (ACTUAL IMPLEMENTATION - FIXED)
 ```bash
 AGENT_ID="agent_$(date +%s%N)"  # Nanosecond precision ✅
-.agent_coordination/coordination_helper.sh claim "$work_type" "$desc" "$priority" "$team" # ✅ Exists
+agent_coordination/coordination_helper.sh claim "$work_type" "$desc" "$priority" "$team" # ✅ Exists
 ```
 
 **CONSISTENT FILE FORMAT**: JSON format across all components ✅

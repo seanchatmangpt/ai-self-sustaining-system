@@ -5,7 +5,7 @@ Feature: Agent Coordination with Zero-Conflict Guarantees
 
   Background:
     Given the Agent Coordination Middleware is active
-    And the coordination directory ".agent_coordination" exists
+    And the coordination directory "agent_coordination" exists
     And all agents use nanosecond-precision IDs
 
   @critical @coordination

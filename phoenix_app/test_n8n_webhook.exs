@@ -27,7 +27,7 @@ try do
       IO.puts("✅ Webhook processing successful!")
       IO.puts("   Reactor Module: #{result.reactor_module}")
       IO.puts("   Executed At: #{result.executed_at}")
-      IO.puts("   Correlation ID: #{result.correlation_id}")
+      IO.puts("   Trace ID: #{result.trace_id}")
       IO.puts("   Reactor Result: #{inspect(result.reactor_result)}")
       
     {:error, reason} ->

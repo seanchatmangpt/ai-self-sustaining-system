@@ -201,7 +201,7 @@ test-reactor: ## Test enhanced reactor runner functionality
 test-coordination: ## Test agent coordination system (shell scripts and JSON consistency)
 	@echo "$(BLUE)🤝 Testing Agent Coordination System...$(RESET)"
 	@echo "$(CYAN)Running BATS test suite for coordination helper...$(RESET)"
-	@cd .agent_coordination && bats coordination_helper.bats
+	@cd agent_coordination && bats coordination_helper.bats
 	@echo "$(CYAN)Testing coordination JSON format consistency...$(RESET)"
 	@$(MAKE) test-coordination-consistency
 	@echo "$(GREEN)✅ Agent coordination tests completed$(RESET)"
@@ -209,11 +209,11 @@ test-coordination: ## Test agent coordination system (shell scripts and JSON con
 test-coordination-consistency: ## Verify JSON format consistency between shell and Elixir
 	@echo "$(BLUE)🔍 Verifying JSON format consistency...$(RESET)"
 	@echo "$(CYAN)Testing shell script work claim format...$(RESET)"
-	@cd .agent_coordination && \
+	@cd agent_coordination && \
 		AGENT_ID="test_consistency_$$$$" ./coordination_helper.sh claim "format_test" "JSON consistency validation" "high" "test_team" >/dev/null && \
 		echo "  ✅ Shell script: Work claim created" || echo "  ❌ Shell script: Work claim failed"
 	@echo "$(CYAN)Validating JSON structure matches middleware expectations...$(RESET)"
-	@cd .agent_coordination && \
+	@cd agent_coordination && \
 		jq -e '.[] | select(.agent_id | startswith("test_consistency")) | has("work_item_id", "agent_id", "reactor_id", "claimed_at", "work_type", "priority", "description", "status", "team")' work_claims.json >/dev/null && \
 		echo "  ✅ JSON structure: Compatible with AgentCoordinationMiddleware" || echo "  ❌ JSON structure: Incompatible format detected"
 	@echo "$(GREEN)✅ JSON consistency validation completed$(RESET)"
@@ -221,21 +221,21 @@ test-coordination-consistency: ## Verify JSON format consistency between shell a
 test-scrum-commands: ## Test all Scrum at Scale commands functionality
 	@echo "$(BLUE)📊 Testing Scrum at Scale Commands...$(RESET)"
 	@echo "$(CYAN)Testing core Scrum commands...$(RESET)"
-	@cd .agent_coordination && ./coordination_helper.sh dashboard >/dev/null && echo "  ✅ dashboard" || echo "  ❌ dashboard"
-	@cd .agent_coordination && ./coordination_helper.sh pi-planning >/dev/null && echo "  ✅ pi-planning" || echo "  ❌ pi-planning"
-	@cd .agent_coordination && ./coordination_helper.sh scrum-of-scrums >/dev/null && echo "  ✅ scrum-of-scrums" || echo "  ❌ scrum-of-scrums"
+	@cd agent_coordination && ./coordination_helper.sh dashboard >/dev/null && echo "  ✅ dashboard" || echo "  ❌ dashboard"
+	@cd agent_coordination && ./coordination_helper.sh pi-planning >/dev/null && echo "  ✅ pi-planning" || echo "  ❌ pi-planning"
+	@cd agent_coordination && ./coordination_helper.sh scrum-of-scrums >/dev/null && echo "  ✅ scrum-of-scrums" || echo "  ❌ scrum-of-scrums"
 	@echo "$(CYAN)Testing new Scrum at Scale commands...$(RESET)"
-	@cd .agent_coordination && ./coordination_helper.sh innovation-planning >/dev/null && echo "  ✅ innovation-planning" || echo "  ❌ innovation-planning"
-	@cd .agent_coordination && ./coordination_helper.sh system-demo >/dev/null && echo "  ✅ system-demo" || echo "  ❌ system-demo"
-	@cd .agent_coordination && ./coordination_helper.sh inspect-adapt >/dev/null && echo "  ✅ inspect-adapt" || echo "  ❌ inspect-adapt"
-	@cd .agent_coordination && ./coordination_helper.sh art-sync >/dev/null && echo "  ✅ art-sync" || echo "  ❌ art-sync"
-	@cd .agent_coordination && ./coordination_helper.sh portfolio-kanban >/dev/null && echo "  ✅ portfolio-kanban" || echo "  ❌ portfolio-kanban"
-	@cd .agent_coordination && ./coordination_helper.sh coach-training >/dev/null && echo "  ✅ coach-training" || echo "  ❌ coach-training"
-	@cd .agent_coordination && ./coordination_helper.sh value-stream >/dev/null && echo "  ✅ value-stream" || echo "  ❌ value-stream"
+	@cd agent_coordination && ./coordination_helper.sh innovation-planning >/dev/null && echo "  ✅ innovation-planning" || echo "  ❌ innovation-planning"
+	@cd agent_coordination && ./coordination_helper.sh system-demo >/dev/null && echo "  ✅ system-demo" || echo "  ❌ system-demo"
+	@cd agent_coordination && ./coordination_helper.sh inspect-adapt >/dev/null && echo "  ✅ inspect-adapt" || echo "  ❌ inspect-adapt"
+	@cd agent_coordination && ./coordination_helper.sh art-sync >/dev/null && echo "  ✅ art-sync" || echo "  ❌ art-sync"
+	@cd agent_coordination && ./coordination_helper.sh portfolio-kanban >/dev/null && echo "  ✅ portfolio-kanban" || echo "  ❌ portfolio-kanban"
+	@cd agent_coordination && ./coordination_helper.sh coach-training >/dev/null && echo "  ✅ coach-training" || echo "  ❌ coach-training"
+	@cd agent_coordination && ./coordination_helper.sh value-stream >/dev/null && echo "  ✅ value-stream" || echo "  ❌ value-stream"
 	@echo "$(CYAN)Testing command aliases...$(RESET)"
-	@cd .agent_coordination && ./coordination_helper.sh ip >/dev/null && echo "  ✅ ip (innovation-planning alias)" || echo "  ❌ ip alias"
-	@cd .agent_coordination && ./coordination_helper.sh ia >/dev/null && echo "  ✅ ia (inspect-adapt alias)" || echo "  ❌ ia alias"
-	@cd .agent_coordination && ./coordination_helper.sh vsm >/dev/null && echo "  ✅ vsm (value-stream alias)" || echo "  ❌ vsm alias"
+	@cd agent_coordination && ./coordination_helper.sh ip >/dev/null && echo "  ✅ ip (innovation-planning alias)" || echo "  ❌ ip alias"
+	@cd agent_coordination && ./coordination_helper.sh ia >/dev/null && echo "  ✅ ia (inspect-adapt alias)" || echo "  ❌ ia alias"
+	@cd agent_coordination && ./coordination_helper.sh vsm >/dev/null && echo "  ✅ vsm (value-stream alias)" || echo "  ❌ vsm alias"
 	@echo "$(GREEN)✅ Scrum at Scale commands tested$(RESET)"
 
 # ============================================================================
@@ -456,7 +456,7 @@ coordination-help: ## Show agent coordination system help
 	@echo "  $(BLUE)make test-scrum-commands$(RESET)         - Test all Scrum at Scale commands"
 	@echo ""
 	@echo "$(GREEN)🎯 Scrum at Scale Commands (via coordination helper):$(RESET)"
-	@echo "  $(BLUE)cd .agent_coordination && ./coordination_helper.sh <command>$(RESET)"
+	@echo "  $(BLUE)cd agent_coordination && ./coordination_helper.sh <command>$(RESET)"
 	@echo ""
 	@echo "$(GREEN)📊 Core Work Management:$(RESET)"
 	@echo "  • $(YELLOW)claim <work_type> <description> [priority] [team]$(RESET) - Claim work"

@@ -22,7 +22,7 @@ The AI Self-Sustaining System now includes an enterprise-grade agent coordinatio
 
 ### Coordination Directory Structure
 ```
-.agent_coordination/
+agent_coordination/
 ├── backlog.json           # Product backlog (PM_Agent owned)
 ├── active_sprints.json    # Current sprint work (all agents)
 ├── work_claims.json       # Real-time atomic work claims  
@@ -87,26 +87,26 @@ The AI Self-Sustaining System now includes an enterprise-grade agent coordinatio
 ```bash
 # Run the coordination demonstration
 cd /Users/sac/dev/ai-self-sustaining-system
-./.agent_coordination/coordination_helper.sh demo
+./agent_coordination/coordination_helper.sh demo
 ```
 
 ### Manual Agent Operations
 ```bash
 # Register as a Developer Agent
 export AGENT_ROLE="Developer_Agent" 
-./.agent_coordination/coordination_helper.sh register 100 "active"
+./agent_coordination/coordination_helper.sh register 100 "active"
 
 # Claim implementation work
-./.agent_coordination/coordination_helper.sh claim "implementation" "Optimize database queries" "high"
+./agent_coordination/coordination_helper.sh claim "implementation" "Optimize database queries" "high"
 
 # Update progress
-./.agent_coordination/coordination_helper.sh progress "$WORK_ITEM_ID" "75" "in_progress"
+./agent_coordination/coordination_helper.sh progress "$WORK_ITEM_ID" "75" "in_progress"
 
 # Complete work
-./.agent_coordination/coordination_helper.sh complete "$WORK_ITEM_ID" "success"
+./agent_coordination/coordination_helper.sh complete "$WORK_ITEM_ID" "success"
 
 # Check coordination status
-./.agent_coordination/coordination_helper.sh dashboard
+./agent_coordination/coordination_helper.sh dashboard
 ```
 
 ### Integration with `/project:auto`

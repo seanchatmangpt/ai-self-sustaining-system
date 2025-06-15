@@ -1,0 +1,91 @@
+[
+  {
+    "work_item_id": "work_1734567890123456000",
+    "agent_id": "agent_1734567890123456000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:14:14Z",
+    "estimated_duration": "30m",
+    "work_type": "coordination_optimization",
+    "priority": "critical",
+    "description": "Optimize cross-team coordination bottlenecks affecting PI objectives",
+    "status": "active",
+    "team": "coordination_team"
+  },
+  {
+    "work_item_id": "work_1734567890123457000",
+    "agent_id": "agent_1734567890123457000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:14:14Z",
+    "estimated_duration": "45m",
+    "work_type": "performance_enhancement",
+    "priority": "high",
+    "description": "Implement adaptive concurrency control for system optimization",
+    "status": "active",
+    "team": "development_team"
+  },
+  {
+    "work_item_id": "work_1750007916253227000",
+    "agent_id": "agent_1750007916250653000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:18:36Z",
+    "estimated_duration": "30m",
+    "work_type": "claude_verification",
+    "priority": "critical",
+    "description": "Final verification that Claude Code works with S@S",
+    "status": "active",
+    "team": "integration_team"
+  },
+  {
+    "work_item_id": "work_1750008116175176000",
+    "agent_id": "agent_1750008116172741000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:21:56Z",
+    "estimated_duration": "30m",
+    "work_type": "sprint_planning",
+    "priority": "high",
+    "description": "Facilitate sprint planning for development team",
+    "status": "completed",
+    "team": "coordination_team",
+    "progress": 25,
+    "last_update": "2025-06-15T17:22:09Z",
+    "completed_at": "2025-06-15T17:22:23Z",
+    "result": "success"
+  },
+  {
+    "work_item_id": "work_1750008122619494000",
+    "agent_id": "agent_1750008122617016000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:22:02Z",
+    "estimated_duration": "30m",
+    "work_type": "user_story_implementation",
+    "priority": "medium",
+    "description": "Implement user authentication feature",
+    "status": "implementation",
+    "team": "development_team",
+    "progress": 50,
+    "last_update": "2025-06-15T17:22:16Z"
+  },
+  {
+    "work_item_id": "work_1750008433345481000",
+    "agent_id": "agent_1750008433343026000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-15T17:27:13Z",
+    "estimated_duration": "30m",
+    "work_type": "otel_test_work",
+    "priority": "high",
+    "description": "Testing OpenTelemetry trace integration",
+    "status": "completed",
+    "team": "telemetry_team",
+    "telemetry": {
+      "trace_id": "af7463e6cff4a91f21bf608ca9b1ed53",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination-test",
+      "last_progress_trace_id": "9a9fa62a73e73009301690f7419ba82a"
+    },
+    "progress": 90,
+    "last_update": "2025-06-15T17:28:22Z",
+    "completed_at": "2025-06-15T17:28:22Z",
+    "result": "success"
+  }
+]

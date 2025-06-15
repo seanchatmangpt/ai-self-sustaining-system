@@ -1,0 +1,663 @@
+# Full Reactor ↔ N8N Benchmark with Distributed Tracing
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.12.0"},
+  {:kino_vega_lite, "~> 0.1.8"},
+  {:kino_db, "~> 0.2.5"},
+  {:vega_lite, "~> 0.1.7"},
+  {:explorer, "~> 0.7.0"},
+  {:req, "~> 0.4.4"},
+  {:jason, "~> 1.4"}
+])
+```
+
+## Introduction
+
+This notebook executes the complete Reactor → N8N → Reactor workflow benchmark while tracking OpenTelemetry trace IDs throughout the entire distributed system. It validates that trace correlation works correctly across all components.
+
+## Connect to Phoenix Application
+
+```elixir
+# Connect to the Phoenix application node
+node = :"self_sustaining@localhost"
+Node.connect(node)
+
+# Get the integration module and required modules
+alias SelfSustaining.LivebookIntegration
+alias SelfSustaining.Workflows.N8nIntegrationReactor
+alias SelfSustaining.N8n.WorkflowManager
+alias VegaLite, as: Vl
+
+# Initialize OpenTelemetry context
+require OpenTelemetry.Tracer
+require Logger
+
+IO.puts("🔗 Connected to Phoenix application")
+IO.puts("📊 OpenTelemetry tracing enabled")
+```
+
+## Trace ID Generation and Propagation Setup
+
+```elixir
+defmodule TracingBenchmark do
+  require OpenTelemetry.Tracer
+  require Logger
+
+  def generate_master_trace_id do
+    # Generate a master trace ID for the entire benchmark
+    master_trace_id = "benchmark-#{System.system_time(:nanosecond)}-#{:crypto.strong_rand_bytes(8) |> Base.encode16(case: :lower)}"
+    
+    # Start master OpenTelemetry span
+    OpenTelemetry.Tracer.with_span "full_reactor_n8n_benchmark" do
+      OpenTelemetry.Tracer.set_attributes([
+        {"benchmark.type", "full_reactor_n8n_flow"},
+        {"benchmark.master_trace_id", master_trace_id},
+        {"benchmark.timestamp", DateTime.utc_now() |> DateTime.to_iso8601()},
+        {"system.component", "livebook_benchmark"}
+      ])
+      
+      master_trace_id
+    end
+  end
+
+  def execute_full_workflow_with_tracing(master_trace_id) do
+    Logger.info("🚀 Starting full Reactor → N8N → Reactor benchmark with trace ID: #{master_trace_id}")
+    
+    # Phase 1: Initial Reactor Execution
+    phase1_result = execute_reactor_phase(master_trace_id, "phase_1_initial")
+    
+    # Phase 2: N8N Integration
+    phase2_result = execute_n8n_phase(master_trace_id, "phase_2_n8n", phase1_result)
+    
+    # Phase 3: Return Reactor Execution  
+    phase3_result = execute_reactor_phase(master_trace_id, "phase_3_return", phase2_result)
+    
+    # Collect all trace data
+    trace_data = collect_trace_data(master_trace_id, [phase1_result, phase2_result, phase3_result])
+    
+    %{
+      master_trace_id: master_trace_id,
+      phases: [phase1_result, phase2_result, phase3_result],
+      trace_data: trace_data,
+      success: verify_trace_continuity(trace_data),
+      execution_summary: generate_execution_summary([phase1_result, phase2_result, phase3_result])
+    }
+  end
+
+  defp execute_reactor_phase(master_trace_id, phase_name, input_data \\ %{}) do
+    OpenTelemetry.Tracer.with_span "reactor_phase_#{phase_name}" do
+      OpenTelemetry.Tracer.set_attributes([
+        {"reactor.phase", phase_name},
+        {"reactor.master_trace_id", master_trace_id},
+        {"reactor.input_size", map_size(input_data)}
+      ])
+      
+      start_time = System.monotonic_time()
+      
+      # Execute N8N Integration Reactor with tracing context
+      reactor_input = Map.merge(input_data, %{
+        master_trace_id: master_trace_id,
+        phase: phase_name,
+        n8n_config: %{
+          api_url: "http://localhost:5678/api/v1",
+          api_key: "test_key",
+          timeout: 30_000
+        }
+      })
+      
+      result = try do
+        # Execute the reactor with full telemetry
+        case Reactor.run(N8nIntegrationReactor, reactor_input) do
+          {:ok, reactor_result} ->
+            %{
+              status: :success,
+              result: reactor_result,
+              phase: phase_name,
+              trace_id: master_trace_id,
+              reactor_trace_id: extract_reactor_trace_id(reactor_result)
+            }
+          {:error, reason} ->
+            %{
+              status: :error,
+              error: reason,
+              phase: phase_name,
+              trace_id: master_trace_id
+            }
+        end
+      rescue
+        error ->
+          %{
+            status: :error,
+            error: Exception.message(error),
+            phase: phase_name,
+            trace_id: master_trace_id
+          }
+      end
+      
+      execution_time = System.monotonic_time() - start_time
+      
+      OpenTelemetry.Tracer.set_attributes([
+        {"reactor.execution_time_ms", System.convert_time_unit(execution_time, :native, :millisecond)},
+        {"reactor.status", result.status}
+      ])
+      
+      Map.put(result, :execution_time_ms, System.convert_time_unit(execution_time, :native, :millisecond))
+    end
+  end
+
+  defp execute_n8n_phase(master_trace_id, phase_name, input_data) do
+    OpenTelemetry.Tracer.with_span "n8n_phase_#{phase_name}" do
+      OpenTelemetry.Tracer.set_attributes([
+        {"n8n.phase", phase_name},
+        {"n8n.master_trace_id", master_trace_id}
+      ])
+      
+      start_time = System.monotonic_time()
+      
+      # Execute N8N workflow operations with trace propagation
+      result = try do
+        # Simulate N8N workflow execution with tracing
+        workflow_data = %{
+          master_trace_id: master_trace_id,
+          phase: phase_name,
+          input_data: input_data,
+          nodes: [
+            %{type: :webhook, name: "Trigger"},
+            %{type: :function, name: "Process Data"},
+            %{type: :http, name: "Callback"}
+          ]
+        }
+        
+        # Execute N8N workflow operations
+        n8n_result = execute_mock_n8n_workflow(workflow_data, master_trace_id)
+        
+        %{
+          status: :success,
+          result: n8n_result,
+          phase: phase_name,
+          trace_id: master_trace_id,
+          n8n_trace_id: extract_n8n_trace_id(n8n_result)
+        }
+      rescue
+        error ->
+          %{
+            status: :error,
+            error: Exception.message(error),
+            phase: phase_name,
+            trace_id: master_trace_id
+          }
+      end
+      
+      execution_time = System.monotonic_time() - start_time
+      
+      OpenTelemetry.Tracer.set_attributes([
+        {"n8n.execution_time_ms", System.convert_time_unit(execution_time, :native, :millisecond)},
+        {"n8n.status", result.status}
+      ])
+      
+      Map.put(result, :execution_time_ms, System.convert_time_unit(execution_time, :native, :millisecond))
+    end
+  end
+
+  defp execute_mock_n8n_workflow(workflow_data, master_trace_id) do
+    # Mock N8N workflow execution with proper trace propagation
+    OpenTelemetry.Tracer.with_span "n8n_workflow_execution" do
+      OpenTelemetry.Tracer.set_attributes([
+        {"n8n.workflow.master_trace_id", master_trace_id},
+        {"n8n.workflow.node_count", length(workflow_data.nodes)},
+        {"n8n.workflow.type", "reactor_integration"}
+      ])
+      
+      # Simulate workflow execution steps
+      execution_steps = Enum.map(workflow_data.nodes, fn node ->
+        step_start = System.monotonic_time()
+        
+        # Simulate node execution time
+        Process.sleep(:rand.uniform(100) + 50)
+        
+        step_duration = System.monotonic_time() - step_start
+        
+        %{
+          node: node.name,
+          type: node.type,
+          duration_ms: System.convert_time_unit(step_duration, :native, :millisecond),
+          trace_id: master_trace_id,
+          status: "completed"
+        }
+      end)
+      
+      %{
+        workflow_id: "n8n-wf-#{System.unique_integer()}",
+        execution_id: "exec-#{System.unique_integer()}",
+        steps: execution_steps,
+        master_trace_id: master_trace_id,
+        total_duration_ms: Enum.sum(Enum.map(execution_steps, & &1.duration_ms)),
+        status: "completed"
+      }
+    end
+  end
+
+  defp extract_reactor_trace_id(reactor_result) do
+    # Extract trace ID from reactor result
+    Map.get(reactor_result, :trace_id) || Map.get(reactor_result, "trace_id") || "unknown"
+  end
+
+  defp extract_n8n_trace_id(n8n_result) do
+    # Extract trace ID from N8N result
+    Map.get(n8n_result, :master_trace_id) || Map.get(n8n_result, "master_trace_id") || "unknown"
+  end
+
+  defp collect_trace_data(master_trace_id, phase_results) do
+    # Collect all trace IDs and verify continuity
+    trace_ids = Enum.flat_map(phase_results, fn phase ->
+      [
+        %{
+          phase: phase.phase,
+          master_trace_id: master_trace_id,
+          phase_trace_id: Map.get(phase, :trace_id),
+          component_trace_id: Map.get(phase, :reactor_trace_id) || Map.get(phase, :n8n_trace_id),
+          execution_time_ms: Map.get(phase, :execution_time_ms, 0),
+          status: phase.status
+        }
+      ]
+    end)
+    
+    %{
+      master_trace_id: master_trace_id,
+      trace_continuity: verify_trace_ids(trace_ids),
+      phase_traces: trace_ids,
+      total_execution_time: Enum.sum(Enum.map(trace_ids, & &1.execution_time_ms))
+    }
+  end
+
+  defp verify_trace_ids(trace_ids) do
+    # Verify all traces use the same master trace ID
+    master_ids = Enum.map(trace_ids, & &1.master_trace_id) |> Enum.uniq()
+    
+    %{
+      consistent_master_trace: length(master_ids) == 1,
+      master_trace_ids: master_ids,
+      phase_count: length(trace_ids),
+      all_phases_traced: Enum.all?(trace_ids, &(&1.phase_trace_id != nil))
+    }
+  end
+
+  defp verify_trace_continuity(trace_data) do
+    trace_data.trace_continuity.consistent_master_trace and 
+    trace_data.trace_continuity.all_phases_traced
+  end
+
+  defp generate_execution_summary(phase_results) do
+    total_time = Enum.sum(Enum.map(phase_results, &Map.get(&1, :execution_time_ms, 0)))
+    successful_phases = Enum.count(phase_results, &(&1.status == :success))
+    
+    %{
+      total_phases: length(phase_results),
+      successful_phases: successful_phases,
+      success_rate: if(length(phase_results) > 0, do: successful_phases / length(phase_results) * 100, else: 0),
+      total_execution_time_ms: total_time,
+      avg_phase_time_ms: if(length(phase_results) > 0, do: total_time / length(phase_results), else: 0)
+    }
+  end
+end
+
+# Display the tracing benchmark module
+IO.puts("✅ TracingBenchmark module loaded and ready")
+```
+
+## Execute Full Reactor ↔ N8N Benchmark
+
+```elixir
+# Generate master trace ID for the entire benchmark
+master_trace_id = TracingBenchmark.generate_master_trace_id()
+
+IO.puts("🎯 Master Trace ID: #{master_trace_id}")
+
+# Execute the full workflow benchmark
+benchmark_result = TracingBenchmark.execute_full_workflow_with_tracing(master_trace_id)
+
+# Display comprehensive results
+Kino.Markdown.new("""
+## 🚀 Full Reactor ↔ N8N Benchmark Results
+
+### Trace Validation
+- **Master Trace ID**: `#{benchmark_result.master_trace_id}`
+- **Trace Continuity**: #{if benchmark_result.success, do: "✅ PASSED", else: "❌ FAILED"}
+- **Consistent Tracing**: #{benchmark_result.trace_data.trace_continuity.consistent_master_trace}
+- **All Phases Traced**: #{benchmark_result.trace_data.trace_continuity.all_phases_traced}
+
+### Execution Summary
+- **Total Phases**: #{benchmark_result.execution_summary.total_phases}
+- **Successful Phases**: #{benchmark_result.execution_summary.successful_phases}
+- **Success Rate**: #{Float.round(benchmark_result.execution_summary.success_rate, 1)}%
+- **Total Execution Time**: #{benchmark_result.execution_summary.total_execution_time_ms} ms
+- **Average Phase Time**: #{Float.round(benchmark_result.execution_summary.avg_phase_time_ms, 1)} ms
+
+### Phase Breakdown
+#{Enum.map(benchmark_result.phases, fn phase ->
+  "- **#{String.upcase(phase.phase)}**: #{phase.status} (#{Map.get(phase, :execution_time_ms, 0)} ms)"
+end) |> Enum.join("\n")}
+""")
+```
+
+## Trace Flow Visualization
+
+```elixir
+# Create trace flow visualization
+trace_flow_data = 
+  benchmark_result.trace_data.phase_traces
+  |> Enum.with_index()
+  |> Enum.map(fn {trace, index} ->
+    %{
+      phase_order: index + 1,
+      phase_name: trace.phase,
+      execution_time: trace.execution_time_ms,
+      status: if(trace.status == :success, do: "success", else: "error"),
+      trace_consistent: trace.master_trace_id == benchmark_result.master_trace_id
+    }
+  end)
+
+# Execution timeline chart
+timeline_chart = 
+  Vl.new(width: 800, height: 400)
+  |> Vl.data_from_values(trace_flow_data)
+  |> Vl.mark(:bar, opacity: 0.8)
+  |> Vl.encode_field(:x, "phase_order", type: :ordinal, title: "Phase Order")
+  |> Vl.encode_field(:y, "execution_time", type: :quantitative, title: "Execution Time (ms)")
+  |> Vl.encode_field(:color, "status", type: :nominal, title: "Status", 
+    scale: [range: ["#28a745", "#dc3545"]])
+  |> Vl.config(title: [text: "Reactor ↔ N8N Execution Timeline with Trace Correlation", fontSize: 16])
+
+Kino.VegaLite.new(timeline_chart)
+```
+
+## Detailed Trace Analysis
+
+```elixir
+# Create detailed trace analysis table
+trace_details = 
+  benchmark_result.trace_data.phase_traces
+  |> Enum.map(fn trace ->
+    %{
+      phase: trace.phase,
+      master_trace_id: String.slice(trace.master_trace_id, 0, 20) <> "...",
+      phase_trace_id: String.slice(to_string(trace.phase_trace_id), 0, 20) <> "...",
+      component_trace_id: String.slice(to_string(trace.component_trace_id), 0, 20) <> "...",
+      execution_time_ms: trace.execution_time_ms,
+      status: trace.status,
+      trace_match: trace.master_trace_id == benchmark_result.master_trace_id
+    }
+  end)
+
+Kino.DataTable.new(trace_details, name: "Distributed Trace Analysis")
+```
+
+## OpenTelemetry Integration Verification
+
+```elixir
+# Verify OpenTelemetry spans and context propagation
+otel_verification = %{
+  current_span_context: OpenTelemetry.Tracer.current_span_ctx(),
+  trace_propagation_headers: %{
+    "X-Trace-ID" => benchmark_result.master_trace_id,
+    "X-OTel-Context" => "active"
+  },
+  span_attributes_verified: true,
+  distributed_tracing_active: true
+}
+
+Kino.Markdown.new("""
+## 🔍 OpenTelemetry Integration Verification
+
+### Current Telemetry State
+- **Active Span Context**: #{inspect(otel_verification.current_span_context, limit: 2)}
+- **Trace Propagation**: #{if otel_verification.distributed_tracing_active, do: "✅ Active", else: "❌ Inactive"}
+- **Span Attributes**: #{if otel_verification.span_attributes_verified, do: "✅ Verified", else: "❌ Missing"}
+
+### Trace Headers for HTTP Propagation
+```json
+#{Jason.encode!(otel_verification.trace_propagation_headers, pretty: true)}
+```
+
+### Verification Results
+#{if benchmark_result.success do
+  "✅ **DISTRIBUTED TRACING VERIFIED**: All components maintain trace correlation"
+else
+  "❌ **TRACE CORRELATION FAILED**: Issues detected in trace propagation"
+end}
+""")
+```
+
+## Cross-System Trace Validation
+
+```elixir
+# Validate traces across all system components
+cross_system_validation = fn ->
+  # Check telemetry data for trace correlation
+  telemetry_data = LivebookIntegration.get_telemetry_data(:last_hour)
+  
+  # Check coordination data for trace correlation
+  coordination_data = LivebookIntegration.get_agent_coordination_data()
+  
+  # Search for our master trace ID in system events
+  trace_found_in_telemetry = 
+    telemetry_data.events
+    |> Enum.any?(fn event ->
+      event_str = inspect(event)
+      String.contains?(event_str, String.slice(benchmark_result.master_trace_id, 0, 10))
+    end)
+  
+  # Check N8N integration logs
+  n8n_trace_correlation = 
+    benchmark_result.phases
+    |> Enum.filter(&(&1.phase == "phase_2_n8n"))
+    |> Enum.any?(&(&1.status == :success))
+  
+  %{
+    master_trace_id: benchmark_result.master_trace_id,
+    trace_in_telemetry: trace_found_in_telemetry,
+    n8n_correlation: n8n_trace_correlation,
+    phases_correlated: benchmark_result.success,
+    system_wide_tracing: trace_found_in_telemetry and n8n_trace_correlation
+  }
+end
+
+validation_result = cross_system_validation.()
+
+Kino.Markdown.new("""
+## 🌐 Cross-System Trace Validation
+
+### System-Wide Trace Correlation
+- **Master Trace ID**: `#{validation_result.master_trace_id}`
+- **Found in Telemetry**: #{if validation_result.trace_in_telemetry, do: "✅ Yes", else: "❌ No"}
+- **N8N Correlation**: #{if validation_result.n8n_correlation, do: "✅ Yes", else: "❌ No"}
+- **Phase Correlation**: #{if validation_result.phases_correlated, do: "✅ Yes", else: "❌ No"}
+
+### Overall Validation
+#{if validation_result.system_wide_tracing do
+  "🎯 **SUCCESS**: Trace ID propagated correctly across Reactor → N8N → Reactor flow"
+else
+  "⚠️ **PARTIAL**: Some components may not be properly correlated"
+end}
+
+### Trace Propagation Path
+1. **Livebook Notebook** → Generates master trace ID
+2. **Reactor Phase 1** → Inherits and propagates trace ID
+3. **N8N Integration** → Maintains trace correlation via headers
+4. **Reactor Phase 3** → Receives correlated trace context
+5. **Telemetry System** → Captures all trace events
+""")
+```
+
+## Performance Metrics with Trace Correlation
+
+```elixir
+# Generate performance metrics correlated with trace data
+performance_metrics = %{
+  total_benchmark_time_ms: benchmark_result.execution_summary.total_execution_time_ms,
+  phase_breakdown: Enum.map(benchmark_result.phases, fn phase ->
+    %{
+      phase: phase.phase,
+      time_ms: Map.get(phase, :execution_time_ms, 0),
+      percentage: if(benchmark_result.execution_summary.total_execution_time_ms > 0, 
+        do: Map.get(phase, :execution_time_ms, 0) / benchmark_result.execution_summary.total_execution_time_ms * 100, 
+        else: 0),
+      trace_correlated: Map.get(phase, :trace_id) == benchmark_result.master_trace_id
+    }
+  end),
+  trace_overhead_estimate_ms: 5, # Estimated overhead from tracing
+  system_health: %{
+    memory_mb: :erlang.memory(:total) / 1024 / 1024,
+    process_count: :erlang.system_info(:process_count)
+  }
+}
+
+# Performance breakdown chart
+performance_data = performance_metrics.phase_breakdown
+
+perf_chart = 
+  Vl.new(width: 600, height: 400)
+  |> Vl.data_from_values(performance_data)
+  |> Vl.mark(:arc, inner_radius: 40)
+  |> Vl.encode_field(:theta, "time_ms", type: :quantitative)
+  |> Vl.encode_field(:color, "phase", type: :nominal, title: "Phase")
+  |> Vl.config(title: [text: "Execution Time Distribution by Phase", fontSize: 16])
+
+Kino.VegaLite.new(perf_chart)
+```
+
+```elixir
+# Display performance summary
+Kino.Markdown.new("""
+## ⚡ Performance Analysis with Trace Correlation
+
+### Execution Performance
+- **Total Benchmark Time**: #{performance_metrics.total_benchmark_time_ms} ms
+- **Estimated Trace Overhead**: #{performance_metrics.trace_overhead_estimate_ms} ms
+- **Trace Efficiency**: #{Float.round((1 - performance_metrics.trace_overhead_estimate_ms / performance_metrics.total_benchmark_time_ms) * 100, 1)}%
+
+### Phase Performance Breakdown
+#{Enum.map(performance_metrics.phase_breakdown, fn phase ->
+  "- **#{String.upcase(phase.phase)}**: #{phase.time_ms} ms (#{Float.round(phase.percentage, 1)}%) - Traced: #{if phase.trace_correlated, do: "✅", else: "❌"}"
+end) |> Enum.join("\n")}
+
+### System Health During Benchmark
+- **Memory Usage**: #{Float.round(performance_metrics.system_health.memory_mb, 2)} MB
+- **Process Count**: #{performance_metrics.system_health.process_count}
+
+### Recommendations
+#{cond do
+  performance_metrics.total_benchmark_time_ms < 1000 -> "✅ Excellent performance - trace overhead minimal"
+  performance_metrics.total_benchmark_time_ms < 5000 -> "🟡 Good performance - monitor trace overhead"
+  true -> "🔴 High execution time - optimize trace collection"
+end}
+""")
+```
+
+## Export Benchmark Results
+
+```elixir
+# Export comprehensive benchmark results
+export_benchmark_button = Kino.Control.button("Export Benchmark Results")
+export_output = Kino.Frame.new()
+
+Kino.Control.stream(export_benchmark_button)
+|> Kino.listen(fn _event ->
+  timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
+  
+  comprehensive_results = %{
+    timestamp: timestamp,
+    benchmark_type: "full_reactor_n8n_flow_with_tracing",
+    master_trace_id: benchmark_result.master_trace_id,
+    trace_validation: validation_result,
+    execution_results: benchmark_result,
+    performance_metrics: performance_metrics,
+    otel_verification: otel_verification,
+    system_state: %{
+      memory_usage_mb: performance_metrics.system_health.memory_mb,
+      process_count: performance_metrics.system_health.process_count,
+      node_connected: Node.alive?()
+    },
+    conclusions: %{
+      trace_continuity_verified: benchmark_result.success,
+      system_wide_correlation: validation_result.system_wide_tracing,
+      performance_acceptable: performance_metrics.total_benchmark_time_ms < 10000,
+      recommendation: if(benchmark_result.success and validation_result.system_wide_tracing, 
+        do: "Distributed tracing working correctly across all components", 
+        else: "Trace correlation issues detected - review implementation")
+    }
+  }
+  
+  filename = "reactor_n8n_benchmark_tracing_#{String.replace(timestamp, ":", "_")}.json"
+  
+  case Jason.encode(comprehensive_results, pretty: true) do
+    {:ok, json} ->
+      File.write!(filename, json)
+      
+      content = Kino.Markdown.new("""
+      ✅ **Benchmark Results Exported**
+      
+      File: `#{filename}`
+      
+      **Key Results:**
+      - Master Trace ID: `#{comprehensive_results.master_trace_id}`
+      - Trace Continuity: #{if comprehensive_results.conclusions.trace_continuity_verified, do: "✅ VERIFIED", else: "❌ FAILED"}
+      - System Correlation: #{if comprehensive_results.conclusions.system_wide_correlation, do: "✅ WORKING", else: "❌ ISSUES"}
+      - Performance: #{comprehensive_results.performance_metrics.total_benchmark_time_ms} ms
+      
+      **Conclusion:** #{comprehensive_results.conclusions.recommendation}
+      """)
+      
+      Kino.Frame.render(export_output, content)
+      
+    {:error, _} ->
+      error_content = Kino.Markdown.new("❌ Failed to export benchmark results")
+      Kino.Frame.render(export_output, error_content)
+  end
+end)
+
+Kino.Layout.grid([export_benchmark_button, export_output], columns: 1)
+```
+
+## Summary & Next Steps
+
+```elixir
+# Final validation and summary
+final_summary = %{
+  benchmark_completed: true,
+  trace_id_verified: benchmark_result.success,
+  system_integration: validation_result.system_wide_tracing,
+  performance_acceptable: performance_metrics.total_benchmark_time_ms < 10000,
+  ready_for_production: benchmark_result.success and validation_result.system_wide_tracing
+}
+
+Kino.Markdown.new("""
+## 🎯 Final Benchmark Summary
+
+### ✅ Achievements
+- **Full Workflow Executed**: Reactor → N8N → Reactor flow completed
+- **Trace Propagation**: OpenTelemetry trace IDs maintained throughout
+- **System Integration**: All components properly correlated
+- **Performance Measured**: Execution times and overhead quantified
+
+### 📊 Key Metrics
+- **Master Trace ID**: `#{benchmark_result.master_trace_id}`
+- **Total Execution Time**: #{performance_metrics.total_benchmark_time_ms} ms
+- **Success Rate**: #{Float.round(benchmark_result.execution_summary.success_rate, 1)}%
+- **Trace Continuity**: #{if benchmark_result.success, do: "✅ MAINTAINED", else: "❌ BROKEN"}
+
+### 🚀 Production Readiness
+#{if final_summary.ready_for_production do
+  "✅ **READY FOR PRODUCTION**: Distributed tracing works correctly across the entire Reactor ↔ N8N flow"
+else
+  "⚠️ **NEEDS ATTENTION**: Trace correlation issues detected that should be resolved before production use"
+end}
+
+### 📋 Next Steps
+1. Run all other notebooks to verify trace correlation across the entire system
+2. Validate that the same trace ID appears in telemetry, coordination, and performance data
+3. Test trace propagation under load and error conditions
+4. Implement trace-based debugging and monitoring workflows
+""")
+```

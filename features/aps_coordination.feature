@@ -5,7 +5,7 @@ Feature: APS (Agile Protocol Specification) Coordination
 
   Background:
     Given the APS coordination system is active
-    And the ".agent_coordination" directory exists
+    And the "agent_coordination" directory exists
     And APS YAML specifications follow the defined schema
     And agent roles include PM_Agent, Architect_Agent, Developer_Agent, QA_Agent, DevOps_Agent
 

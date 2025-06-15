@@ -30,7 +30,7 @@ register_tdd_session() {
             "test_count": 0,
             "passing_tests": 0
         }
-    }' -i .agent_coordination/tdd_sessions.yaml
+    }' -i agent_coordination/tdd_sessions.yaml
 }
 ```
 
@@ -76,8 +76,8 @@ art_level_tdd_standards:
 ```bash
 start_story_tdd_with_sprint_context() {
     # Get current sprint and story context
-    current_story=$(yq eval '.active_claims[] | select(.agent_id == "'$AGENT_ID'") | .description' .agent_coordination/work_claims.yaml)
-    story_points=$(yq eval '.active_claims[] | select(.agent_id == "'$AGENT_ID'") | .scrum_at_scale.story_points' .agent_coordination/work_claims.yaml)
+    current_story=$(yq eval '.active_claims[] | select(.agent_id == "'$AGENT_ID'") | .description' agent_coordination/work_claims.yaml)
+    story_points=$(yq eval '.active_claims[] | select(.agent_id == "'$AGENT_ID'") | .scrum_at_scale.story_points' agent_coordination/work_claims.yaml)
     
     # Analyze acceptance criteria for test planning
     acceptance_criteria=$(extract_acceptance_criteria "$current_story")
@@ -104,7 +104,7 @@ start_story_tdd_with_sprint_context() {
 ```bash
 velocity_aware_tdd_execution() {
     # Calculate team velocity impact of comprehensive testing
-    team_velocity=$(yq eval '.teams[] | select(.name == "'$team'") | .current_velocity' .agent_coordination/backlog.yaml)
+    team_velocity=$(yq eval '.teams[] | select(.name == "'$team'") | .current_velocity' agent_coordination/backlog.yaml)
     testing_velocity_factor=$(calculate_testing_velocity_multiplier)
     
     # Optimize test writing for team velocity
@@ -124,7 +124,7 @@ velocity_aware_tdd_execution() {
 ```bash
 coordinate_integration_tests_across_teams() {
     # Identify cross-team dependencies for testing
-    integration_points=$(yq eval '.cross_team_dependencies[]' .agent_coordination/backlog.yaml)
+    integration_points=$(yq eval '.cross_team_dependencies[]' agent_coordination/backlog.yaml)
     
     # Coordinate integration test development
     for dependency in $integration_points; do
@@ -136,7 +136,7 @@ coordinate_integration_tests_across_teams() {
     done
     
     # Update cross-team test coordination status
-    yq eval '.tdd_sessions["'$TDD_SESSION_ID'"].cross_team_coordination = true' -i .agent_coordination/tdd_sessions.yaml
+    yq eval '.tdd_sessions["'$TDD_SESSION_ID'"].cross_team_coordination = true' -i agent_coordination/tdd_sessions.yaml
 }
 ```
 
@@ -165,8 +165,8 @@ enforce_art_quality_gates() {
     fi
     
     # Update quality metrics in coordination system
-    yq eval '.tdd_sessions["'$TDD_SESSION_ID'"].quality_gates.coverage_actual = "'$test_coverage'"' -i .agent_coordination/tdd_sessions.yaml
-    yq eval '.tdd_sessions["'$TDD_SESSION_ID'"].quality_gates.test_count = '$test_count'' -i .agent_coordination/tdd_sessions.yaml
+    yq eval '.tdd_sessions["'$TDD_SESSION_ID'"].quality_gates.coverage_actual = "'$test_coverage'"' -i agent_coordination/tdd_sessions.yaml
+    yq eval '.tdd_sessions["'$TDD_SESSION_ID'"].quality_gates.test_count = '$test_count'' -i agent_coordination/tdd_sessions.yaml
 }
 ```
 

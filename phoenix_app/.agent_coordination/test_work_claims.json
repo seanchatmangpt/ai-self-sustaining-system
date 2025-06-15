@@ -1,0 +1,74 @@
+[
+  {
+    "agent_id": "agent_1750007424338014416_1",
+    "claimed_at": "2025-06-15T17:10:24.357319Z",
+    "priority": "high",
+    "status": "active",
+    "test_name": "Single Agent Work Claim",
+    "work_item_id": "work_1750007424333128833_1",
+    "work_type": "self_improvement"
+  },
+  {
+    "agent_id": "agent_1750007424338014416_1",
+    "claimed_at": "2025-06-15T17:10:24.472057Z",
+    "priority": "high",
+    "status": "active",
+    "test_name": "Single Agent Work Claim",
+    "work_item_id": "work_1750007424335659416_2",
+    "work_type": "self_improvement"
+  },
+  {
+    "agent_id": "agent_1750007424338014416_1",
+    "claimed_at": "2025-06-15T17:10:24.575839Z",
+    "priority": "high",
+    "status": "active",
+    "test_name": "Single Agent Work Claim",
+    "work_item_id": "work_1750007424335664666_3",
+    "work_type": "self_improvement"
+  },
+  {
+    "agent_id": "agent_1750007424678358416_2",
+    "claimed_at": "2025-06-15T17:10:24.684362Z",
+    "priority": "medium",
+    "status": "active",
+    "test_name": "Multi-Agent Coordination",
+    "work_item_id": "work_1750007424678318083_1",
+    "work_type": "performance_optimization"
+  },
+  {
+    "agent_id": "agent_1750007424678343500_1",
+    "claimed_at": "2025-06-15T17:10:24.703617Z",
+    "priority": "medium",
+    "status": "active",
+    "test_name": "Multi-Agent Coordination",
+    "work_item_id": "work_1750007424678323666_2",
+    "work_type": "performance_optimization"
+  },
+  {
+    "agent_id": "agent_1750007424678364208_3",
+    "claimed_at": "2025-06-15T17:10:24.716675Z",
+    "priority": "medium",
+    "status": "active",
+    "test_name": "Multi-Agent Coordination",
+    "work_item_id": "work_1750007424678324833_3",
+    "work_type": "performance_optimization"
+  },
+  {
+    "agent_id": "agent_1750007424824207041_9",
+    "claimed_at": "2025-06-15T17:10:24.825692Z",
+    "priority": "high",
+    "status": "active",
+    "test_name": "High Contention Scenario",
+    "work_item_id": "work_1750007424824131416_1",
+    "work_type": "security_improvement"
+  },
+  {
+    "agent_id": "agent_1750007424824193500_5",
+    "claimed_at": "2025-06-15T17:10:24.835789Z",
+    "priority": "high",
+    "status": "active",
+    "test_name": "High Contention Scenario",
+    "work_item_id": "work_1750007424824135708_2",
+    "work_type": "security_improvement"
+  }
+]

@@ -48,7 +48,7 @@ art_health_dashboard:
 # Real-time coordination system monitoring
 monitor_coordination_health() {
     # Check YAML coordination system integrity
-    yamllint .agent_coordination/*.yaml
+    yamllint agent_coordination/*.yaml
     
     # Verify zero-conflict guarantee
     conflicts=$(./agent_coordination/coordination_helper.sh conflicts)
@@ -59,8 +59,8 @@ monitor_coordination_health() {
     fi
     
     # Agent status and capacity monitoring
-    active_agents=$(yq eval '.agents | keys | length' .agent_coordination/agent_status.yaml)
-    total_capacity=$(yq eval '[.agents[].capacity] | add' .agent_coordination/agent_status.yaml)
+    active_agents=$(yq eval '.agents | keys | length' agent_coordination/agent_status.yaml)
+    total_capacity=$(yq eval '[.agents[].capacity] | add' agent_coordination/agent_status.yaml)
     
     echo "Active Agents: $active_agents"
     echo "Total Capacity: $total_capacity story points"
@@ -71,12 +71,12 @@ monitor_coordination_health() {
 ```bash
 # Monitor sprint goal and PI objective progress
 monitor_sprint_health() {
-    current_sprint=$(yq eval '.current_sprint.id' .agent_coordination/backlog.yaml)
-    sprint_goal=$(yq eval '.current_sprint.goal' .agent_coordination/backlog.yaml)
+    current_sprint=$(yq eval '.current_sprint.id' agent_coordination/backlog.yaml)
+    sprint_goal=$(yq eval '.current_sprint.goal' agent_coordination/backlog.yaml)
     
     # Calculate sprint burndown health
-    committed_points=$(yq eval '.current_sprint.committed_story_points' .agent_coordination/backlog.yaml)
-    completed_points=$(yq eval '.current_sprint.completed_story_points' .agent_coordination/backlog.yaml)
+    committed_points=$(yq eval '.current_sprint.committed_story_points' agent_coordination/backlog.yaml)
+    completed_points=$(yq eval '.current_sprint.completed_story_points' agent_coordination/backlog.yaml)
     remaining_points=$((committed_points - completed_points))
     
     sprint_progress=$(echo "scale=2; $completed_points / $committed_points * 100" | bc)
@@ -86,7 +86,7 @@ monitor_sprint_health() {
     echo "Progress: $sprint_progress% ($completed_points/$committed_points points)"
     
     # PI objective health check
-    pi_objectives_met=$(yq eval '.program_increments["'$(date +%Y)_Q$(($(date +%-m-1)/3+1))'"]. objectives_completed' .agent_coordination/backlog.yaml)
+    pi_objectives_met=$(yq eval '.program_increments["'$(date +%Y)_Q$(($(date +%-m-1)/3+1))'"]. objectives_completed' agent_coordination/backlog.yaml)
     echo "PI Objectives Met: $pi_objectives_met"
 }
 ```
@@ -180,8 +180,8 @@ monitor_quality_health() {
     echo "Credo Issues: $credo_issues (Target: 0)"
     
     # Definition of Done compliance rate
-    completed_work=$(yq eval '.active_claims[] | select(.progress.status == "completed")' .agent_coordination/work_claims.yaml | wc -l)
-    dod_compliant=$(yq eval '.active_claims[] | select(.quality_gates.definition_of_done_checklist | length > 0)' .agent_coordination/work_claims.yaml | wc -l)
+    completed_work=$(yq eval '.active_claims[] | select(.progress.status == "completed")' agent_coordination/work_claims.yaml | wc -l)
+    dod_compliant=$(yq eval '.active_claims[] | select(.quality_gates.definition_of_done_checklist | length > 0)' agent_coordination/work_claims.yaml | wc -l)
     
     if [ "$completed_work" -gt 0 ]; then
         dod_compliance_rate=$(echo "scale=2; $dod_compliant / $completed_work * 100" | bc)

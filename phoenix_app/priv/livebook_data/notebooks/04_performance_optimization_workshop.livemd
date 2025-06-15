@@ -1,0 +1,639 @@
+# Performance Optimization Workshop
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.13.0"},
+  {:kino_vega_lite, "~> 0.1.11"},
+  {:kino_db, "~> 0.2.7"},
+  {:vega_lite, "~> 0.1.9"},
+  {:explorer, "~> 0.8.0"},
+  {:req, "~> 0.5.0"}
+])
+```
+
+## Introduction
+
+This notebook provides an interactive workshop environment for collaborative performance optimization of the AI Self-Sustaining System. Teams can analyze performance data, identify bottlenecks, experiment with optimizations, and track improvements in real-time.
+
+## Connect to Phoenix Application
+
+```elixir
+# Connect to the Phoenix application node
+node = :"self_sustaining@localhost"
+Node.connect(node)
+
+# Get the integration module
+alias SelfSustaining.LivebookIntegration
+alias Explorer.DataFrame, as: DF
+alias VegaLite, as: Vl
+```
+
+## Load Performance Data
+
+```elixir
+# Load comprehensive performance data
+performance_data = LivebookIntegration.get_performance_data()
+
+Kino.Markdown.new("""
+## 🚀 Performance Optimization Dashboard
+
+### System Overview
+- **Active Benchmarks**: #{length(performance_data.benchmarks)}
+- **Memory Usage**: #{Float.round(performance_data.system_metrics.memory_usage.total / 1024 / 1024, 2)} MB
+- **Process Count**: #{performance_data.system_metrics.process_count}
+- **Data Collection Time**: #{performance_data.timestamp |> DateTime.to_string()}
+
+### Workshop Objectives
+1. **Identify Performance Bottlenecks** 
+2. **Analyze Resource Utilization**
+3. **Experiment with Optimizations**
+4. **Validate Improvements**
+5. **Document Best Practices**
+""")
+```
+
+## System Resource Analysis
+
+```elixir
+# Analyze current system resources
+memory_breakdown = performance_data.system_metrics.memory_usage
+
+memory_data = [
+  %{type: "Total", bytes: memory_breakdown.total, mb: memory_breakdown.total / 1024 / 1024},
+  %{type: "Processes", bytes: memory_breakdown.processes, mb: memory_breakdown.processes / 1024 / 1024},
+  %{type: "System", bytes: memory_breakdown.system, mb: memory_breakdown.system / 1024 / 1024},
+  %{type: "Atom", bytes: memory_breakdown.atom, mb: memory_breakdown.atom / 1024 / 1024},
+  %{type: "Binary", bytes: memory_breakdown.binary, mb: memory_breakdown.binary / 1024 / 1024},
+  %{type: "ETS", bytes: memory_breakdown.ets, mb: memory_breakdown.ets / 1024 / 1024}
+]
+
+# Memory usage visualization
+memory_chart = 
+  Vl.new(width: 600, height: 400)
+  |> Vl.data_from_values(memory_data)
+  |> Vl.mark(:bar)
+  |> Vl.encode_field(:x, "type", type: :nominal, title: "Memory Type")
+  |> Vl.encode_field(:y, "mb", type: :quantitative, title: "Memory Usage (MB)")
+  |> Vl.encode_field(:color, "type", type: :nominal)
+  |> Vl.config(title: [text: "Memory Usage Breakdown", fontSize: 16])
+
+Kino.VegaLite.new(memory_chart)
+```
+
+```elixir
+# System resource summary table
+resource_summary = [
+  %{metric: "Total Memory", value: "#{Float.round(memory_breakdown.total / 1024 / 1024, 2)} MB", status: if(memory_breakdown.total < 1_000_000_000, do: "✅ Normal", else: "⚠️ High")},
+  %{metric: "Process Count", value: "#{performance_data.system_metrics.process_count}", status: if(performance_data.system_metrics.process_count < 50_000, do: "✅ Normal", else: "⚠️ High")},
+  %{metric: "Processes Memory", value: "#{Float.round(memory_breakdown.processes / 1024 / 1024, 2)} MB", status: "📊 Tracking"},
+  %{metric: "Binary Memory", value: "#{Float.round(memory_breakdown.binary / 1024 / 1024, 2)} MB", status: "📊 Tracking"},
+  %{metric: "ETS Memory", value: "#{Float.round(memory_breakdown.ets / 1024 / 1024, 2)} MB", status: "📊 Tracking"}
+]
+
+Kino.DataTable.new(resource_summary, name: "System Resource Summary")
+```
+
+## Benchmark Analysis
+
+```elixir
+# Analyze available benchmark data
+benchmark_analysis = 
+  performance_data.benchmarks
+  |> Enum.filter(&Map.has_key?(&1, :status))
+  |> Enum.map(fn benchmark ->
+    %{
+      name: Map.get(benchmark, :file, "Unknown"),
+      status: Map.get(benchmark, :status, "unknown"),
+      results: Map.get(benchmark, :results, %{}),
+      last_run: Map.get(benchmark, :last_run, "N/A")
+    }
+  end)
+
+if length(benchmark_analysis) > 0 do
+  Kino.DataTable.new(benchmark_analysis, name: "Benchmark Status")
+else
+  Kino.Markdown.new("""
+  ## 📊 Benchmark Data
+  
+  No benchmark results currently available. To generate performance data:
+  
+  1. Run the performance benchmarks from the Phoenix app
+  2. Execute: `elixir run_performance_benchmark.exs`
+  3. Return to this notebook to analyze results
+  """)
+end
+```
+
+## Interactive Performance Profiling
+
+```elixir
+# Create performance profiling controls
+profiling_controls = [
+  target_module: Kino.Input.select("Target Module", [
+    {"Reactor Middleware", "SelfSustaining.ReactorMiddleware"},
+    {"N8N Integration", "SelfSustaining.N8n"},
+    {"Agent Coordination", "SelfSustaining.AgentCoordination"},
+    {"AI Components", "SelfSustaining.AI"},
+    {"Telemetry System", "SelfSustaining.Telemetry"}
+  ]),
+  profiling_duration: Kino.Input.select("Profiling Duration", [
+    {"30 seconds", 30},
+    {"1 minute", 60},
+    {"5 minutes", 300},
+    {"10 minutes", 600}
+  ]),
+  metrics_to_track: Kino.Input.select("Metrics Focus", [
+    {"Memory Usage", "memory"},
+    {"CPU Usage", "cpu"},
+    {"Message Passing", "messages"},
+    {"Process Spawning", "processes"},
+    {"All Metrics", "all"}
+  ])
+]
+
+start_profiling_button = Kino.Control.button("Start Performance Profiling")
+profiling_results_frame = Kino.Frame.new()
+```
+
+```elixir
+# Display profiling interface
+profiling_interface = Kino.Layout.grid([
+  Kino.Markdown.new("## 🔍 Interactive Performance Profiling"),
+  profiling_controls.target_module,
+  profiling_controls.profiling_duration,
+  profiling_controls.metrics_to_track,
+  start_profiling_button,
+  profiling_results_frame
+], columns: 1)
+
+# Handle profiling execution
+Kino.Control.stream(start_profiling_button)
+|> Kino.listen(fn _event ->
+  target = Kino.Input.read(profiling_controls.target_module)
+  duration = Kino.Input.read(profiling_controls.profiling_duration)
+  metrics = Kino.Input.read(profiling_controls.metrics_to_track)
+  
+  # Start profiling (mock implementation)
+  profiling_config = %{
+    target_module: target,
+    duration: duration,
+    metrics: metrics,
+    started_at: DateTime.utc_now()
+  }
+  
+  # Simulate profiling results
+  mock_results = %{
+    avg_memory_per_process: :rand.uniform(50) + 10,
+    peak_memory_usage: :rand.uniform(200) + 100,
+    function_call_frequency: :rand.uniform(1000) + 500,
+    gc_frequency: :rand.uniform(50) + 10,
+    message_queue_length: :rand.uniform(20),
+    recommendations: [
+      "Consider process pooling for #{target}",
+      "Monitor memory allocation patterns",
+      "Optimize message passing efficiency"
+    ]
+  }
+  
+  results_content = Kino.Markdown.new("""
+  ✅ **Profiling Complete** (#{duration}s)
+  
+  **Target:** #{target}  
+  **Focus:** #{metrics}
+  
+  ### Results Summary
+  - **Average Memory per Process:** #{mock_results.avg_memory_per_process} MB
+  - **Peak Memory Usage:** #{mock_results.peak_memory_usage} MB
+  - **Function Call Frequency:** #{mock_results.function_call_frequency} calls/sec
+  - **GC Frequency:** #{mock_results.gc_frequency} cycles/min
+  - **Message Queue Length:** #{mock_results.message_queue_length} avg
+  
+  ### Optimization Recommendations
+  #{mock_results.recommendations |> Enum.map(&("- " <> &1)) |> Enum.join("\n")}
+  
+  _Note: This is a mock implementation. Real profiling would use tools like :fprof, :eprof, or observer._
+  """)
+  
+  Kino.Frame.render(profiling_results_frame, results_content)
+end)
+
+profiling_interface
+```
+
+## Bottleneck Identification Workshop
+
+```elixir
+# Interactive bottleneck analysis
+bottleneck_frame = Kino.Frame.new()
+
+# Common bottleneck patterns to check
+bottleneck_checks = [
+  %{
+    name: "Database Query Performance", 
+    status: :check,
+    description: "Analyze database query execution times and connection pool usage"
+  },
+  %{
+    name: "Memory Allocation Patterns",
+    status: :check, 
+    description: "Check for memory leaks and inefficient allocation patterns"
+  },
+  %{
+    name: "Process Message Queues",
+    status: :check,
+    description: "Monitor message queue lengths and processing delays"
+  },
+  %{
+    name: "N8N Integration Latency", 
+    status: :check,
+    description: "Measure API call latency and timeout frequency"
+  },
+  %{
+    name: "Reactor Workflow Overhead",
+    status: :check,
+    description: "Analyze middleware execution time and workflow complexity"
+  },
+  %{
+    name: "Agent Coordination Efficiency",
+    status: :check,
+    description: "Check work claiming contention and coordination delays"
+  }
+]
+
+run_bottleneck_analysis = Kino.Control.button("Run Bottleneck Analysis")
+
+bottleneck_content = Kino.Layout.grid([
+  Kino.Markdown.new("## 🔍 Bottleneck Identification Workshop"),
+  Kino.Markdown.new("""
+  ### Analysis Areas
+  #{bottleneck_checks |> Enum.map(&("- **#{&1.name}**: #{&1.description}")) |> Enum.join("\n")}
+  """),
+  run_bottleneck_analysis,
+  bottleneck_frame
+], columns: 1)
+
+# Execute bottleneck analysis
+Kino.Control.stream(run_bottleneck_analysis)
+|> Kino.listen(fn _event ->
+  # Simulate bottleneck analysis results
+  analysis_results = Enum.map(bottleneck_checks, fn check ->
+    severity = Enum.random([:low, :medium, :high])
+    impact = Enum.random([:minor, :moderate, :significant])
+    
+    %{
+      check
+      | status: severity,
+        impact: impact,
+        recommendations: case severity do
+          :high -> ["Immediate attention required", "High priority fix"]
+          :medium -> ["Schedule optimization", "Monitor closely"]
+          :low -> ["No immediate action needed", "Periodic review"]
+        end
+    }
+  end)
+  
+  # Generate analysis report
+  high_priority = Enum.filter(analysis_results, &(&1.status == :high))
+  medium_priority = Enum.filter(analysis_results, &(&1.status == :medium))
+  
+  results_content = Kino.Markdown.new("""
+  ## 📊 Bottleneck Analysis Results
+  
+  ### High Priority Issues (#{length(high_priority)})
+  #{if length(high_priority) > 0 do
+    high_priority
+    |> Enum.map(&("🔴 **#{&1.name}** - #{List.first(&1.recommendations)}"))
+    |> Enum.join("\n")
+  else
+    "✅ No high priority bottlenecks detected"
+  end}
+  
+  ### Medium Priority Issues (#{length(medium_priority)})
+  #{if length(medium_priority) > 0 do
+    medium_priority
+    |> Enum.map(&("🟡 **#{&1.name}** - #{List.first(&1.recommendations)}"))
+    |> Enum.join("\n")
+  else
+    "✅ No medium priority bottlenecks detected"
+  end}
+  
+  ### Overall System Health
+  #{cond do
+    length(high_priority) > 2 -> "⚠️ **Critical**: Multiple high-priority bottlenecks require immediate attention"
+    length(high_priority) > 0 -> "🔶 **Attention Needed**: Some bottlenecks require optimization"
+    length(medium_priority) > 3 -> "🔷 **Monitor**: Several areas need ongoing attention"
+    true -> "✅ **Healthy**: System performance is within acceptable parameters"
+  end}
+  """)
+  
+  Kino.Frame.render(bottleneck_frame, results_content)
+end)
+
+bottleneck_content
+```
+
+## Optimization Experiment Environment
+
+```elixir
+# Create optimization experiment workspace
+experiment_frame = Kino.Frame.new()
+
+optimization_types = [
+  {"Process Pool Sizing", "process_pool"},
+  {"Memory Allocation Strategy", "memory_allocation"},
+  {"Database Connection Pool", "db_pool"}, 
+  {"Caching Strategy", "caching"},
+  {"Message Passing Optimization", "message_passing"},
+  {"Workflow Middleware Order", "middleware_order"}
+]
+
+experiment_controls = [
+  optimization_type: Kino.Input.select("Optimization Type", optimization_types),
+  parameter_value: Kino.Input.number("Parameter Value", default: 10),
+  test_duration: Kino.Input.select("Test Duration", [
+    {"Quick Test (30s)", 30},
+    {"Standard Test (2min)", 120},
+    {"Extended Test (5min)", 300}
+  ]),
+  baseline_comparison: Kino.Input.checkbox("Compare with Baseline", default: true)
+]
+
+run_experiment_button = Kino.Control.button("Run Optimization Experiment")
+
+experiment_interface = Kino.Layout.grid([
+  Kino.Markdown.new("## 🧪 Optimization Experiment Environment"),
+  Kino.Markdown.new("Configure and run controlled optimization experiments to validate improvements."),
+  experiment_controls.optimization_type,
+  experiment_controls.parameter_value,
+  experiment_controls.test_duration,
+  experiment_controls.baseline_comparison,
+  run_experiment_button,
+  experiment_frame
+], columns: 1)
+
+# Handle experiment execution
+Kino.Control.stream(run_experiment_button)
+|> Kino.listen(fn _event ->
+  experiment_config = %{
+    type: Kino.Input.read(experiment_controls.optimization_type),
+    parameter: Kino.Input.read(experiment_controls.parameter_value),
+    duration: Kino.Input.read(experiment_controls.test_duration),
+    baseline: Kino.Input.read(experiment_controls.baseline_comparison),
+    started_at: DateTime.utc_now()
+  }
+  
+  # Simulate experiment execution
+  baseline_metrics = %{
+    throughput: 100 + :rand.uniform(50),
+    latency: 50 + :rand.uniform(30),
+    memory_usage: 200 + :rand.uniform(100),
+    cpu_usage: 30 + :rand.uniform(20)
+  }
+  
+  optimized_metrics = %{
+    throughput: baseline_metrics.throughput * (1 + (:rand.uniform(40) - 20) / 100),
+    latency: baseline_metrics.latency * (1 + (:rand.uniform(30) - 15) / 100), 
+    memory_usage: baseline_metrics.memory_usage * (1 + (:rand.uniform(25) - 12) / 100),
+    cpu_usage: baseline_metrics.cpu_usage * (1 + (:rand.uniform(20) - 10) / 100)
+  }
+  
+  improvements = %{
+    throughput: ((optimized_metrics.throughput - baseline_metrics.throughput) / baseline_metrics.throughput * 100),
+    latency: ((baseline_metrics.latency - optimized_metrics.latency) / baseline_metrics.latency * 100),
+    memory_usage: ((baseline_metrics.memory_usage - optimized_metrics.memory_usage) / baseline_metrics.memory_usage * 100),
+    cpu_usage: ((baseline_metrics.cpu_usage - optimized_metrics.cpu_usage) / baseline_metrics.cpu_usage * 100)
+  }
+  
+  results_content = Kino.Markdown.new("""
+  ## 🎯 Experiment Results
+  
+  **Optimization:** #{experiment_config.type}  
+  **Parameter:** #{experiment_config.parameter}  
+  **Duration:** #{experiment_config.duration}s
+  
+  ### Performance Comparison
+  
+  | Metric | Baseline | Optimized | Improvement |
+  |--------|----------|-----------|-------------|
+  | **Throughput** | #{Float.round(baseline_metrics.throughput, 1)} ops/sec | #{Float.round(optimized_metrics.throughput, 1)} ops/sec | #{if improvements.throughput > 0, do: "🟢 +#{Float.round(improvements.throughput, 1)}%", else: "🔴 #{Float.round(improvements.throughput, 1)}%"} |
+  | **Latency** | #{Float.round(baseline_metrics.latency, 1)} ms | #{Float.round(optimized_metrics.latency, 1)} ms | #{if improvements.latency > 0, do: "🟢 -#{Float.round(improvements.latency, 1)}%", else: "🔴 +#{Float.round(abs(improvements.latency), 1)}%"} |
+  | **Memory** | #{Float.round(baseline_metrics.memory_usage, 1)} MB | #{Float.round(optimized_metrics.memory_usage, 1)} MB | #{if improvements.memory_usage > 0, do: "🟢 -#{Float.round(improvements.memory_usage, 1)}%", else: "🔴 +#{Float.round(abs(improvements.memory_usage), 1)}%"} |
+  | **CPU** | #{Float.round(baseline_metrics.cpu_usage, 1)}% | #{Float.round(optimized_metrics.cpu_usage, 1)}% | #{if improvements.cpu_usage > 0, do: "🟢 -#{Float.round(improvements.cpu_usage, 1)}%", else: "🔴 +#{Float.round(abs(improvements.cpu_usage), 1)}%"} |
+  
+  ### Recommendation
+  #{cond do
+    Enum.count([improvements.throughput, improvements.latency, improvements.memory_usage, improvements.cpu_usage], &(&1 > 5)) >= 3 ->
+      "✅ **Deploy**: Significant improvements across multiple metrics"
+    Enum.count([improvements.throughput, improvements.latency, improvements.memory_usage, improvements.cpu_usage], &(&1 > 0)) >= 2 ->
+      "🔶 **Test Further**: Mixed results, consider extended testing"
+    true ->
+      "❌ **Reject**: No significant improvement or degraded performance"
+  end}
+  
+  _Note: This is a simulated experiment. Real implementation would execute actual system changes and measure real metrics._
+  """)
+  
+  Kino.Frame.render(experiment_frame, results_content)
+end)
+
+experiment_interface
+```
+
+## Team Collaboration Space
+
+```elixir
+# Collaborative optimization planning
+collaboration_space = Kino.Frame.new()
+
+# Team planning inputs
+planning_inputs = [
+  optimization_priority: Kino.Input.select("Optimization Priority", [
+    {"Performance (Speed)", "performance"},
+    {"Resource Usage (Memory/CPU)", "resources"},
+    {"Scalability (Load Handling)", "scalability"},
+    {"Reliability (Error Reduction)", "reliability"}
+  ]),
+  team_member: Kino.Input.text("Your Name"),
+  optimization_proposal: Kino.Input.textarea("Optimization Proposal"),
+  expected_impact: Kino.Input.select("Expected Impact", [
+    {"High (>20% improvement)", "high"},
+    {"Medium (5-20% improvement)", "medium"},
+    {"Low (<5% improvement)", "low"}
+  ])
+]
+
+submit_proposal_button = Kino.Control.button("Submit Optimization Proposal")
+
+# Mock existing proposals
+existing_proposals = [
+  %{
+    author: "Alice",
+    priority: "performance", 
+    proposal: "Implement connection pooling for N8N API calls",
+    impact: "high",
+    timestamp: "2024-06-15 09:30"
+  },
+  %{
+    author: "Bob",
+    priority: "resources",
+    proposal: "Optimize agent coordination file locking mechanism", 
+    impact: "medium",
+    timestamp: "2024-06-15 10:15"
+  }
+]
+
+display_collaboration = fn proposals ->
+  proposals_text = 
+    proposals
+    |> Enum.map(fn p ->
+      "**#{p.author}** (#{p.timestamp}) - #{p.priority}  \n#{p.proposal}  \n*Expected Impact: #{p.impact}*"
+    end)
+    |> Enum.join("\n\n---\n\n")
+  
+  Kino.Layout.grid([
+    Kino.Markdown.new("## 👥 Team Optimization Planning"),
+    Kino.Markdown.new("### Current Proposals\n\n" <> proposals_text),
+    Kino.Markdown.new("### Add New Proposal"),
+    planning_inputs.team_member,
+    planning_inputs.optimization_priority,
+    planning_inputs.optimization_proposal,
+    planning_inputs.expected_impact,
+    submit_proposal_button
+  ], columns: 1)
+end
+
+Kino.Frame.render(collaboration_space, display_collaboration.(existing_proposals))
+
+# Handle new proposals
+Kino.Control.stream(submit_proposal_button)
+|> Kino.listen(fn _event ->
+  new_proposal = %{
+    author: Kino.Input.read(planning_inputs.team_member),
+    priority: Kino.Input.read(planning_inputs.optimization_priority),
+    proposal: Kino.Input.read(planning_inputs.optimization_proposal),
+    impact: Kino.Input.read(planning_inputs.expected_impact),
+    timestamp: DateTime.utc_now() |> DateTime.to_string()
+  }
+  
+  if String.trim(new_proposal.author) != "" and String.trim(new_proposal.proposal) != "" do
+    updated_proposals = existing_proposals ++ [new_proposal]
+    Kino.Frame.render(collaboration_space, display_collaboration.(updated_proposals))
+  end
+end)
+
+collaboration_space
+```
+
+## Performance Monitoring Dashboard
+
+```elixir
+# Real-time performance monitoring
+monitoring_frame = Kino.Frame.new()
+
+# Create monitoring dashboard
+create_monitoring_dashboard = fn ->
+  current_metrics = %{
+    timestamp: DateTime.utc_now(),
+    memory_mb: Float.round(:erlang.memory(:total) / 1024 / 1024, 2),
+    process_count: :erlang.system_info(:process_count),
+    message_queues: :erlang.statistics(:total_active_tasks),
+    reductions: elem(:erlang.statistics(:reductions), 0)
+  }
+  
+  Kino.Markdown.new("""
+  ## 📊 Live Performance Dashboard
+  
+  **Updated:** #{current_metrics.timestamp |> DateTime.to_string()}
+  
+  | Metric | Current Value | Status |
+  |--------|---------------|--------|
+  | **Memory Usage** | #{current_metrics.memory_mb} MB | #{if current_metrics.memory_mb < 500, do: "✅ Good", else: "⚠️ Monitor"} |
+  | **Process Count** | #{current_metrics.process_count} | #{if current_metrics.process_count < 50000, do: "✅ Normal", else: "⚠️ High"} |
+  | **Active Tasks** | #{current_metrics.message_queues} | 📊 Monitoring |
+  | **Reductions** | #{current_metrics.reductions} | 📊 Tracking |
+  
+  ### Quick Actions
+  - 🔍 [Run System Profiling](#profiling)
+  - 🧪 [Start Performance Experiment](#experiment)
+  - 👥 [Join Team Discussion](#collaboration)
+  - 📤 [Export Performance Report](#export)
+  """)
+end
+
+# Update dashboard every 30 seconds
+Task.async(fn ->
+  Stream.interval(30_000)
+  |> Enum.each(fn _ ->
+    Kino.Frame.render(monitoring_frame, create_monitoring_dashboard.())
+  end)
+end)
+
+# Initial dashboard render
+Kino.Frame.render(monitoring_frame, create_monitoring_dashboard.())
+monitoring_frame
+```
+
+## Export Workshop Results
+
+```elixir
+# Export comprehensive workshop results
+export_workshop_button = Kino.Control.button("Export Workshop Results")
+workshop_output = Kino.Frame.new()
+
+Kino.Control.stream(export_workshop_button)
+|> Kino.listen(fn _event ->
+  timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
+  
+  workshop_report = %{
+    timestamp: timestamp,
+    session_info: %{
+      workshop_type: "Performance Optimization",
+      duration: "Interactive Session",
+      participants: ["Team Members"]
+    },
+    system_analysis: %{
+      memory_usage: performance_data.system_metrics.memory_usage,
+      process_count: performance_data.system_metrics.process_count,
+      benchmark_status: length(performance_data.benchmarks)
+    },
+    optimization_experiments: [
+      "Mock experiment results would be included here",
+      "Real implementation would track actual experiment data"
+    ],
+    team_proposals: existing_proposals,
+    recommendations: [
+      "Focus on high-impact, low-risk optimizations first",
+      "Implement comprehensive monitoring before major changes",
+      "Use controlled experiments to validate improvements",
+      "Maintain collaborative review process for all optimizations",
+      "Document optimization decisions and their outcomes"
+    ]
+  }
+  
+  workshop_filename = "performance_workshop_#{String.replace(timestamp, ":", "_")}.json"
+  File.write!(workshop_filename, Jason.encode!(workshop_report, pretty: true))
+  
+  content = Kino.Markdown.new("""
+  ✅ **Workshop Results Exported**
+  
+  Report saved to: `#{workshop_filename}`
+  
+  **Workshop Summary:**
+  - System performance analysis completed
+  - Bottleneck identification performed
+  - Optimization experiments documented
+  - Team collaboration captured
+  - Recommendations generated
+  
+  ### Next Steps
+  1. Review and prioritize optimization proposals
+  2. Schedule implementation of approved optimizations
+  3. Set up continuous performance monitoring
+  4. Plan follow-up workshop sessions
+  """)
+  
+  Kino.Frame.render(workshop_output, content)
+end)
+
+Kino.Layout.grid([export_workshop_button, workshop_output], columns: 1)
+```

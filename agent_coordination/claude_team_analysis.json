@@ -1,0 +1,1 @@
+{"type":"result","subtype":"error_during_execution","duration_ms":42635,"duration_api_ms":42484,"is_error":false,"num_turns":0,"session_id":"a139dd15-626b-4ea6-b367-ffb75ba12a1a","total_cost_usd":0.0682233,"usage":{"input_tokens":15,"cache_creation_input_tokens":6364,"cache_read_input_tokens":50961,"output_tokens":1935,"server_tool_use":{"web_search_requests":0}}}

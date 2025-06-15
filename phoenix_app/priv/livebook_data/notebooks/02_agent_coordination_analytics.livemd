@@ -1,0 +1,369 @@
+# Agent Coordination Analytics
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.13.0"},
+  {:kino_vega_lite, "~> 0.1.11"},
+  {:kino_db, "~> 0.2.7"},
+  {:vega_lite, "~> 0.1.9"},
+  {:explorer, "~> 0.8.0"}
+])
+```
+
+## Introduction
+
+This notebook provides comprehensive analytics for the AI Self-Sustaining System's agent coordination capabilities. It enables teams to collaboratively analyze agent performance, optimize work distribution, and improve coordination efficiency.
+
+## Connect to Phoenix Application
+
+```elixir
+# Connect to the Phoenix application node
+node = :"self_sustaining@localhost"
+Node.connect(node)
+
+# Get the integration module
+alias SelfSustaining.LivebookIntegration
+alias Explorer.DataFrame, as: DF
+alias VegaLite, as: Vl
+```
+
+## Load Coordination Data
+
+```elixir
+# Load current coordination status
+coordination_data = LivebookIntegration.get_agent_coordination_data()
+
+Kino.Markdown.new("""
+## 📊 Agent Coordination Overview
+
+### Current Status
+- **Active Agents**: #{coordination_data.metrics.active_agents}
+- **Active Work Items**: #{coordination_data.metrics.active_work_items}
+- **Completed Work Items**: #{coordination_data.metrics.completed_work_items}
+- **Average Completion Time**: #{coordination_data.metrics.avg_completion_time}ms
+
+### Data Collection Time
+#{DateTime.utc_now() |> DateTime.to_string()}
+""")
+```
+
+## Agent Performance Analysis
+
+```elixir
+# Convert agent data to DataFrame for analysis
+agents_data = 
+  coordination_data.agents
+  |> Enum.map(fn {agent_id, agent_info} ->
+    %{
+      agent_id: agent_id,
+      status: Map.get(agent_info, "status", "unknown"),
+      work_items_claimed: Map.get(agent_info, "work_items_claimed", 0),
+      work_items_completed: Map.get(agent_info, "work_items_completed", 0),
+      last_activity: Map.get(agent_info, "last_activity", "N/A"),
+      team: Map.get(agent_info, "team", "unassigned"),
+      priority_focus: Map.get(agent_info, "priority_focus", "medium")
+    }
+  end)
+
+# Create DataFrame
+agents_df = DF.new(agents_data)
+
+# Display agent performance table
+Kino.DataTable.new(agents_data, name: "Agent Performance Metrics")
+```
+
+## Agent Workload Distribution
+
+```elixir
+# Visualize agent workload distribution
+workload_chart = 
+  Vl.new(width: 600, height: 400)
+  |> Vl.data_from_values(agents_data)
+  |> Vl.mark(:bar)
+  |> Vl.encode_field(:x, "agent_id", type: :nominal, title: "Agent ID")
+  |> Vl.encode_field(:y, "work_items_claimed", type: :quantitative, title: "Work Items")
+  |> Vl.encode_field(:color, "status", type: :nominal, title: "Status")
+  |> Vl.config(title: [text: "Agent Workload Distribution", fontSize: 16])
+
+Kino.VegaLite.new(workload_chart)
+```
+
+## Team Performance Comparison
+
+```elixir
+# Group agents by team for team-level analysis
+team_performance = 
+  agents_data
+  |> Enum.group_by(& &1.team)
+  |> Enum.map(fn {team, agents} ->
+    %{
+      team: team,
+      agent_count: length(agents),
+      total_work_claimed: Enum.sum(Enum.map(agents, & &1.work_items_claimed)),
+      total_work_completed: Enum.sum(Enum.map(agents, & &1.work_items_completed)),
+      avg_productivity: if(length(agents) > 0, 
+        do: Enum.sum(Enum.map(agents, & &1.work_items_completed)) / length(agents), 
+        else: 0)
+    }
+  end)
+
+# Team performance chart
+team_chart = 
+  Vl.new(width: 600, height: 400)
+  |> Vl.data_from_values(team_performance)
+  |> Vl.mark(:bar)
+  |> Vl.encode_field(:x, "team", type: :nominal, title: "Team")
+  |> Vl.encode_field(:y, "avg_productivity", type: :quantitative, title: "Average Productivity")
+  |> Vl.encode_field(:color, "team", type: :nominal)
+  |> Vl.config(title: [text: "Team Performance Comparison", fontSize: 16])
+
+Kino.VegaLite.new(team_chart)
+```
+
+```elixir
+# Team performance summary table
+Kino.DataTable.new(team_performance, name: "Team Performance Summary")
+```
+
+## Work Item Analysis
+
+```elixir
+# Analyze work items
+work_items_data = 
+  coordination_data.active_work
+  |> Enum.map(fn {work_id, work_info} ->
+    %{
+      work_id: work_id,
+      type: Map.get(work_info, "type", "unknown"),
+      priority: Map.get(work_info, "priority", "medium"),
+      assigned_agent: Map.get(work_info, "agent_id", "unassigned"),
+      claimed_at: Map.get(work_info, "claimed_at", "N/A"),
+      status: Map.get(work_info, "status", "unknown"),
+      team: Map.get(work_info, "team", "unassigned")
+    }
+  end)
+
+# Work items by type and priority
+work_type_chart = 
+  Vl.new(width: 500, height: 300)
+  |> Vl.data_from_values(work_items_data)
+  |> Vl.mark(:bar)
+  |> Vl.encode_field(:x, "type", type: :nominal, title: "Work Type")
+  |> Vl.encode(:y, aggregate: :count, title: "Count")
+  |> Vl.encode_field(:color, "priority", type: :nominal, title: "Priority")
+  |> Vl.config(title: [text: "Work Items by Type and Priority", fontSize: 14])
+
+priority_chart = 
+  Vl.new(width: 400, height: 300)
+  |> Vl.data_from_values(work_items_data)
+  |> Vl.mark(:arc, inner_radius: 50)
+  |> Vl.encode_field(:theta, "priority", type: :nominal, aggregate: :count)
+  |> Vl.encode_field(:color, "priority", type: :nominal, title: "Priority")
+  |> Vl.config(title: [text: "Work Priority Distribution", fontSize: 14])
+
+Kino.Layout.grid([
+  Kino.VegaLite.new(work_type_chart),
+  Kino.VegaLite.new(priority_chart)
+], columns: 2)
+```
+
+## Coordination Efficiency Metrics
+
+```elixir
+# Calculate coordination efficiency metrics
+efficiency_metrics = %{
+  agent_utilization: if(coordination_data.metrics.active_agents > 0, 
+    do: coordination_data.metrics.active_work_items / coordination_data.metrics.active_agents * 100, 
+    else: 0),
+  work_completion_rate: if(coordination_data.metrics.active_work_items + coordination_data.metrics.completed_work_items > 0,
+    do: coordination_data.metrics.completed_work_items / (coordination_data.metrics.active_work_items + coordination_data.metrics.completed_work_items) * 100,
+    else: 0),
+  idle_agents: Enum.count(agents_data, fn agent -> agent.work_items_claimed == 0 end),
+  overloaded_agents: Enum.count(agents_data, fn agent -> agent.work_items_claimed > 5 end)
+}
+
+Kino.Markdown.new("""
+## 🎯 Coordination Efficiency Analysis
+
+### Key Metrics
+- **Agent Utilization**: #{Float.round(efficiency_metrics.agent_utilization, 1)}%
+- **Work Completion Rate**: #{Float.round(efficiency_metrics.work_completion_rate, 1)}%
+- **Idle Agents**: #{efficiency_metrics.idle_agents}
+- **Overloaded Agents**: #{efficiency_metrics.overloaded_agents}
+
+### Recommendations
+#{cond do
+  efficiency_metrics.agent_utilization < 50 -> "🔄 **Low Utilization**: Consider redistributing work or reducing agent count"
+  efficiency_metrics.agent_utilization > 150 -> "⚠️ **High Utilization**: Consider adding more agents or optimizing work distribution"
+  true -> "✅ **Optimal Utilization**: Agent workload is well balanced"
+end}
+
+#{if efficiency_metrics.idle_agents > 2 do
+  "💤 **Idle Agents Alert**: #{efficiency_metrics.idle_agents} agents have no active work"
+else
+  ""
+end}
+
+#{if efficiency_metrics.overloaded_agents > 0 do
+  "🔥 **Overload Alert**: #{efficiency_metrics.overloaded_agents} agents may be overloaded"
+else
+  ""
+end}
+""")
+```
+
+## Interactive Agent Inspector
+
+```elixir
+# Create interactive agent selector
+agent_selector = Kino.Input.select("Select Agent", 
+  agents_data |> Enum.map(&{&1.agent_id, &1.agent_id})
+)
+```
+
+```elixir
+selected_agent_id = Kino.Input.read(agent_selector)
+
+if selected_agent_id do
+  selected_agent = Enum.find(agents_data, &(&1.agent_id == selected_agent_id))
+  
+  if selected_agent do
+    Kino.Markdown.new("""
+    ## 🔍 Agent Details: #{selected_agent.agent_id}
+    
+    | Property | Value |
+    |----------|-------|
+    | **Status** | #{selected_agent.status} |
+    | **Team** | #{selected_agent.team} |
+    | **Work Items Claimed** | #{selected_agent.work_items_claimed} |
+    | **Work Items Completed** | #{selected_agent.work_items_completed} |
+    | **Priority Focus** | #{selected_agent.priority_focus} |
+    | **Last Activity** | #{selected_agent.last_activity} |
+    
+    ### Performance Analysis
+    - **Completion Rate**: #{if selected_agent.work_items_claimed > 0, 
+        do: Float.round(selected_agent.work_items_completed / selected_agent.work_items_claimed * 100, 1), 
+        else: 0}%
+    - **Workload Status**: #{cond do
+        selected_agent.work_items_claimed == 0 -> "💤 Idle"
+        selected_agent.work_items_claimed < 3 -> "✅ Normal Load"
+        selected_agent.work_items_claimed < 6 -> "⚠️ High Load"
+        true -> "🔥 Overloaded"
+      end}
+    """)
+  else
+    Kino.Markdown.new("Agent not found.")
+  end
+else
+  Kino.Markdown.new("Please select an agent to view details.")
+end
+```
+
+## Coordination Optimization Workshop
+
+```elixir
+# Interactive optimization recommendations
+optimization_frame = Kino.Frame.new()
+
+optimization_analysis = fn ->
+  recommendations = []
+  
+  # Analyze for optimization opportunities
+  if efficiency_metrics.idle_agents > 2 do
+    recommendations = recommendations ++ ["**Redistribute Work**: Move work from overloaded to idle agents"]
+  end
+  
+  if efficiency_metrics.overloaded_agents > 0 do
+    recommendations = recommendations ++ ["**Load Balancing**: Split large work items or add capacity"]
+  end
+  
+  team_imbalances = 
+    team_performance
+    |> Enum.filter(&(&1.avg_productivity < 1.0))
+    |> Enum.map(& &1.team)
+  
+  if length(team_imbalances) > 0 do
+    recommendations = recommendations ++ ["**Team Training**: Teams #{Enum.join(team_imbalances, ", ")} need productivity improvement"]
+  end
+  
+  high_priority_unassigned = 
+    work_items_data
+    |> Enum.filter(&(&1.priority == "high" and &1.assigned_agent == "unassigned"))
+    |> length()
+  
+  if high_priority_unassigned > 0 do
+    recommendations = recommendations ++ ["**Priority Assignment**: #{high_priority_unassigned} high-priority items need immediate attention"]
+  end
+  
+  content = Kino.Markdown.new("""
+  ## 🛠️ Optimization Recommendations
+  
+  #{if length(recommendations) > 0 do
+    recommendations
+    |> Enum.with_index(1)
+    |> Enum.map(fn {rec, idx} -> "#{idx}. #{rec}" end)
+    |> Enum.join("\n")
+  else
+    "✅ **System Running Optimally**: No immediate optimizations needed."
+  end}
+  
+  ### Quick Actions
+  - Review agent assignments for work items marked as high priority
+  - Consider agent team rebalancing based on productivity metrics
+  - Monitor overloaded agents for potential burnout
+  - Investigate idle agents for skill matching opportunities
+  """)
+  
+  Kino.Frame.render(optimization_frame, content)
+end
+
+optimization_analysis.()
+optimization_frame
+```
+
+## Export Coordination Report
+
+```elixir
+# Generate comprehensive coordination report
+export_report_button = Kino.Control.button("Generate Coordination Report")
+report_output = Kino.Frame.new()
+
+Kino.Control.stream(export_report_button)
+|> Kino.listen(fn _event ->
+  timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
+  
+  comprehensive_report = %{
+    timestamp: timestamp,
+    summary: coordination_data.metrics,
+    agents: agents_data,
+    teams: team_performance,
+    work_items: work_items_data,
+    efficiency: efficiency_metrics,
+    recommendations: [
+      "Review workload distribution",
+      "Monitor agent performance trends", 
+      "Optimize team coordination"
+    ]
+  }
+  
+  report_filename = "coordination_report_#{String.replace(timestamp, ":", "_")}.json"
+  File.write!(report_filename, Jason.encode!(comprehensive_report, pretty: true))
+  
+  content = Kino.Markdown.new("""
+  ✅ **Coordination Report Generated**
+  
+  Report saved to: `#{report_filename}`
+  
+  **Report Includes:**
+  - Agent performance metrics
+  - Team coordination analysis
+  - Work item distribution
+  - Efficiency calculations
+  - Optimization recommendations
+  """)
+  
+  Kino.Frame.render(report_output, content)
+end)
+
+Kino.Layout.grid([export_report_button, report_output], columns: 1)
+```

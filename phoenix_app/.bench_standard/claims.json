@@ -1,0 +1,10 @@
+[
+  {
+    "agent_id": "agent_1",
+    "claimed_at": "2025-06-15T17:25:58.577451Z",
+    "priority": "medium",
+    "status": "in_progress",
+    "work_item_id": "existing_1",
+    "work_type": "background_work"
+  }
+]

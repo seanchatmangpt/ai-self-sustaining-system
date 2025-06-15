@@ -8,7 +8,7 @@ AI agents autonomously form teams and coordinate work using enterprise Scrum at 
 ```bash
 # SWARM FORMATION - Agents discover optimal team structure
 swarm_team_formation() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     local agent_id="swarm_coordinator_$(date +%s%N)"
     
     echo "🤖 AI Swarm initiating autonomous team formation..."
@@ -68,7 +68,7 @@ spawn_agent_team() {
     local team_name="$1"
     local work_focus="$2" 
     local priority="$3"
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🚀 Spawning $team_name for $work_focus work..."
     
@@ -89,7 +89,7 @@ spawn_agent_team() {
 
 # Monitor swarm health and coordination
 monitor_swarm_health() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "📊 SWARM HEALTH MONITORING"
     echo "=========================="
@@ -125,7 +125,7 @@ monitor_swarm_health() {
 
 # Swarm decision making for work prioritization
 swarm_decision_making() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🧠 SWARM COLLECTIVE INTELLIGENCE"
     echo "================================"
@@ -167,7 +167,7 @@ coordinate_emergency_response() {
     echo "📢 Directing all agent teams to critical work support..."
     
     # Run emergency ART sync
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     "$coordination_dir/coordination_helper.sh" art-sync
     
     echo "🎯 Emergency priorities established across swarm"
@@ -182,7 +182,7 @@ initiate_proactive_improvements() {
     echo "💡 Swarm initiating proactive system enhancements..."
     
     # Run innovation planning
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     "$coordination_dir/coordination_helper.sh" innovation-planning
     
     echo "🔬 Innovation work initiated across agent teams"

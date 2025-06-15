@@ -1,0 +1,184 @@
+{
+  "timestamp": "2025-06-15T17:31:08.906994Z",
+  "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+  "benchmark_type": "full_reactor_n8n_flow_with_tracing",
+  "trace_validation": {
+    "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+    "coordination_correlation": true,
+    "trace_in_analytics": false,
+    "n8n_correlation": true,
+    "phases_correlated": true,
+    "system_wide_tracing": false
+  },
+  "execution_results": {
+    "success": true,
+    "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+    "trace_data": {
+      "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+      "trace_continuity": {
+        "consistent_master_trace": true,
+        "master_trace_ids": [
+          "benchmark-1750008668256456166-36a0b82d5d05f034"
+        ],
+        "phase_count": 3,
+        "all_phases_traced": true
+      },
+      "phase_traces": [
+        {
+          "status": "success",
+          "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "phase": "phase_1_initial",
+          "execution_time_ms": 218,
+          "phase_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "component_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+        },
+        {
+          "status": "success",
+          "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "phase": "phase_2_n8n",
+          "execution_time_ms": 306,
+          "phase_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "component_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+        },
+        {
+          "status": "success",
+          "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "phase": "phase_3_return",
+          "execution_time_ms": 108,
+          "phase_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "component_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+        }
+      ],
+      "total_execution_time": 632
+    },
+    "phases": [
+      {
+        "status": "success",
+        "result": {
+          "phase_output": "Reactor phase_1_initial completed successfully",
+          "processed_data": {
+            "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+            "phase": "phase_1_initial",
+            "trace_headers": {
+              "X-OTel-Context": "active",
+              "X-Trace-ID": "benchmark-1750008668256456166-36a0b82d5d05f034"
+            }
+          },
+          "reactor_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+        },
+        "phase": "phase_1_initial",
+        "reactor_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+        "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+        "execution_time_ms": 218
+      },
+      {
+        "status": "success",
+        "result": {
+          "status": "completed",
+          "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+          "workflow_id": "n8n-wf--576460752303423422",
+          "execution_id": "exec--576460752303423358",
+          "steps": [
+            {
+              "node": "Trigger",
+              "status": "completed",
+              "type": "webhook",
+              "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+              "duration_ms": 89
+            },
+            {
+              "node": "Process Data",
+              "status": "completed",
+              "type": "function",
+              "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+              "duration_ms": 125
+            },
+            {
+              "node": "Callback",
+              "status": "completed",
+              "type": "http",
+              "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+              "duration_ms": 92
+            }
+          ],
+          "total_duration_ms": 306
+        },
+        "phase": "phase_2_n8n",
+        "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+        "execution_time_ms": 306,
+        "n8n_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+      },
+      {
+        "status": "success",
+        "result": {
+          "phase_output": "Reactor phase_3_return completed successfully",
+          "processed_data": {
+            "status": "success",
+            "result": {
+              "status": "completed",
+              "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+              "workflow_id": "n8n-wf--576460752303423422",
+              "execution_id": "exec--576460752303423358",
+              "steps": [
+                {
+                  "node": "Trigger",
+                  "status": "completed",
+                  "type": "webhook",
+                  "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+                  "duration_ms": 89
+                },
+                {
+                  "node": "Process Data",
+                  "status": "completed",
+                  "type": "function",
+                  "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+                  "duration_ms": 125
+                },
+                {
+                  "node": "Callback",
+                  "status": "completed",
+                  "type": "http",
+                  "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+                  "duration_ms": 92
+                }
+              ],
+              "total_duration_ms": 306
+            },
+            "master_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+            "phase": "phase_3_return",
+            "trace_headers": {
+              "X-OTel-Context": "active",
+              "X-Trace-ID": "benchmark-1750008668256456166-36a0b82d5d05f034"
+            },
+            "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+            "execution_time_ms": 306,
+            "n8n_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+          },
+          "reactor_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034"
+        },
+        "phase": "phase_3_return",
+        "reactor_trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+        "trace_id": "benchmark-1750008668256456166-36a0b82d5d05f034",
+        "execution_time_ms": 108
+      }
+    ],
+    "execution_summary": {
+      "successful_phases": 3,
+      "total_phases": 3,
+      "success_rate": 100.0,
+      "total_execution_time_ms": 632,
+      "avg_phase_time_ms": 210.66666666666666
+    }
+  },
+  "system_state": {
+    "process_count": 107,
+    "memory_usage_mb": 65.4074182510376,
+    "node_alive": false
+  },
+  "conclusions": {
+    "trace_continuity_verified": true,
+    "system_wide_correlation": false,
+    "performance_acceptable": true,
+    "recommendation": "Trace correlation issues detected - review implementation"
+  }
+}

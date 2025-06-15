@@ -3,7 +3,7 @@
 # Claude Intelligence Integration Demo for Scrum at Scale
 # Demonstrates how Claude provides AI-powered decision making for S@S coordination
 
-COORDINATION_DIR="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+COORDINATION_DIR="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
 
 echo "🚀 CLAUDE INTELLIGENCE INTEGRATION DEMO"
 echo "========================================"

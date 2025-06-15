@@ -38,7 +38,7 @@ register_message() {
             "pi": "'$CURRENT_PI'",
             "coordination_type": "'$coordination_type'"
         }
-    }' -i .agent_coordination/messages.yaml
+    }' -i agent_coordination/messages.yaml
 }
 ```
 

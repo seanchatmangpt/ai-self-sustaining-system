@@ -63,7 +63,7 @@ Based on implemented Gherkin specifications, the autonomous agent can focus on:
 ```bash
 # AI agents autonomously determine focus through S@S coordination system
 determine_autonomous_focus() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     local feature_dir="/Users/sac/dev/ai-self-sustaining-system/features"
     
     echo "🤖 Agent swarm analyzing system state for autonomous work selection..."
@@ -137,7 +137,7 @@ determine_autonomous_focus() {
 ```bash
 # AI SWARM COORDINATION - Agents determine work autonomously
 autonomous_swarm_workflow() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     local agent_id="auto_swarm_$(date +%s%N)"
     
     echo "🤖 Autonomous AI Swarm initiating self-coordination..."
@@ -363,7 +363,7 @@ determine_work_priority() {
 # Claude-powered intelligent work selection based on AI analysis
 determine_claude_recommended_work() {
     local available_capabilities="$1"
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🧠 Claude Intelligence: Determining optimal work selection..."
     
@@ -663,7 +663,7 @@ jtbd_scrum_at_scale_workflow() {
     echo "🎯 Starting JTBD workflow with Scrum at Scale coordination..."
     
     # Step 1: Claim work using enterprise coordination system
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     local agent_id="ai_agent_$(date +%s%N)"
     
     echo "🤖 Agent $agent_id claiming JTBD work..."
@@ -684,7 +684,7 @@ jtbd_scrum_at_scale_workflow() {
 execute_jtbd_with_telemetry() {
     local job_description="$1"
     local agent_id="$2"
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🔧 Executing JTBD: $job_description"
     
@@ -711,7 +711,7 @@ execute_jtbd_with_telemetry() {
 complete_jtbd_work() {
     local agent_id="$1"
     local business_value="$2"
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     # Get work item ID
     local work_item_id
@@ -730,7 +730,7 @@ complete_jtbd_work() {
 ```bash
 # PI Planning for JTBD Portfolio Management
 jtbd_pi_planning() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🎯 JTBD Portfolio PI Planning Session"
     echo "===================================="
@@ -755,7 +755,7 @@ jtbd_pi_planning() {
 
 # System Demo for JTBD Value Demonstration
 jtbd_system_demo() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🎬 JTBD System Demo - Value Delivered"
     echo "===================================="
@@ -776,7 +776,7 @@ jtbd_system_demo() {
 
 # Innovation & Planning for JTBD Research
 jtbd_innovation_planning() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "💡 JTBD Innovation & Planning Session"
     echo "====================================="
@@ -794,7 +794,7 @@ jtbd_innovation_planning() {
 
 # Inspect & Adapt for JTBD Process Improvement  
 jtbd_inspect_adapt() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🔍 JTBD Inspect & Adapt Workshop"
     echo "================================"
@@ -896,7 +896,7 @@ autonomous_outcome_optimization() {
 ```bash
 # Portfolio-level JTBD management
 jtbd_portfolio_kanban() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "📊 JTBD Portfolio Kanban Management"
     echo "=================================="
@@ -928,7 +928,7 @@ jtbd_portfolio_kanban() {
 
 # Cross-team JTBD coordination
 jtbd_art_sync() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🔄 JTBD ART Synchronization"
     echo "=========================="
@@ -961,7 +961,7 @@ jtbd_art_sync() {
 
 # Value stream mapping for JTBD workflows
 jtbd_value_stream_mapping() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🗺️ JTBD Value Stream Mapping"
     echo "============================="
@@ -1017,7 +1017,7 @@ jtbd_value_stream_mapping() {
 ```bash
 # Show JTBD-specific metrics from coordination system
 show_jtbd_metrics() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "📊 JTBD Performance Metrics"
     echo "=========================="
@@ -1058,7 +1058,7 @@ show_jtbd_metrics() {
 
 # JTBD-focused dashboard
 jtbd_dashboard() {
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     
     echo "🎯 JOBS-TO-BE-DONE DASHBOARD"
     echo "============================"
@@ -1160,7 +1160,7 @@ execute_jtbd_autonomous() {
     local job_category="$2"
     
     # Verify S@S coordination system is available
-    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/.agent_coordination"
+    local coordination_dir="/Users/sac/dev/ai-self-sustaining-system/agent_coordination"
     if [[ ! -f "$coordination_dir/coordination_helper.sh" ]]; then
         echo "❌ S@S coordination system not available"
         return 1

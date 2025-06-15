@@ -4,10 +4,88 @@
 # Provides utilities for managing agent coordination using nanosecond IDs
 
 # Allow override for testing
-COORDINATION_DIR="${COORDINATION_DIR:-/Users/sac/dev/ai-self-sustaining-system/.agent_coordination}"
+COORDINATION_DIR="${COORDINATION_DIR:-/Users/sac/dev/ai-self-sustaining-system/agent_coordination}"
 WORK_CLAIMS_FILE="work_claims.json"
 AGENT_STATUS_FILE="agent_status.json"
 COORDINATION_LOG_FILE="coordination_log.json"
+
+# OpenTelemetry configuration for distributed tracing
+OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-s2s-coordination}"
+OTEL_SERVICE_VERSION="${OTEL_SERVICE_VERSION:-1.0.0}"
+
+# Generate OpenTelemetry trace ID (128-bit, 32 hex characters)
+generate_trace_id() {
+    # Generate 128-bit trace ID using random hex
+    echo "$(openssl rand -hex 16)"
+}
+
+# Generate OpenTelemetry span ID (64-bit, 16 hex characters) 
+generate_span_id() {
+    # Generate 64-bit span ID using random hex
+    echo "$(openssl rand -hex 8)"
+}
+
+# Create OpenTelemetry context for S@S operations
+create_otel_context() {
+    local operation_name="$1"
+    local parent_trace_id="${2:-$(generate_trace_id)}"
+    local parent_span_id="${3:-$(generate_span_id)}"
+    
+    # Generate current span ID
+    local current_span_id="$(generate_span_id)"
+    
+    # Export OpenTelemetry environment variables
+    export OTEL_TRACE_ID="$parent_trace_id"
+    export OTEL_PARENT_SPAN_ID="$parent_span_id"
+    export OTEL_SPAN_ID="$current_span_id"
+    export OTEL_OPERATION_NAME="$operation_name"
+    
+    echo "$parent_trace_id"
+}
+
+# Log telemetry span for S@S operations
+log_telemetry_span() {
+    local span_name="$1"
+    local span_kind="${2:-internal}"  # server, client, producer, consumer, internal
+    local status="${3:-ok}"           # ok, error, timeout
+    local duration_ms="${4:-0}"
+    local attributes="$5"             # JSON string of additional attributes
+    
+    local span_data=$(cat <<EOF
+{
+  "trace_id": "${OTEL_TRACE_ID:-$(generate_trace_id)}",
+  "span_id": "${OTEL_SPAN_ID:-$(generate_span_id)}",
+  "parent_span_id": "${OTEL_PARENT_SPAN_ID:-}",
+  "operation_name": "$span_name",
+  "span_kind": "$span_kind",
+  "status": "$status",
+  "start_time": "$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)",
+  "duration_ms": $duration_ms,
+  "service": {
+    "name": "$OTEL_SERVICE_NAME",
+    "version": "$OTEL_SERVICE_VERSION"
+  },
+  "resource_attributes": {
+    "service.name": "$OTEL_SERVICE_NAME",
+    "service.version": "$OTEL_SERVICE_VERSION",
+    "s2s.component": "coordination_helper",
+    "deployment.environment": "${DEPLOYMENT_ENV:-development}"
+  },
+  "span_attributes": $attributes
+}
+EOF
+    )
+    
+    # Log to telemetry file
+    echo "$span_data" >> "$COORDINATION_DIR/telemetry_spans.jsonl"
+    
+    # Send to OpenTelemetry collector if available
+    if command -v curl >/dev/null 2>&1 && [ -n "$OTEL_EXPORTER_OTLP_ENDPOINT" ]; then
+        curl -s -X POST "$OTEL_EXPORTER_OTLP_ENDPOINT/v1/traces" \
+             -H "Content-Type: application/json" \
+             -d "$span_data" >/dev/null 2>&1 || true
+    fi
+}
 
 # Generate unique nanosecond-based agent ID
 generate_agent_id() {
@@ -21,11 +99,16 @@ claim_work() {
     local priority="${3:-medium}"
     local team="${4:-autonomous_team}"
     
+    # Create OpenTelemetry trace context for work claiming
+    local trace_id=$(create_otel_context "s2s.work.claim")
+    local start_time=$(date +%s%3N)
+    
     # Generate unique nanosecond-based IDs
     local agent_id="${AGENT_ID:-$(generate_agent_id)}"
     local work_item_id
     work_item_id="work_$(date +%s%N)"
     
+    echo "🔍 Trace ID: $trace_id"
     echo "🤖 Agent $agent_id claiming work: $work_item_id"
     
     # Ensure coordination directory exists
@@ -44,7 +127,13 @@ claim_work() {
   "priority": "$priority",
   "description": "$description",
   "status": "active",
-  "team": "$team"
+  "team": "$team",
+  "telemetry": {
+    "trace_id": "$trace_id",
+    "span_id": "$OTEL_SPAN_ID",
+    "operation": "s2s.work.claim",
+    "service": "$OTEL_SERVICE_NAME"
+  }
 }
 EOF
     )
@@ -90,9 +179,42 @@ EOF
         # Register agent in coordination system
         register_agent_in_team "$agent_id" "$team"
         
+        # Log successful work claim telemetry
+        local end_time=$(date +%s%3N)
+        local duration_ms=$((end_time - start_time))
+        local claim_attributes=$(cat <<EOF
+{
+  "s2s.work_item_id": "$work_item_id",
+  "s2s.agent_id": "$agent_id",
+  "s2s.work_type": "$work_type",
+  "s2s.priority": "$priority",
+  "s2s.team": "$team",
+  "s2s.operation": "work_claim",
+  "s2s.status": "success"
+}
+EOF
+        )
+        log_telemetry_span "s2s.work.claim" "internal" "ok" "$duration_ms" "$claim_attributes"
+        
         rm -f "$lock_file"
         return 0
     else
+        # Log failed work claim telemetry
+        local end_time=$(date +%s%3N)
+        local duration_ms=$((end_time - start_time))
+        local conflict_attributes=$(cat <<EOF
+{
+  "s2s.work_type": "$work_type",
+  "s2s.priority": "$priority",
+  "s2s.team": "$team",
+  "s2s.operation": "work_claim",
+  "s2s.status": "conflict",
+  "s2s.error": "file_lock_conflict"
+}
+EOF
+        )
+        log_telemetry_span "s2s.work.claim" "internal" "error" "$duration_ms" "$conflict_attributes"
+        
         echo "⚠️ CONFLICT: Another process is updating work claims"
         return 1
     fi
@@ -153,11 +275,16 @@ update_progress() {
     local progress="$2"
     local status="${3:-in_progress}"
     
+    # Create OpenTelemetry trace context for progress update
+    local trace_id=$(create_otel_context "s2s.work.progress")
+    local start_time=$(date +%s%3N)
+    
     if [ -z "$work_item_id" ]; then
         echo "❌ ERROR: No work item ID specified"
         return 1
     fi
     
+    echo "🔍 Trace ID: $trace_id"
     echo "📈 PROGRESS: Updated $work_item_id to $progress% ($status)"
     
     local work_claims_path="$COORDINATION_DIR/$WORK_CLAIMS_FILE"
@@ -175,12 +302,27 @@ update_progress() {
            --arg status "$status" \
            --arg progress "$progress" \
            --arg timestamp "$timestamp" \
-           'map(if .work_item_id == $id then . + {"status": $status, "progress": ($progress | tonumber), "last_update": $timestamp} else . end)' \
+           --arg trace_id "$trace_id" \
+           'map(if .work_item_id == $id then . + {"status": $status, "progress": ($progress | tonumber), "last_update": $timestamp, "telemetry": (.telemetry + {"last_progress_trace_id": $trace_id})} else . end)' \
            "$work_claims_path" > "$work_claims_path.tmp" && \
         mv "$work_claims_path.tmp" "$work_claims_path"
     else
         echo "⚠️ WARNING: jq not available, progress update limited"
     fi
+    
+    # Log progress update telemetry
+    local end_time=$(date +%s%3N)
+    local duration_ms=$((end_time - start_time))
+    local progress_attributes=$(cat <<EOF
+{
+  "s2s.work_item_id": "$work_item_id",
+  "s2s.progress_percent": $progress,
+  "s2s.status": "$status",
+  "s2s.operation": "progress_update"
+}
+EOF
+    )
+    log_telemetry_span "s2s.work.progress" "internal" "ok" "$duration_ms" "$progress_attributes"
 }
 
 # Complete work using JSON format (consistent with AgentCoordinationMiddleware)

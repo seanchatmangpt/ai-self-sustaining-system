@@ -339,5 +339,71 @@
     "status": "active",
     "work_item_id": "reactor_1750005505046292125_708606",
     "work_type": "general_reactor"
+  },
+  {
+    "agent_id": "agent_1750007290561892500",
+    "claimed_at": "2025-06-15T17:08:10.561975Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "high",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750007290561893208_80864",
+    "work_type": "general_reactor"
+  },
+  {
+    "agent_id": "agent_1750007291580777833",
+    "claimed_at": "2025-06-15T17:08:11.580919Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "high",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750007291580784750_783612",
+    "work_type": "general_reactor"
+  },
+  {
+    "agent_id": "agent_1750007291592238833",
+    "claimed_at": "2025-06-15T17:08:11.592342Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "high",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750007291592239625_178645",
+    "work_type": "general_reactor"
+  },
+  {
+    "agent_id": "agent_1750007292601724708",
+    "claimed_at": "2025-06-15T17:08:12.601862Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "high",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750007292601728542_776364",
+    "work_type": "general_reactor"
+  },
+  {
+    "agent_id": "agent_1750007292610099750",
+    "claimed_at": "2025-06-15T17:08:12.610187Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "medium",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750007292610100292_881636",
+    "work_type": "general_reactor"
+  },
+  {
+    "agent_id": "agent_1750007293618838250",
+    "claimed_at": "2025-06-15T17:08:13.619016Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "medium",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750007293618844208_441445",
+    "work_type": "general_reactor"
   }
 ]

@@ -53,12 +53,11 @@ defmodule SelfSustaining.MixProject do
       
       # Reactor for workflow orchestration
       {:reactor, "~> 0.15.4"},
-      {:reactor_req, "~> 0.1.4"},
       
       # Additional dependencies
       {:tidewave, "~> 0.1"},
       {:httpoison, "~> 2.0"},
-      {:req, "~> 0.5.0"},
+      {:req, "~> 0.5.2"},
       {:file_system, "~> 1.0"},
       {:cachex, "~> 3.6"},
       {:yaml_elixir, "~> 2.9"},
@@ -75,6 +74,14 @@ defmodule SelfSustaining.MixProject do
       # Asset compilation
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
+      
+      # Livebook Teams Integration (optional - install separately)
+      # {:livebook, "~> 0.12.0", optional: true},
+      # {:kino, "~> 0.12.0", optional: true},
+      # {:kino_vega_lite, "~> 0.1.8", optional: true},
+      # {:kino_db, "~> 0.2.5", optional: true},
+      # {:vega_lite, "~> 0.1.7", optional: true},
+      # {:explorer, "~> 0.7.0", optional: true},
       
     ]
   end

@@ -26,7 +26,7 @@ export CURRENT_PI CURRENT_SPRINT
 ```
 
 ## Scrum at Scale Team Assignment Logic
-1. **Check Current PI Objectives**: Analyze `.agent_coordination/backlog.yaml` for PI priorities
+1. **Check Current PI Objectives**: Analyze `agent_coordination/backlog.yaml` for PI priorities
 2. **Assess Team Capacity**: Review sprint commitments and current velocity
 3. **Evaluate Agent Skills**: Match agent capabilities with team needs
 4. **Assign to Optimal Team**:
@@ -75,7 +75,7 @@ register_agent_in_art() {
         "status": "initializing",
         "pi": "'$CURRENT_PI'",
         "sprint": "'$CURRENT_SPRINT'"
-    }' -i .agent_coordination/agent_status.yaml
+    }' -i agent_coordination/agent_status.yaml
 }
 ```
 
@@ -83,11 +83,11 @@ register_agent_in_art() {
 ```bash
 # Analyze current Program Increment objectives
 analyze_pi_context() {
-    current_pi_objectives=$(yq eval '.program_increments["'$CURRENT_PI'"].objectives' .agent_coordination/backlog.yaml)
-    sprint_commitments=$(yq eval '.current_sprint.team_commitments' .agent_coordination/backlog.yaml)
+    current_pi_objectives=$(yq eval '.program_increments["'$CURRENT_PI'"].objectives' agent_coordination/backlog.yaml)
+    sprint_commitments=$(yq eval '.current_sprint.team_commitments' agent_coordination/backlog.yaml)
     
     # Determine highest priority work areas
-    priority_work=$(yq eval '.current_sprint.high_priority_areas[]' .agent_coordination/backlog.yaml)
+    priority_work=$(yq eval '.current_sprint.high_priority_areas[]' agent_coordination/backlog.yaml)
 }
 ```
 
@@ -96,8 +96,8 @@ analyze_pi_context() {
 # Check team capacity and current velocity
 assess_team_capacity() {
     for team in coordination_team development_team platform_team; do
-        current_capacity=$(yq eval '.teams[] | select(.name == "'$team'") | .current_capacity' .agent_coordination/backlog.yaml)
-        committed_work=$(yq eval '.teams[] | select(.name == "'$team'") | .sprint_commitment' .agent_coordination/backlog.yaml)
+        current_capacity=$(yq eval '.teams[] | select(.name == "'$team'") | .current_capacity' agent_coordination/backlog.yaml)
+        committed_work=$(yq eval '.teams[] | select(.name == "'$team'") | .sprint_commitment' agent_coordination/backlog.yaml)
         
         # Calculate available capacity for new agent
         available_capacity=$((current_capacity - committed_work))
@@ -125,8 +125,8 @@ assign_to_optimal_team() {
     fi
     
     # Register team assignment in YAML
-    yq eval '.agents["'$AGENT_ID'"].team = "'$AGENT_TEAM'"' -i .agent_coordination/agent_status.yaml
-    yq eval '.agents["'$AGENT_ID'"].role = "'$AGENT_ROLE'"' -i .agent_coordination/agent_status.yaml
+    yq eval '.agents["'$AGENT_ID'"].team = "'$AGENT_TEAM'"' -i agent_coordination/agent_status.yaml
+    yq eval '.agents["'$AGENT_ID'"].role = "'$AGENT_ROLE'"' -i agent_coordination/agent_status.yaml
 }
 ```
 
@@ -135,13 +135,13 @@ assign_to_optimal_team() {
 # Register with Agile Release Train coordination
 register_with_art() {
     # Update team capacity
-    .agent_coordination/coordination_helper.sh register_agent "$AGENT_ID" "$AGENT_TEAM" 100 "sprint_contribution"
+    agent_coordination/coordination_helper.sh register_agent "$AGENT_ID" "$AGENT_TEAM" 100 "sprint_contribution"
     
     # Set agent status to active
-    yq eval '.agents["'$AGENT_ID'"].status = "active"' -i .agent_coordination/agent_status.yaml
+    yq eval '.agents["'$AGENT_ID'"].status = "active"' -i agent_coordination/agent_status.yaml
     
     # Log registration in coordination log
-    echo "$(date -u +%Y-%m-%dT%H:%M:%SZ): Agent $AGENT_ID registered to $AGENT_TEAM as $AGENT_ROLE" >> .agent_coordination/coordination_log.yaml
+    echo "$(date -u +%Y-%m-%dT%H:%M:%SZ): Agent $AGENT_ID registered to $AGENT_TEAM as $AGENT_ROLE" >> agent_coordination/coordination_log.yaml
 }
 ```
 

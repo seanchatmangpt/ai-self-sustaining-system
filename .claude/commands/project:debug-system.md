@@ -25,7 +25,7 @@ register_debug_session() {
         "team_affected": "'$team'",
         "started_at": "'$TIMESTAMP'",
         "status": "investigating"
-    }' -i .agent_coordination/debug_sessions.yaml
+    }' -i agent_coordination/debug_sessions.yaml
 }
 ```
 
@@ -124,7 +124,7 @@ debug_infrastructure_with_coordination() {
     fi
     
     # Log in coordination system
-    yq eval '.debug_sessions["'$ISSUE_ID'"].affected_teams = ['$(printf '"%s",' "${blocked_teams[@]}" | sed 's/,$//')']' -i .agent_coordination/debug_sessions.yaml
+    yq eval '.debug_sessions["'$ISSUE_ID'"].affected_teams = ['$(printf '"%s",' "${blocked_teams[@]}" | sed 's/,$//')']' -i agent_coordination/debug_sessions.yaml
 }
 ```
 
@@ -215,7 +215,7 @@ coordinate_debugging_across_teams() {
     done
     
     # Track coordination in YAML
-    yq eval '.debug_sessions["'$ISSUE_ID'"].coordination_status = "multi_team_engaged"' -i .agent_coordination/debug_sessions.yaml
+    yq eval '.debug_sessions["'$ISSUE_ID'"].coordination_status = "multi_team_engaged"' -i agent_coordination/debug_sessions.yaml
 }
 ```
 
@@ -235,9 +235,9 @@ track_resolution_and_capture_learning() {
     team_impact=$(measure_actual_velocity_impact)
     
     # Complete debugging session
-    yq eval '.debug_sessions["'$ISSUE_ID'"].status = "resolved"' -i .agent_coordination/debug_sessions.yaml
-    yq eval '.debug_sessions["'$ISSUE_ID'"].resolution_time = "'$resolution_time'"' -i .agent_coordination/debug_sessions.yaml
-    yq eval '.debug_sessions["'$ISSUE_ID'"].root_cause = "'$root_cause'"' -i .agent_coordination/debug_sessions.yaml
+    yq eval '.debug_sessions["'$ISSUE_ID'"].status = "resolved"' -i agent_coordination/debug_sessions.yaml
+    yq eval '.debug_sessions["'$ISSUE_ID'"].resolution_time = "'$resolution_time'"' -i agent_coordination/debug_sessions.yaml
+    yq eval '.debug_sessions["'$ISSUE_ID'"].root_cause = "'$root_cause'"' -i agent_coordination/debug_sessions.yaml
 }
 ```
 

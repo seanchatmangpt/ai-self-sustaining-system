@@ -88,5 +88,25 @@ config :self_sustaining, :n8n,
   webhook_password: System.get_env("N8N_WEBHOOK_PASSWORD", "webhook_pass"),
   timeout: 30_000
 
+# Livebook Configuration
+config :livebook,
+  # Authentication integration with Phoenix app
+  authentication: :token,
+  # Database connectivity for notebooks
+  default_runtime: {Livebook.Runtime.Attached, node: Node.self()},
+  # Team collaboration features
+  teams_enabled: true,
+  # Integration with Phoenix endpoint
+  iframe_port: 4002,
+  # Security settings
+  token: System.get_env("LIVEBOOK_TOKEN", "self-sustaining-system-token"),
+  # Data source configuration
+  data_path: "priv/livebook_data",
+  # Enable Teams features
+  feature_flags: ["teams", "deployment", "collaboration"]
+
+# Configure Kino for interactive widgets
+config :kino, :output, :terminal
+
 # Import environment specific config
 import_config "#{config_env()}.exs"

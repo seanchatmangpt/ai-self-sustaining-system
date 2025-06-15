@@ -1,0 +1,114 @@
+[
+  {
+    "agent_id": "agent_1734567890123456000",
+    "team": "coordination_team",
+    "specialization": "scrum_master",
+    "capacity": 80,
+    "status": "active"
+  },
+  {
+    "agent_id": "agent_1734567890123457000",
+    "team": "development_team",
+    "specialization": "backend_developer",
+    "capacity": 100,
+    "status": "active"
+  },
+  {
+    "agent_id": "agent_1750007916250653000",
+    "team": "integration_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T17:18:36Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_scrum_master_1750008075127150000",
+    "team": "coordination_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "scrum_master",
+    "last_heartbeat": "2025-06-15T17:21:15Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_developer_1750008081426869000",
+    "team": "development_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "developer",
+    "last_heartbeat": "2025-06-15T17:21:21Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_product_owner_1750008088821549000",
+    "team": "platform_team",
+    "status": "active",
+    "capacity": 80,
+    "current_workload": 0,
+    "specialization": "product_owner",
+    "last_heartbeat": "2025-06-15T17:21:28Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750008116172741000",
+    "team": "coordination_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T17:21:56Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750008122617016000",
+    "team": "development_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T17:22:02Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750008433343026000",
+    "team": "telemetry_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-15T17:27:13Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  }
+]

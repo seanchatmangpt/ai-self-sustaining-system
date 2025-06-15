@@ -206,7 +206,7 @@ defmodule SelfSustaining.ReactorMiddleware.AgentCoordinationMiddleware do
     }
     
     # Atomic file-based claiming (as per existing coordination system)
-    coordination_file = ".agent_coordination/work_claims.json"
+    coordination_file = "agent_coordination/work_claims.json"
     
     with {:ok, existing_claims} <- read_coordination_file(coordination_file),
          false <- work_already_claimed?(existing_claims, work_item_id),
@@ -797,7 +797,7 @@ end
 1. **Create Agent Coordination Middleware** (Week 1)
    - Implement nanosecond-precision agent ID generation
    - Build atomic work claiming with exponential backoff
-   - Integrate with existing `.agent_coordination/` system
+   - Integrate with existing `agent_coordination/` system
 
 2. **Replace APS WorkflowEngine** (Week 1)
    - Convert GenServer to Reactor pipeline
@@ -1004,7 +1004,7 @@ end
 #### **1. Prepare Migration Environment**
 ```bash
 # Create backup of current coordination state
-cp -r .agent_coordination .agent_coordination.backup
+cp -r agent_coordination agent_coordination.backup
 
 # Create new Reactor-specific directories
 mkdir -p lib/self_sustaining/reactor_steps

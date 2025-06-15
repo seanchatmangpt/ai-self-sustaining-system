@@ -8,7 +8,7 @@
 
 ## Enterprise Scrum at Scale Features
 - **Nanosecond Precision Claims**: Mathematically unique work item IDs with atomic claiming
-- **YAML-First Coordination**: All work claims stored in `.agent_coordination/work_claims.yaml`
+- **YAML-First Coordination**: All work claims stored in `agent_coordination/work_claims.yaml`
 - **Sprint Context Awareness**: Claims work from current sprint backlog aligned with PI objectives
 - **Team Velocity Integration**: Contributes to team velocity and burndown tracking
 - **Zero-Conflict Guarantee**: Atomic operations prevent double work assignment
@@ -23,8 +23,8 @@ analyze_current_sprint() {
     CURRENT_PI="PI_$(date +%Y)_Q$(($(date +%-m-1)/3+1))"
     
     # Get sprint backlog from YAML coordination system
-    sprint_stories=$(yq eval '.current_sprint.team_commitments' .agent_coordination/backlog.yaml)
-    sprint_goal=$(yq eval '.current_sprint.goal' .agent_coordination/backlog.yaml)
+    sprint_stories=$(yq eval '.current_sprint.team_commitments' agent_coordination/backlog.yaml)
+    sprint_goal=$(yq eval '.current_sprint.goal' agent_coordination/backlog.yaml)
     
     echo "Current Sprint: $CURRENT_SPRINT"
     echo "Sprint Goal: $sprint_goal"
@@ -80,7 +80,7 @@ claim_sprint_work() {
     # Atomic claim operation using YAML coordination
     claim_work_atomically() {
         # Use coordination helper for atomic operations
-        .agent_coordination/coordination_helper.sh claim \
+        agent_coordination/coordination_helper.sh claim \
             "$work_type" \
             "$work_description" \
             "$priority" \
@@ -99,7 +99,7 @@ claim_sprint_work() {
 
 ### 4. YAML Coordination System Integration
 ```yaml
-# .agent_coordination/work_claims.yaml structure
+# agent_coordination/work_claims.yaml structure
 ---
 active_claims:
   - work_item_id: "work_1749970490597398001"
@@ -130,10 +130,10 @@ active_claims:
 ```bash
 # Track contribution to team velocity
 track_velocity_contribution() {
-    story_points=$(yq eval '.active_claims[] | select(.work_item_id == "'$WORK_ITEM_ID'") | .scrum_at_scale.story_points' .agent_coordination/work_claims.yaml)
+    story_points=$(yq eval '.active_claims[] | select(.work_item_id == "'$WORK_ITEM_ID'") | .scrum_at_scale.story_points' agent_coordination/work_claims.yaml)
     
     # Update team velocity tracking
-    yq eval '.teams[] | select(.name == "'$AGENT_TEAM'") | .current_sprint_velocity += '$story_points'' -i .agent_coordination/backlog.yaml
+    yq eval '.teams[] | select(.name == "'$AGENT_TEAM'") | .current_sprint_velocity += '$story_points'' -i agent_coordination/backlog.yaml
     
     # Contribute to sprint burndown
     update_sprint_burndown "$story_points" "claimed"
@@ -223,7 +223,7 @@ platform_work:
 # Atomic claim verification with rollback capability
 verify_claim_success() {
     # Re-read coordination state to verify claim success
-    claimed_agent=$(yq eval '.active_claims[] | select(.work_item_id == "'$WORK_ITEM_ID'") | .agent_id' .agent_coordination/work_claims.yaml)
+    claimed_agent=$(yq eval '.active_claims[] | select(.work_item_id == "'$WORK_ITEM_ID'") | .agent_id' agent_coordination/work_claims.yaml)
     
     if [ "$claimed_agent" == "$AGENT_ID" ]; then
         echo "✅ Claim verified successfully"
@@ -254,7 +254,7 @@ enforce_definition_of_done() {
             "performance_objectives_met",
             "security_scan_passed",
             "documentation_updated"
-        ]' -i .agent_coordination/work_claims.yaml
+        ]' -i agent_coordination/work_claims.yaml
     }
 }
 ```

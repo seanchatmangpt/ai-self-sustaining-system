@@ -57,3 +57,19 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Livebook Development Configuration
+config :livebook,
+  # Development-specific settings
+  ip: {127, 0, 0, 1},
+  port: 8080,
+  # Enable auto-start in development
+  auto_shutdown: false,
+  # Development token (should be changed in production)
+  token: "dev-self-sustaining-livebook-token",
+  # Enable all features for development
+  feature_flags: ["teams", "deployment", "collaboration", "apps"],
+  # Development-specific data path
+  data_path: "priv/livebook_data/dev",
+  # Allow iframe embedding for Phoenix integration
+  iframe_url: "http://localhost:4001"

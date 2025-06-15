@@ -16,6 +16,10 @@ defmodule SelfSustaining.ReactorMiddleware.TelemetryMiddleware do
     reactor_id = context[:__reactor__][:id] || "unknown_reactor"
     span_name = "reactor.#{reactor_id}.execution"
     
+    # Generate trace ID for distributed tracing
+    trace_id = generate_trace_id()
+    otel_trace_id = OpenTelemetry.Tracer.current_span_ctx() |> Map.get(:trace_id, trace_id)
+    
     OpenTelemetry.Tracer.with_span span_name do
       OpenTelemetry.Tracer.set_attributes([
         {"reactor.id", reactor_id},
@@ -23,24 +27,32 @@ defmodule SelfSustaining.ReactorMiddleware.TelemetryMiddleware do
         {"agent.coordination.enabled", Map.has_key?(context, :work_claim)},
         {"system.version", Application.spec(:self_sustaining, :vsn) || "unknown"},
         {"execution.mode", "autonomous"},
-        {"reactor.middleware.telemetry", true}
+        {"reactor.middleware.telemetry", true},
+        {"trace.id", trace_id},
+        {"otel.trace.id", otel_trace_id}
       ])
       
       # Emit reactor start telemetry
       :telemetry.execute([:self_sustaining, :reactor, :execution, :start], %{
         timestamp: System.system_time(:microsecond),
         reactor_id: reactor_id,
-        steps_count: get_steps_count(context)
+        steps_count: get_steps_count(context),
+        trace_id: trace_id,
+        otel_trace_id: otel_trace_id
       }, context)
       
       enhanced_context = context
         |> Map.put(:execution_start_time, System.monotonic_time())
         |> Map.put(:telemetry_span_ctx, OpenTelemetry.Tracer.current_span_ctx())
+        |> Map.put(:trace_id, trace_id)
+        |> Map.put(:otel_trace_id, otel_trace_id)
         |> Map.put(__MODULE__, %{
           reactor_id: reactor_id,
           start_time: System.monotonic_time(),
           step_timings: %{},
-          metadata: extract_telemetry_metadata(context)
+          metadata: extract_telemetry_metadata(context),
+          trace_id: trace_id,
+          otel_trace_id: otel_trace_id
         })
       
       Logger.info("Reactor telemetry initialized", 
@@ -74,7 +86,9 @@ defmodule SelfSustaining.ReactorMiddleware.TelemetryMiddleware do
       Map.merge(%{
         reactor_id: telemetry_state[:reactor_id],
         duration: execution_duration,
-        success: match?({:ok, _}, result)
+        success: match?({:ok, _}, result),
+        trace_id: telemetry_state[:trace_id],
+        otel_trace_id: telemetry_state[:otel_trace_id]
       }, performance_metrics),
       Map.merge(context, %{result: result})
     )
@@ -513,5 +527,13 @@ defmodule SelfSustaining.ReactorMiddleware.TelemetryMiddleware do
     end
   rescue
     _ -> 0
+  end
+
+  # Generate a unique trace ID for distributed tracing
+  defp generate_trace_id do
+    "reactor-" <> 
+    (:crypto.strong_rand_bytes(16) |> Base.encode16(case: :lower)) <>
+    "-" <> 
+    (System.system_time(:nanosecond) |> to_string())
   end
 end

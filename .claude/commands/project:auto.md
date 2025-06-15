@@ -53,7 +53,7 @@ autonomous_startup() {
 # Intelligent work claiming from sprint backlog
 discover_and_claim_work() {
     # Analyze current sprint commitments and team velocity
-    current_sprint_status=$(yq eval '.current_sprint' .agent_coordination/backlog.yaml)
+    current_sprint_status=$(yq eval '.current_sprint' agent_coordination/backlog.yaml)
     team_capacity=$(get_team_available_capacity "$AGENT_TEAM")
     
     # Prioritize work based on sprint goals and PI objectives
@@ -234,7 +234,7 @@ decision_matrix:
 # Enhanced team coordination with ART awareness
 coordinate_with_teams() {
     # Check cross-team dependencies
-    dependencies=$(yq eval '.cross_team_dependencies[]' .agent_coordination/backlog.yaml)
+    dependencies=$(yq eval '.cross_team_dependencies[]' agent_coordination/backlog.yaml)
     
     # Coordinate with other teams if dependencies exist
     for dependency in $dependencies; do
