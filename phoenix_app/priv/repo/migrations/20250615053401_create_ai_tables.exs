@@ -189,7 +189,8 @@ defmodule SelfSustaining.Repo.Migrations.CreateAiTables do
         default: fragment("(now() AT TIME ZONE 'utc')")
       )
 
-      add(:full_text_vector, :vector, size: 1536)
+      # Note: Vector functionality moved to Qdrant service
+      # add(:full_text_vector, :vector, size: 1536)
     end
 
     create table(:ai_code_analyses, primary_key: false) do
@@ -214,7 +215,8 @@ defmodule SelfSustaining.Repo.Migrations.CreateAiTables do
         default: fragment("(now() AT TIME ZONE 'utc')")
       )
 
-      add(:full_text_vector, :vector, size: 1536)
+      # Note: Vector functionality moved to Qdrant service
+      # add(:full_text_vector, :vector, size: 1536)
     end
   end
 

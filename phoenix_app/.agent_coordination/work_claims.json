@@ -1,0 +1,13 @@
+[
+  {
+    "agent_id": "agent_1750004380842597666",
+    "claimed_at": "2025-06-15T16:19:40.842699Z",
+    "description": "Reactor execution: Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "estimated_duration": "30m",
+    "priority": "medium",
+    "reactor_id": "Elixir.SelfSustaining.Workflows.SelfImprovementReactor",
+    "status": "active",
+    "work_item_id": "reactor_1750004380842599125_548967",
+    "work_type": "general_reactor"
+  }
+]

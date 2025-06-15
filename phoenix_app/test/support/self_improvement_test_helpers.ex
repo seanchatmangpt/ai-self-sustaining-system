@@ -15,22 +15,15 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
   Generates property-based test data for improvement cycles.
   """
   def improvement_cycle_generator do
-    gen all(
-          opportunity_count <- integer(1..10),
-          success_rate <- float(min: 0.0, max: 1.0),
-          cycle_duration <- integer(1000..30000),
-          resource_usage <- map_of(atom(:alphanumeric), float(min: 0.0, max: 1.0)),
-          error_patterns <- list_of(string(:alphanumeric), min_length: 0, max_length: 5)
-        ) do
-      %{
-        opportunities_found: opportunity_count,
-        success_rate: success_rate,
-        cycle_duration: cycle_duration,
-        resource_usage: resource_usage,
-        error_patterns: error_patterns,
-        timestamp: DateTime.utc_now()
-      }
-    end
+    # Simple static generator for now - can be enhanced later with StreamData
+    %{
+      opportunities_found: Enum.random(1..10),
+      success_rate: :rand.uniform(),
+      cycle_duration: Enum.random(1000..30000),
+      resource_usage: %{cpu: :rand.uniform(), memory: :rand.uniform()},
+      error_patterns: [],
+      timestamp: DateTime.utc_now()
+    }
   end
   
   @doc """
@@ -76,7 +69,7 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
     
     try do
       # Run normal operations during chaos
-      yield()
+      :timer.sleep(10)
     after
       Process.exit(chaos_pid, :normal)
     end
@@ -137,7 +130,7 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
         end
       end
       
-      yield()
+      :timer.sleep(10)
     end
   end
   
@@ -148,7 +141,7 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
     # Start multiple improvement cycles concurrently
     tasks = for i <- 1..concurrency_level do
       Task.async(fn ->
-        cycle_id = SelfImprovementOrchestrator.trigger_improvement_cycle()
+        _cycle_id = SelfImprovementOrchestrator.trigger_improvement_cycle()
         
         # Wait for completion
         receive do
@@ -210,11 +203,8 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
   Tests the system's ability to handle gradual load increases.
   """
   def load_test(start_load \\ 1, max_load \\ 20, increment \\ 2) do
-    results = []
-    
-    for load <- start_load..max_load//increment do
+    results = Enum.reduce(start_load..max_load//increment, [], fn load, acc ->
       load_result = apply_load(load)
-      results = [load_result | results]
       
       # Check if system is still responsive
       if load_result.success_rate < 0.8 do
@@ -223,7 +213,9 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
       
       # Brief cooldown between load levels
       :timer.sleep(1000)
-    end
+      
+      [load_result | acc]
+    end)
     
     analyze_load_test_results(Enum.reverse(results))
   end

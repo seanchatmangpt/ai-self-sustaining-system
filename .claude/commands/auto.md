@@ -1,409 +1,483 @@
-Autonomous AI agent operation with nanosecond IDs, YAML-first configuration, and Scrum at Scale enterprise coordination.
+Autonomous AI agent operation guided by comprehensive Gherkin specifications and anti-hallucination protocols.
 
-Auto operation mode: $ARGUMENTS (optional: focus area or specific objectives)
+Auto operation mode: $ARGUMENTS (optional: focus area like "performance", "coordination", "n8n", "ash")
 
-## NANOSECOND AGENT IDENTIFICATION SYSTEM
+## GHERKIN-DRIVEN AUTONOMOUS OPERATION
 
-### Unique Agent ID Generation
-Every agent automatically generates a unique nanosecond-based ID on startup:
+### Pre-Flight Verification (MANDATORY)
+Before any autonomous action, verify capabilities exist in Gherkin specifications:
+
 ```bash
-AGENT_ID="agent_$(date +%s%N)"  # Example: agent_1749970490597398000
-export AGENT_ID
-```
-
-**Benefits of Nanosecond IDs**:
-- ✅ **Mathematical Uniqueness**: Impossible collisions across distributed systems
-- ✅ **High Precision Tracking**: Sub-second operation timing and coordination
-- ✅ **Sortable Timestamps**: Natural chronological ordering of agent activities
-- ✅ **Collision-Free Scaling**: Supports unlimited concurrent agent instantiation
-
-### Agent ID Integration
-```bash
-# Agent startup sequence with nanosecond ID
-AGENT_ID="agent_$(date +%s%N)"
-AGENT_ROLE="Developer_Agent"  # Determined by coordination system
-AGENT_TEAM="development_team"  # Scrum at Scale team assignment
-
-# Register in coordination system
-register_agent_in_team "$AGENT_ID" "$AGENT_TEAM" 100 "feature_development"
-```
-
-## SCRUM AT SCALE FRAMEWORK IMPLEMENTATION
-
-### Multi-Team Coordination Structure
-```yaml
-# Agile Release Train (ART) Configuration
-art_configuration:
-  name: "AI_Self_Sustaining_ART"
-  solution_train: "Autonomous_AI_Solution"
-  program_increment: "PI_2025_Q2"
-  cadence: "2_weeks"
-  
-  teams:
-    - name: "coordination_team"
-      focus: "Agent coordination and process optimization"
-      capacity: 40
-      scrum_master: "agent_scrum_master_001"
-      
-    - name: "development_team"  
-      focus: "Feature implementation and quality assurance"
-      capacity: 45
-      scrum_master: "agent_scrum_master_002"
-      
-    - name: "platform_team"
-      focus: "Infrastructure and architectural governance"
-      capacity: 35
-      scrum_master: "agent_scrum_master_003"
-```
-
-### Program Increment (PI) Planning Automation
-```bash
-# Automated PI Planning with agent coordination
-run_pi_planning() {
-    PI_ID="PI_$(date +%Y)_Q$(($(date +%-m-1)/3+1))"
+# MANDATORY: Check feature specifications exist
+verify_gherkin_capability() {
+    local capability="$1"
+    local feature_dir="/Users/sac/dev/ai-self-sustaining-system/features"
     
-    # Business Value Prioritization
-    objectives:
-      - business_value: 50 | "Implement Advanced Agent Coordination"
-      - business_value: 40 | "Deploy Continuous Quality Gates"  
-      - business_value: 30 | "Enhance System Observability"
-      - business_value: 20 | "Optimize Performance & Scalability"
+    echo "🔍 Verifying capability: $capability"
     
-    # Team Capacity Planning (per sprint × 4 sprints)
-    art_capacity:
-      coordination_team: 40 × 4 = 160 points
-      development_team: 45 × 4 = 180 points  
-      platform_team: 35 × 4 = 140 points
-      total_capacity: 480 story points
-}
-```
-
-### Scrum of Scrums Daily Coordination
-```bash
-# Automated Scrum of Scrums (09:30 UTC daily)
-scrum_of_scrums() {
-    participants: ["scrum_masters", "technical_leads"]
-    
-    team_updates:
-      coordination_team:
-        yesterday: "Implemented atomic work claiming in YAML"
-        today: "Migrating to nanosecond-based agent IDs"
-        impediments: "None blocking"
-        dependencies: "Platform team YAML validation"
-        
-      development_team:
-        yesterday: "Resolved compilation warnings, improved quality"
-        today: "Implementing AI Scrum Master agent"
-        impediments: "None blocking"
-        dependencies: "Architecture guidance from Platform team"
-        
-      platform_team:
-        yesterday: "Deployed enterprise coordination infrastructure"
-        today: "YAML schema validation and migration tools"
-        impediments: "None blocking"
-        dependencies: "None"
-}
-```
-
-## YAML-FIRST CONFIGURATION SYSTEM
-
-### Coordination Data Structure (YAML Only)
-```yaml
-# .agent_coordination/work_claims.yaml
----
-active_claims:
-  - work_item_id: "work_1749970490597398001"
-    agent_id: "agent_1749970490597398000"
-    agent_role: "Developer_Agent"
-    team: "development_team"
-    claimed_at: "2025-06-15T06:54:00Z"
-    work_type: "feature_implementation"
-    priority: "high"
-    description: "Implement AI Scrum Master agent"
-    scrum_at_scale:
-      sprint: "sprint_2025_15"
-      pi: "PI_2025_Q2"
-      art: "AI_Self_Sustaining_ART"
-      story_points: 21
-
-# .agent_coordination/agent_status.yaml  
----
-agents:
-  agent_1749970490597398000:
-    agent_id: "agent_1749970490597398000"
-    team: "development_team"
-    status: "active"
-    capacity: 100
-    scrum_at_scale:
-      role: "team_member"
-      sprint: "sprint_2025_15"
-      pi: "PI_2025_Q2"
-      velocity_contribution: 15
-```
-
-### YAML Schema Validation
-```bash
-# Automatic YAML validation before any coordination operation
-validate_yaml_schema() {
-    yamllint .agent_coordination/*.yaml
-    yq eval 'has("active_claims")' .agent_coordination/work_claims.yaml
-    yq eval 'has("agents")' .agent_coordination/agent_status.yaml
-}
-```
-
-## AUTONOMOUS AGENT SEQUENCE WITH SCRUM AT SCALE
-
-### 1. Agent Initialization with Nanosecond ID and Team Assignment
-```bash
-# Automatic startup sequence
-AGENT_ID="agent_$(date +%s%N)"
-TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-
-# Determine role and team based on current PI and sprint needs
-determine_agent_role_and_team() {
-    current_sprint_needs=$(yq eval '.current_sprint.team_commitments' .agent_coordination/backlog.yaml)
-    
-    if needs_coordination_support; then
-        AGENT_ROLE="Scrum_Master_Agent"
-        AGENT_TEAM="coordination_team"
-    elif needs_development_work; then
-        AGENT_ROLE="Developer_Agent"  
-        AGENT_TEAM="development_team"
-    elif needs_platform_work; then
-        AGENT_ROLE="DevOps_Agent"
-        AGENT_TEAM="platform_team"
+    if ! find "$feature_dir" -name "*.feature" -exec grep -l "Scenario.*$capability" {} \; | head -1; then
+        echo "❌ ERROR: Capability '$capability' not found in Gherkin specifications"
+        echo "📋 Available capabilities:"
+        find "$feature_dir" -name "*.feature" -exec basename {} .feature \;
+        return 1
     fi
-}
-
-# Register in Scrum at Scale structure
-register_agent_in_team "$AGENT_ID" "$AGENT_TEAM" 100 "autonomous_development"
-```
-
-### 2. Sprint Work Claiming with YAML Coordination
-```bash
-# Claim work from current sprint backlog
-claim_sprint_work() {
-    current_sprint=$(yq eval '.current_sprint.id' .agent_coordination/backlog.yaml)
-    available_stories=$(yq eval '.current_sprint.team_commitments.'$AGENT_TEAM'.stories[] | select(.status == "ready")' .agent_coordination/backlog.yaml)
     
-    # Atomic claim with nanosecond precision
-    work_item_id="work_$(date +%s%N)"
-    claim_work "story_implementation" "$story_title" "high" "$AGENT_TEAM"
+    echo "✅ Capability verified in Gherkin specifications"
+    return 0
+}
+
+# Example verification before autonomous work
+verify_gherkin_capability "Agent Coordination" || exit 1
+```
+
+### Implemented System Architecture (VERIFIED)
+The autonomous agent operates within these **actually implemented** components:
+
+1. **Reactor Workflows** (Located: `/phoenix_app/lib/self_sustaining/workflows/`)
+   - `SelfImprovementReactor` - AI enhancement workflows
+   - `N8nIntegrationReactor` - n8n compilation/execution
+   - `APSReactor` - Agent coordination workflows
+
+2. **Reactor Middleware** (Located: `/phoenix_app/lib/self_sustaining/reactor_middleware/`)
+   - `AgentCoordinationMiddleware` - Nanosecond precision coordination
+   - `TelemetryMiddleware` - OpenTelemetry integration
+
+3. **Reactor Steps** (Located: `/phoenix_app/lib/self_sustaining/reactor_steps/`)
+   - `ParallelImprovementStep` - Adaptive concurrency control
+   - `N8nWorkflowStep` - n8n workflow operations
+
+## AUTONOMOUS OPERATION MODES (GHERKIN-VERIFIED)
+
+### Available Focus Areas
+Based on implemented Gherkin specifications, the autonomous agent can focus on:
+
+1. **"reactor"** - Reactor workflow orchestration and middleware enhancement
+2. **"coordination"** - Agent coordination with nanosecond precision
+3. **"n8n"** - N8n integration workflows and automation
+4. **"ash"** - Ash Framework database operations and migrations
+5. **"performance"** - Performance optimization and adaptive concurrency
+6. **"telemetry"** - System monitoring and OpenTelemetry integration
+7. **"error-handling"** - Error recovery and compensation logic
+
+### Focus Area Selection Logic
+```bash
+# Auto-determine focus based on system state and Gherkin priorities
+determine_autonomous_focus() {
+    local requested_focus="$1"
+    local feature_dir="/Users/sac/dev/ai-self-sustaining-system/features"
+    
+    case "$requested_focus" in
+        "reactor")
+            verify_gherkin_capability "Reactor Workflow" && 
+            focus_on_reactor_orchestration ;;
+        "coordination") 
+            verify_gherkin_capability "Agent Coordination" &&
+            focus_on_agent_coordination ;;
+        "n8n")
+            verify_gherkin_capability "N8n Integration" &&
+            focus_on_n8n_workflows ;;
+        "ash")
+            verify_gherkin_capability "Ash.*Database" &&
+            focus_on_database_operations ;;
+        "performance")
+            verify_gherkin_capability "Performance.*Optimization" &&
+            focus_on_performance_tuning ;;
+        *)
+            echo "Auto-selecting focus based on current system needs..."
+            auto_select_priority_focus ;;
+    esac
+}
+
+### Autonomous Operation Workflow (Based on Current Todo List)
+```bash
+# ACTUAL PENDING TASKS from current system state
+autonomous_workflow() {
+    echo "📋 Current pending tasks (from todo list):"
+    echo "1. Create AtomicAgentAssignmentStep and related coordination steps (medium priority)"
+    echo "2. Enhance existing Reactor workflows with new middleware and advanced patterns (medium priority)"
+    
+    # Priority-based autonomous execution
+    case "$1" in
+        "coordination"|"reactor"|"")
+            implement_atomic_agent_assignment_step ;;
+        "enhancement"|"middleware")
+            enhance_reactor_workflows_with_middleware ;;
+        *)
+            echo "Available autonomous focus areas:"
+            echo "- coordination: Implement AtomicAgentAssignmentStep"
+            echo "- enhancement: Enhance Reactor workflows with middleware"
+            ;;
+    esac
+}
+
+implement_atomic_agent_assignment_step() {
+    echo "🎯 Implementing AtomicAgentAssignmentStep based on Gherkin specifications..."
+    
+    # Reference Gherkin scenarios from agent_coordination.feature
+    verify_gherkin_capability "Atomic.*Agent.*Assignment" || return 1
+    
+    # Follow the pattern from existing ParallelImprovementStep
+    local base_dir="/Users/sac/dev/ai-self-sustaining-system/phoenix_app/lib/self_sustaining/reactor_steps"
+    
+    echo "📂 Creating new Reactor step in: $base_dir"
+    echo "📋 Following Gherkin scenarios from agent_coordination.feature"
+    echo "🔧 Using patterns from existing ParallelImprovementStep"
+}
+
+enhance_reactor_workflows_with_middleware() {
+    echo "🎯 Enhancing existing Reactor workflows with new middleware..."
+    
+    # Reference implemented middleware components
+    local middleware_dir="/Users/sac/dev/ai-self-sustaining-system/phoenix_app/lib/self_sustaining/reactor_middleware"
+    local workflows_dir="/Users/sac/dev/ai-self-sustaining-system/phoenix_app/lib/self_sustaining/workflows"
+    
+    echo "📂 Available middleware: AgentCoordinationMiddleware, TelemetryMiddleware"
+    echo "📂 Target workflows: SelfImprovementReactor, N8nIntegrationReactor, APSReactor"
+    echo "🔧 Integrating middleware with existing workflow patterns"
 }
 ```
 
-### 3. Continuous Work Execution with Velocity Tracking
+## GHERKIN-DRIVEN QUALITY GATES
+
+### Mandatory Pre-Implementation Validation
 ```bash
-# Work execution with Scrum at Scale metrics
-execute_sprint_work() {
-    while [ "$work_status" != "completed" ]; do
-        # Execute work increment
-        implement_story_increment
+# ANTI-HALLUCINATION: Verify all features exist in Gherkin before implementation
+pre_implementation_checks() {
+    local feature_name="$1"
+    local scenario_name="$2"
+    
+    echo "🔍 Running pre-implementation validation..."
+    
+    # Check 1: Gherkin specification exists
+    if ! verify_gherkin_capability "$scenario_name"; then
+        echo "❌ HALT: No Gherkin specification for '$scenario_name'"
+        return 1
+    fi
+    
+    # Check 2: Current system state allows implementation
+    check_system_readiness() {
+        echo "🏥 Checking Phoenix application status..."
+        curl -s http://localhost:4000/health >/dev/null || {
+            echo "⚠️  Phoenix not running, attempting to start..."
+            return 1
+        }
         
-        # Update progress with velocity tracking
-        update_progress "$work_item_id" "$progress_percent" "in_progress"
+        echo "📊 Checking database connectivity..."
+        mix ecto.migrate --check >/dev/null 2>&1 || {
+            echo "⚠️  Database issues detected"
+            return 1
+        }
         
-        # Daily Scrum participation (if scheduled)
-        if daily_scrum_time; then
-            participate_in_daily_scrum
+        echo "✅ System ready for implementation"
+        return 0
+    }
+    
+    check_system_readiness
+}
+
+# Example usage in autonomous mode
+autonomous_implementation() {
+    local focus="$1"
+    
+    case "$focus" in
+        "coordination")
+            pre_implementation_checks "agent_coordination" "Atomic Agent Assignment" &&
+            implement_from_gherkin "agent_coordination" ;;
+        "reactor")
+            pre_implementation_checks "reactor_workflow_orchestration" "Reactor Middleware Integration" &&
+            implement_from_gherkin "reactor_workflow_orchestration" ;;
+        *)
+            echo "🎯 Available autonomous implementations:"
+            echo "  /project:auto coordination - Implement agent coordination features"
+            echo "  /project:auto reactor - Implement reactor workflow enhancements"
+            ;;
+    esac
+}
+```
+
+### Implementation Pattern (Anti-Hallucination)
+```bash
+# ONLY implement features that exist in Gherkin specifications
+implement_from_gherkin() {
+    local feature_file="$1"
+    local gherkin_path="/Users/sac/dev/ai-self-sustaining-system/features/${feature_file}.feature"
+    
+    echo "📋 Extracting implementation requirements from: $gherkin_path"
+    
+    # Parse Gherkin scenarios for implementation guidance
+    echo "🔍 Available scenarios in $feature_file:"
+    grep "Scenario:" "$gherkin_path" | head -5
+    
+    echo "📝 Implementation will follow Given-When-Then patterns from Gherkin"
+    echo "🛡️  Anti-hallucination: Only implementing defined behaviors"
+}
+
+## AUTONOMOUS EXECUTION SEQUENCE (GHERKIN-GUIDED)
+
+### Step 1: System State Analysis
+```bash
+# Analyze current system state using implemented capabilities
+analyze_system_state() {
+    echo "🔍 Analyzing current system state..."
+    
+    # Check implemented Reactor workflows
+    local workflows_dir="/Users/sac/dev/ai-self-sustaining-system/phoenix_app/lib/self_sustaining/workflows"
+    echo "📂 Available Reactor workflows:"
+    ls "$workflows_dir"/*.ex 2>/dev/null | xargs -I{} basename {} .ex
+    
+    # Check implemented middleware  
+    local middleware_dir="/Users/sac/dev/ai-self-sustaining-system/phoenix_app/lib/self_sustaining/reactor_middleware"
+    echo "🔧 Available middleware:"
+    ls "$middleware_dir"/*.ex 2>/dev/null | xargs -I{} basename {} .ex
+    
+    # Check Gherkin specifications
+    local features_dir="/Users/sac/dev/ai-self-sustaining-system/features"
+    echo "📋 Available Gherkin specifications:"
+    ls "$features_dir"/*.feature 2>/dev/null | xargs -I{} basename {} .feature
+    
+    echo "✅ System state analysis complete"
+}
+
+# Work priority determination based on actual pending tasks
+determine_work_priority() {
+    echo "📋 Current pending work from todo list:"
+    echo "1. AtomicAgentAssignmentStep (medium priority)"
+    echo "2. Enhance Reactor workflows with middleware (medium priority)"
+    
+    # Auto-select based on system readiness
+    if [[ "$1" == "coordination" ]] || [[ -z "$1" ]]; then
+        echo "🎯 Priority: Implement AtomicAgentAssignmentStep"
+        return 0
+    elif [[ "$1" == "enhancement" ]] || [[ "$1" == "middleware" ]]; then
+        echo "🎯 Priority: Enhance Reactor workflows with middleware"
+        return 0
+    fi
+    
+    echo "🤖 Auto-selecting: AtomicAgentAssignmentStep (first pending task)"
+}
+```
+
+### Step 2: Gherkin-Verified Implementation
+```bash
+# Execute work following Gherkin specifications
+execute_autonomous_work() {
+    local focus_area="$1"
+    
+    echo "🚀 Starting autonomous work execution..."
+    
+    # Step 1: Verify capabilities exist in Gherkin
+    analyze_system_state
+    determine_work_priority "$focus_area"
+    
+    # Step 2: Execute based on Gherkin scenarios
+    case "$focus_area" in
+        "coordination"|"")
+            echo "🎯 Implementing agent coordination features..."
+            verify_gherkin_capability "Agent.*Assignment" && 
+            implement_atomic_agent_assignment_step ;;
+        "enhancement"|"middleware") 
+            echo "🎯 Enhancing workflows with middleware..."
+            verify_gherkin_capability "Reactor.*Middleware" &&
+            enhance_reactor_workflows_with_middleware ;;
+        *)
+            echo "❓ Unknown focus area: $focus_area"
+            echo "Available options: coordination, enhancement"
+            return 1 ;;
+    esac
+    
+    echo "✅ Autonomous work execution complete"
+}
+```
+
+### Step 3: Quality Gates and Verification
+```bash
+# Comprehensive quality gates based on Gherkin scenarios
+run_quality_gates() {
+    echo "🔧 Running quality gates..."
+    
+    # Test execution (from Phoenix and Ash specifications)
+    echo "🧪 Running test suite..."
+    if ! mix test; then
+        echo "❌ Tests failed - halting autonomous execution"
+        return 1
+    fi
+    
+    # Code quality checks
+    echo "📊 Running code quality checks..."
+    mix format --check-formatted || {
+        echo "⚠️  Code formatting issues detected, auto-fixing..."
+        mix format
+    }
+    
+    # Database integrity (Ash Framework requirements)
+    echo "🗄️  Checking database integrity..."
+    mix ash_postgres.generate_migrations --check || {
+        echo "⚠️  Database migration issues detected"
+        return 1
+    }
+    
+    # Compilation check (zero warnings requirement)
+    echo "⚙️  Verifying compilation..."
+    if ! mix compile --warnings-as-errors; then
+        echo "❌ Compilation warnings detected - must fix before completion"
+        return 1
+    fi
+    
+    echo "✅ All quality gates passed"
+    return 0
+}
+
+# Continuous improvement feedback loop
+continuous_improvement_cycle() {
+    echo "🔄 Starting continuous improvement cycle..."
+    
+    # Analyze current implementation against Gherkin scenarios
+    analyze_gherkin_compliance() {
+        local feature_dir="/Users/sac/dev/ai-self-sustaining-system/features"
+        echo "📋 Checking compliance with Gherkin specifications..."
+        
+        # Count implemented vs specified scenarios
+        local total_scenarios=$(find "$feature_dir" -name "*.feature" -exec grep -c "Scenario:" {} \; | awk '{sum+=$1} END {print sum}')
+        echo "📊 Total Gherkin scenarios: $total_scenarios"
+        echo "🎯 Implementation guidance available for all autonomous work"
+    }
+    
+    analyze_gherkin_compliance
+    
+    echo "🔄 Improvement cycle complete - ready for next iteration"
+}
+```
+
+### Autonomous Operation Loop (Anti-Hallucination)
+```bash
+# Main autonomous operation loop - grounded in actual system capabilities
+autonomous_main_loop() {
+    local focus_area="${1:-coordination}"  # Default to coordination work
+    local max_iterations="${2:-5}"         # Limit iterations to prevent runaway
+    local iteration=0
+    
+    echo "🤖 Starting autonomous operation loop (max $max_iterations iterations)"
+    echo "🎯 Focus area: $focus_area"
+    
+    while [[ $iteration -lt $max_iterations ]]; do
+        echo "🔄 Iteration $((iteration + 1))/$max_iterations"
+        
+        # Step 1: System state analysis
+        analyze_system_state
+        
+        # Step 2: Verify Gherkin-defined capabilities
+        if ! verify_gherkin_capability ".*"; then
+            echo "❌ No valid Gherkin capabilities found - halting"
+            break
         fi
         
-        # Quality gates
-        run_automated_tests
-        validate_acceptance_criteria
+        # Step 3: Execute work based on focus area
+        if ! execute_autonomous_work "$focus_area"; then
+            echo "⚠️  Work execution failed - trying different focus"
+            focus_area="enhancement"  # Switch to fallback
+        fi
         
-        # 15-minute progress updates
-        sleep 900
+        # Step 4: Quality gates
+        if ! run_quality_gates; then
+            echo "❌ Quality gates failed - halting autonomous operation"
+            break
+        fi
+        
+        # Step 5: Continuous improvement
+        continuous_improvement_cycle
+        
+        # Step 6: Brief pause for system stability
+        echo "⏸️  Pausing for system stability (30 seconds)..."
+        sleep 30
+        
+        ((iteration++))
     done
     
-    # Complete with velocity points
-    complete_work "$work_item_id" "success" "$story_points"
+    echo "✅ Autonomous operation loop completed ($iteration iterations)"
 }
-```
 
-### 4. Scrum at Scale Event Participation
-```bash
-# Automated participation in Scrum at Scale events
-participate_in_scaled_events() {
-    # Daily Scrum of Scrums (09:30 UTC)
-    if [ "$(date +%H%M)" == "0930" ]; then
-        scrum_of_scrums_update
+# Safe autonomous execution with error handling
+safe_autonomous_execution() {
+    local focus_area="$1"
+    
+    # Trap errors to prevent runaway processes
+    trap 'echo "🛑 Autonomous execution interrupted"; exit 1' INT TERM
+    
+    # Verify system is ready
+    if ! pre_implementation_checks "system" "ready"; then
+        echo "❌ System not ready for autonomous operation"
+        return 1
     fi
     
-    # Sprint Planning (every 2 weeks)
-    if sprint_planning_scheduled; then
-        participate_in_sprint_planning
-    fi
-    
-    # System Demo (bi-weekly)
-    if system_demo_scheduled; then
-        present_team_increment
-    fi
-    
-    # PI Planning (quarterly)
-    if pi_planning_scheduled; then
-        participate_in_pi_planning
+    # Execute with error handling
+    if autonomous_main_loop "$focus_area"; then
+        echo "🎉 Autonomous execution completed successfully"
+        return 0
+    else
+        echo "⚠️  Autonomous execution completed with issues"
+        return 1
     fi
 }
 ```
 
-### 5. Continuous Integration with Team Velocity
+## USAGE EXAMPLES
+
+### Basic Autonomous Operation
 ```bash
-# Team velocity contribution tracking
-track_team_velocity() {
-    completed_points=$(get_completed_story_points)
-    team_velocity=$(get_current_team_velocity "$AGENT_TEAM")
-    
-    # Update team metrics in YAML
-    yq eval '.teams[] | select(.name == "'$AGENT_TEAM'") | .current_velocity += '$completed_points'' .agent_coordination/backlog.yaml
-    
-    # Velocity-based sprint commitment adjustment
-    adjust_sprint_commitment_based_on_velocity
-}
+# Default autonomous operation (coordination focus)
+/project:auto
+
+# Specific focus areas
+/project:auto coordination     # Focus on agent coordination features
+/project:auto enhancement      # Focus on middleware and workflow enhancement
+/project:auto reactor          # Focus on Reactor pattern improvements
 ```
 
-### 6. INFINITE LOOP WITH SCRUM AT SCALE COORDINATION
+### Advanced Usage with Safety Limits
 ```bash
-WHILE (not stop_requested):
-  1. Check current sprint status and PI objectives
-  2. Participate in scheduled Scrum at Scale events
-  3. Claim highest priority work from team backlog
-  4. Execute work with continuous velocity tracking
-  5. Update team coordination and cross-team dependencies
-  6. Complete work and contribute to team velocity
-  7. Update Scrum at Scale metrics and burndown
-  8. Check for PI boundary conditions (end of sprint/PI)
-  9. Sleep 30 seconds for system stability
+# Limited iterations for testing
+/project:auto coordination 3   # Run max 3 iterations
+
+# Debug mode with verbose output
+DEBUG=1 /project:auto enhancement
 ```
 
-## ENTERPRISE COORDINATION DECISION TREE WITH SCRUM AT SCALE
+This Gherkin-driven autonomous system ensures all work is grounded in actual specifications and prevents hallucination by requiring verification of capabilities before implementation.
 
-```yaml
-coordination_logic:
-  startup:
-    - generate_nanosecond_agent_id
-    - determine_current_pi_and_sprint
-    - assess_team_capacity_and_needs
-    - assign_to_optimal_scrum_team
-    - register_in_coordination_system
-    
-  work_selection:
-    - if: critical_pi_objective_blocked
-      then: claim_cross_team_coordination_work
-    - elif: sprint_goal_at_risk
-      then: claim_sprint_goal_supporting_work  
-    - elif: team_has_ready_stories
-      then: claim_highest_priority_story
-    - elif: team_capacity_available
-      then: claim_technical_debt_work
-    - else: participate_in_team_improvement
-    
-  scrum_events:
-    - daily_scrum: participate_with_team_updates
-    - sprint_planning: commit_to_realistic_capacity
-    - sprint_review: demo_completed_increments
-    - sprint_retrospective: contribute_improvement_items
-    - scrum_of_scrums: coordinate_cross_team_dependencies
-    - system_demo: present_integrated_solution
-    - pi_planning: commit_to_pi_objectives
-    
-  quality_assurance:
-    - definition_of_done: enforce_team_standards
-    - acceptance_criteria: validate_story_completion
-    - team_velocity: maintain_sustainable_pace
-    - technical_debt: track_and_address_systematically
-```
+## SYSTEM INTEGRATION POINTS
 
-## ADVANCED SCRUM AT SCALE FEATURES
+### Available Gherkin Feature Files
+The autonomous system can reference these comprehensive specifications:
 
-### AI Scrum Master Agent Implementation
-```yaml
-ai_scrum_master:
-  responsibilities:
-    - facilitate_daily_scrums
-    - remove_impediments_automatically
-    - track_sprint_burndown
-    - coordinate_with_other_scrum_masters
-    - optimize_team_velocity
-    - ensure_adherence_to_scrum_framework
-    
-  automation_capabilities:
-    - impediment_detection: "Monitor team progress and identify blockers"
-    - velocity_optimization: "Analyze patterns and suggest improvements"
-    - cross_team_coordination: "Facilitate dependencies and integration"
-    - continuous_improvement: "Generate retrospective insights"
-```
+- **`reactor_workflow_orchestration.feature`** - 15 scenarios covering Reactor patterns
+- **`agent_coordination.feature`** - 14 scenarios for nanosecond precision coordination  
+- **`n8n_integration.feature`** - 14 scenarios for workflow automation
+- **`self_improvement_processes.feature`** - 18 scenarios for AI enhancement
+- **`aps_coordination.feature`** - 15 scenarios for protocol specification
+- **`system_monitoring_telemetry.feature`** - 16 scenarios for monitoring
+- **`error_handling_recovery.feature`** - 16 scenarios for error management
+- **`performance_optimization.feature`** - 16 scenarios for optimization
+- **`phoenix_application.feature`** - 15 scenarios for web framework
+- **`ash_framework_database.feature`** - 15 scenarios for database operations
+- **`cli_slash_commands.feature`** - 16 scenarios for command interface
 
-### Product Owner Agent Network
-```yaml
-product_owner_network:
-  solution_management:
-    - prioritize_art_backlog
-    - manage_program_increment_planning
-    - coordinate_business_value_delivery
-    - resolve_scope_and_priority_conflicts
-    
-  value_stream_optimization:
-    - identify_value_delivery_bottlenecks
-    - optimize_feature_flow_through_teams
-    - measure_business_outcome_achievement
-    - continuous_market_feedback_integration
-```
+### Implemented System Components
+The autonomous agent can work with these actual implementations:
 
-### Release Train Engineer (RTE) Agent
-```yaml
-rte_agent:
-  art_facilitation:
-    - coordinate_pi_planning_sessions
-    - facilitate_scrum_of_scrums
-    - manage_art_synchronization
-    - track_program_increment_progress
-    
-  continuous_delivery:
-    - coordinate_solution_deployments
-    - manage_integration_points
-    - ensure_art_quality_standards
-    - facilitate_system_demos
-```
+- **Reactor Middleware**: `AgentCoordinationMiddleware`, `TelemetryMiddleware`
+- **Reactor Steps**: `ParallelImprovementStep`, `N8nWorkflowStep`
+- **Reactor Workflows**: `SelfImprovementReactor`, `N8nIntegrationReactor`, `APSReactor`
+- **Phoenix Application**: LiveView, Tidewave MCP endpoint, health checks
+- **Ash Framework**: Database resources, migrations, relationships
 
-## SUCCESS METRICS & CONTINUOUS IMPROVEMENT
+### Success Criteria
+Autonomous operations are successful when they:
+1. ✅ Verify capabilities exist in Gherkin specifications before implementation
+2. ✅ Reference actual system components and file paths
+3. ✅ Pass all quality gates (tests, compilation, formatting)
+4. ✅ Follow Given-When-Then patterns from Gherkin scenarios
+5. ✅ Maintain system stability and prevent runaway processes
 
-### Scrum at Scale KPIs (Automatically Tracked)
-```yaml
-key_metrics:
-  team_level:
-    velocity: "Story points completed per sprint"
-    sprint_goal_achievement: "Percentage of sprint goals met"
-    team_happiness: "Team satisfaction and engagement scores"
-    defect_rate: "Bugs per story point delivered"
-    
-  art_level:
-    pi_objective_achievement: "Business value delivered per PI"
-    program_predictability: "Percentage of PI commitments met"
-    art_velocity: "Aggregate team velocity across all teams"
-    feature_cycle_time: "Time from conception to production"
-    
-  solution_level:
-    solution_velocity: "Value delivered to customers"
-    customer_satisfaction: "Market feedback and adoption metrics"
-    time_to_market: "Speed of feature delivery to market"
-    business_agility: "Ability to respond to market changes"
-```
+## SUMMARY
 
-### Continuous Improvement Automation
-```bash
-# Automatic retrospective insights generation
-generate_retrospective_insights() {
-    velocity_trends=$(analyze_team_velocity_patterns)
-    impediment_patterns=$(identify_recurring_impediments)
-    quality_metrics=$(track_defect_trends)
-    
-    # AI-powered improvement suggestions
-    improvement_recommendations=$(ai_analyze_team_performance)
-    
-    # Update team improvement backlog
-    add_to_improvement_backlog "$improvement_recommendations"
-}
-```
-
-This Scrum at Scale implementation with nanosecond agent IDs and YAML-first configuration creates an enterprise-grade autonomous AI system that operates with the precision and coordination of the most advanced software development organizations, while maintaining mathematical guarantees of uniqueness, coordination, and continuous improvement.
+This autonomous AI agent system operates entirely within the bounds of comprehensive Gherkin specifications, preventing hallucination by requiring verification of capabilities before any implementation work. The system leverages actual implemented components including Reactor workflows, middleware, and Phoenix application infrastructure to deliver reliable, testable, and maintainable autonomous operations.

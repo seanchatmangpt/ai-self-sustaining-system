@@ -16,7 +16,7 @@ defmodule SelfSustaining.MixProject do
   def application do
     [
       mod: {SelfSustaining.Application, []},
-      extra_applications: [:logger, :runtime_tools, :opentelemetry, :opentelemetry_exporter]
+      extra_applications: [:logger, :runtime_tools, :opentelemetry, :opentelemetry_exporter, :os_mon]
     ]
   end
 
@@ -47,11 +47,12 @@ defmodule SelfSustaining.MixProject do
       {:ash_phoenix, "~> 2.0"},
       {:ash_authentication, "~> 4.0"},
       {:ash_authentication_phoenix, "~> 2.0"},
-      {:ash_oban, "~> 0.2"},
+      {:ash_oban, "~> 0.4.9"},
+      {:oban, "~> 2.17"},
       {:ash_ai, github: "ash-project/ash_ai"},
       
       # Reactor for workflow orchestration
-      {:reactor, "~> 0.8"},
+      {:reactor, "~> 0.15.4"},
       
       # Additional dependencies
       {:tidewave, "~> 0.1"},

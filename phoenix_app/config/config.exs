@@ -74,5 +74,19 @@ config :opentelemetry_phoenix,
 config :opentelemetry_ecto,
   repos: [SelfSustaining.Repo]
 
+# Configure Oban for background job processing
+config :self_sustaining, Oban,
+  repo: SelfSustaining.Repo,
+  plugins: [Oban.Plugins.Pruner],
+  queues: [default: 10, ash_oban: 5]
+
+# N8N Configuration
+config :self_sustaining, :n8n,
+  api_url: System.get_env("N8N_API_URL", "http://localhost:5678/api/v1"),
+  api_key: System.get_env("N8N_API_KEY", ""),
+  webhook_username: System.get_env("N8N_WEBHOOK_USERNAME", "webhook_user"),
+  webhook_password: System.get_env("N8N_WEBHOOK_PASSWORD", "webhook_pass"),
+  timeout: 30_000
+
 # Import environment specific config
 import_config "#{config_env()}.exs"

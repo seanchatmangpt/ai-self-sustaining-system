@@ -43,7 +43,7 @@ config :logger, :console,
 
 # Configure OpenTelemetry for development
 config :opentelemetry,
-  traces_exporter: :console,
+  traces_exporter: :none,
   resource: [
     service: [
       name: "self_sustaining_system_dev",
