@@ -50,6 +50,9 @@ defmodule SelfSustaining.MixProject do
       {:ash_oban, "~> 0.2"},
       {:ash_ai, github: "ash-project/ash_ai"},
       
+      # Reactor for workflow orchestration
+      {:reactor, "~> 0.8"},
+      
       # Additional dependencies
       {:tidewave, "~> 0.1"},
       {:httpoison, "~> 2.0"},

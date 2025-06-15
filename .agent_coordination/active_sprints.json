@@ -1,0 +1,42 @@
+{
+  "current_sprint": {
+    "id": "sprint_001",
+    "name": "Agent Coordination Foundation",
+    "start_date": "2025-06-15T00:00:00Z",
+    "end_date": "2025-06-29T00:00:00Z",
+    "goal": "Establish enterprise-grade agent coordination system with zero work conflicts",
+    "committed_work": [
+      {
+        "work_item_id": "feat_001_001",
+        "title": "Atomic Work Claiming System",
+        "assigned_agent_role": "Developer_Agent",
+        "story_points": 8,
+        "status": "ready",
+        "priority": "critical"
+      },
+      {
+        "work_item_id": "feat_001_002",
+        "title": "Real-time Agent Status Monitoring", 
+        "assigned_agent_role": "DevOps_Agent",
+        "story_points": 5,
+        "status": "ready",
+        "priority": "high"
+      },
+      {
+        "work_item_id": "feat_001_003",
+        "title": "Cross-Agent Communication Protocol",
+        "assigned_agent_role": "Architect_Agent", 
+        "story_points": 8,
+        "status": "ready",
+        "priority": "high"
+      }
+    ],
+    "burndown": {
+      "total_points": 21,
+      "completed_points": 0,
+      "days_remaining": 14,
+      "velocity_trend": "on_track"
+    }
+  },
+  "sprint_history": []
+}
