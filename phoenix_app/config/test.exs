@@ -3,8 +3,8 @@ import Config
 # Configure the database
 config :self_sustaining, SelfSustaining.Repo,
   database: "self_sustaining_test#{System.get_env("MIX_TEST_PARTITION")}",
-  username: "postgres",
-  password: "postgres",
+  username: "sac",
+  password: "",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10

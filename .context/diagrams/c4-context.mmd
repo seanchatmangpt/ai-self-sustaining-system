@@ -1,0 +1,40 @@
+```mermaid
+C4Context
+    title AI Self-Sustaining System - Context Diagram
+    
+    Person(developers, "Developers & Operators", "System administrators and developers who monitor and interact with the autonomous AI system")
+    Person(claude_user, "Claude Code User", "AI developer working with Claude Code CLI for system improvements")
+    
+    System(ai_system, "AI Self-Sustaining System", "Autonomous AI system that continuously discovers, implements, and deploys improvements to itself using APS agent coordination")
+    
+    System_Ext(claude_cli, "Claude Code CLI", "AI development assistant providing code analysis, generation, and improvement suggestions without API costs")
+    System_Ext(n8n_external, "n8n Workflow Platform", "External n8n instance for workflow orchestration and automation")
+    SystemDb_Ext(postgres, "PostgreSQL Database", "Primary data persistence for AI improvements, tasks, metrics, and APS processes")
+    SystemDb_Ext(qdrant, "Qdrant Vector Database", "Vector embeddings storage for semantic search and AI-powered code analysis")
+    System_Ext(ollama, "Ollama LLM Service", "Local language model inference for text processing and AI operations")
+    
+    System_Ext(openai_api, "OpenAI Embeddings API", "External API for generating text embeddings for semantic search")
+    System_Ext(github, "GitHub Repository", "Source code repository for version control and CI/CD integration")
+    System_Ext(monitoring, "External Monitoring", "External monitoring and alerting systems for system health")
+    
+    Rel(developers, ai_system, "Monitors system health, reviews improvements, manages APS workflows", "HTTPS/WebUI")
+    Rel(claude_user, ai_system, "Interacts via MCP protocol", "MCP/JSON-RPC")
+    Rel(claude_user, claude_cli, "Uses for AI assistance", "CLI")
+    
+    Rel(ai_system, claude_cli, "Executes AI tasks, code analysis, improvement generation", "CLI/Process")
+    Rel(ai_system, n8n_external, "Deploys workflows, triggers automation", "HTTP/API")
+    Rel(ai_system, postgres, "Stores improvements, tasks, metrics, APS states", "PostgreSQL")
+    Rel(ai_system, qdrant, "Stores/queries vector embeddings", "HTTP/gRPC")
+    Rel(ai_system, ollama, "Processes text, generates responses", "HTTP/API")
+    
+    Rel(ai_system, openai_api, "Generates embeddings for semantic search", "HTTPS/API")
+    Rel(ai_system, github, "Commits improvements, manages code", "Git/HTTPS")
+    Rel(ai_system, monitoring, "Sends metrics and alerts", "HTTP/Webhooks")
+    
+    UpdateElementStyle(ai_system, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(claude_cli, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(n8n_external, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(postgres, $fontColor="white", $bgColor="#336791", $borderColor="#254B6F")
+    UpdateElementStyle(qdrant, $fontColor="white", $bgColor="#DC143C", $borderColor="#B01129")
+    UpdateElementStyle(ollama, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+```

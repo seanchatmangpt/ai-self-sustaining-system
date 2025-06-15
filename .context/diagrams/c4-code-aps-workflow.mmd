@@ -1,0 +1,111 @@
+```mermaid
+C4Code
+    title APS Workflow Engine - Code Level Diagram
+    
+    Container_Boundary(aps_workflow_engine, "APS.WorkflowEngine GenServer") {
+        Component(init_function, "init/1", "Function", "Initialize GenServer state with file monitoring and process tracking")
+        Component(handle_call_load, "handle_call(:load_process)", "Function", "Load and parse APS process file, validate structure")
+        Component(handle_call_execute, "handle_call(:execute_workflow)", "Function", "Execute workflow with agent assignment and state tracking")
+        Component(handle_cast_notify, "handle_cast(:notify_agent)", "Function", "Send notifications to next agent in sequence")
+        Component(handle_info_file, "handle_info({:file_event})", "Function", "Handle file system changes for APS files")
+        
+        Component(state_struct, "State", "Struct", "%{active_processes: map(), agent_assignments: map(), file_watcher: pid()}")
+        Component(process_struct, "Process", "Struct", "%{id: string(), current_stage: atom(), assigned_agent: string(), status: atom(), aps_content: map()}")
+    }
+    
+    Container_Boundary(aps_parser, "APS Parser Module") {
+        Component(parse_file, "parse_file/1", "Function", "Parse APS YAML file and return structured data")
+        Component(validate_structure, "validate_structure/1", "Function", "Validate APS structure against schema")
+        Component(extract_gherkin, "extract_gherkin_scenarios/1", "Function", "Extract and validate Gherkin scenarios")
+        Component(agent_sequence, "get_agent_sequence/1", "Function", "Return PM→Architect→Developer→QA→DevOps sequence")
+    }
+    
+    Container_Boundary(agent_assignment, "AgentAssignment Ash Resource") {
+        Component(assignment_schema, "Schema", "Attributes", "session_id, agent_role, process_id, status, claimed_at, completed_at, metadata")
+        Component(create_action, "create", "Ash.Action", "Create new agent assignment with timestamp")
+        Component(claim_work_action, "claim_work", "Ash.Action", "Claim specific process for agent")
+        Component(complete_work_action, "complete_work", "Ash.Action", "Mark work as completed and trigger handoff")
+        Component(by_status_read, "by_status", "Ash.Read", "Query assignments by status (active, waiting, completed)")
+        Component(active_agents_calc, "active_agents", "Ash.Calculation", "Count of currently active agents")
+    }
+    
+    Container_Boundary(process_state, "ProcessState Module") {
+        Component(track_progress, "track_progress/2", "Function", "Update process state and persist to database")
+        Component(next_stage, "next_stage/1", "Function", "Calculate next stage in workflow sequence")
+        Component(can_transition, "can_transition?/2", "Function", "Validate if process can transition to next stage")
+        Component(get_assigned_agent, "get_assigned_agent/1", "Function", "Get currently assigned agent for process")
+        Component(update_status, "update_status/3", "Function", "Update process status with timestamp")
+    }
+    
+    Container_Boundary(role_assigner, "RoleAssigner Module") {
+        Component(detect_role, "detect_role/0", "Function", "Intelligent role detection based on system state")
+        Component(assign_session, "assign_session/2", "Function", "Assign role to new Claude Code session")
+        Component(read_assignment_file, "read_assignment_file/0", "Function", "Read .claude_role_assignment file")
+        Component(scan_aps_files, "scan_aps_files/0", "Function", "Scan for active APS files and pending work")
+        Component(apply_logic, "apply_assignment_logic/1", "Function", "Apply decision tree logic for role assignment")
+        Component(update_file, "update_assignment_file/2", "Function", "Update .claude_role_assignment with new session")
+    }
+    
+    Container_Boundary(file_operations, "FileOperations Module") {
+        Component(read_aps_file, "read_aps_file/1", "Function", "Read and parse APS YAML file from filesystem")
+        Component(write_aps_file, "write_aps_file/2", "Function", "Write APS data to YAML file with proper formatting")
+        Component(watch_directory, "watch_directory/1", "Function", "Monitor directory for APS file changes")
+        Component(backup_process, "backup_process_state/1", "Function", "Create backup of process state")
+        Component(list_aps_files, "list_aps_files/0", "Function", "List all APS files in project directory")
+    }
+    
+    ContainerDb(postgres_schema, "PostgreSQL Schema", "aps_processes, aps_agent_assignments tables with indexes")
+    Container(file_system_data, "File System Data", "*.aps.yaml files, .claude_role_assignment")
+    
+    %% Workflow Engine Internal Flow
+    Rel(init_function, state_struct, "Initialize state")
+    Rel(handle_call_load, parse_file, "Parse APS file")
+    Rel(handle_call_execute, track_progress, "Track execution")
+    Rel(handle_cast_notify, assign_session, "Assign next agent")
+    Rel(handle_info_file, read_aps_file, "Reload changed file")
+    
+    %% Parser operations
+    Rel(parse_file, validate_structure, "Validate parsed data")
+    Rel(validate_structure, extract_gherkin, "Extract scenarios")
+    Rel(extract_gherkin, agent_sequence, "Get workflow sequence")
+    
+    %% Agent Assignment Resource operations
+    Rel(create_action, assignment_schema, "Create assignment record")
+    Rel(claim_work_action, by_status_read, "Query available work")
+    Rel(complete_work_action, active_agents_calc, "Update agent count")
+    
+    %% Process State management
+    Rel(track_progress, next_stage, "Calculate next stage")
+    Rel(next_stage, can_transition, "Validate transition")
+    Rel(can_transition, get_assigned_agent, "Get current agent")
+    Rel(update_status, postgres_schema, "Persist status change")
+    
+    %% Role Assignment logic
+    Rel(detect_role, read_assignment_file, "Read current state")
+    Rel(read_assignment_file, scan_aps_files, "Scan for work")
+    Rel(scan_aps_files, apply_logic, "Apply assignment logic")
+    Rel(apply_logic, update_file, "Update assignment file")
+    
+    %% File Operations
+    Rel(read_aps_file, file_system_data, "Read YAML file")
+    Rel(write_aps_file, file_system_data, "Write YAML file")
+    Rel(watch_directory, handle_info_file, "File change notification")
+    Rel(backup_process, file_system_data, "Create backup")
+    Rel(list_aps_files, file_system_data, "List files")
+    
+    %% Database persistence
+    Rel(assignment_schema, postgres_schema, "Persist assignments")
+    Rel(process_struct, postgres_schema, "Persist process state")
+    
+    %% Cross-module dependencies
+    Rel(handle_call_execute, create_action, "Create assignment")
+    Rel(track_progress, update_status, "Update process status")
+    Rel(assign_session, claim_work_action, "Claim work for agent")
+    Rel(validate_structure, process_struct, "Create process record")
+    
+    UpdateElementStyle(handle_call_execute, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(detect_role, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(parse_file, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(claim_work_action, $fontColor="white", $bgColor="#C73E1D", $borderColor="#A1321B")
+    UpdateElementStyle(track_progress, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+```

@@ -1,0 +1,125 @@
+```mermaid
+C4Component
+    title APS (Agile Protocol Specification) Engine - Component Diagram
+    
+    Container_Boundary(aps_system, "APS Workflow Engine System") {
+        Component(aps_workflow_engine, "APS Workflow Engine", "GenServer", "Main orchestrator for APS workflow execution and agent coordination")
+        Component(aps_parser, "APS YAML Parser", "Module", "Parse and validate APS YAML files with schema validation")
+        
+        Container_Boundary(agent_system, "Agent Coordination System") {
+            Component(role_assigner, "Agent Role Assigner", "Module", "Automatic role detection and assignment logic")
+            Component(agent_assignment, "Agent Assignment Resource", "Ash.Resource", "Track agent sessions, claims, and status")
+            Component(session_manager, "Session Manager", "GenServer", "Manage multiple Claude Code agent sessions")
+            Component(work_claimer, "Work Claim Manager", "Module", "Handle work claiming and conflict resolution")
+        }
+        
+        Container_Boundary(process_management, "Process Management") {
+            Component(process_state, "Process State Manager", "Module", "Track process execution state and transitions")
+            Component(process_tracker, "Process Tracker", "GenServer", "Monitor active processes and their progress")
+            Component(handoff_manager, "Handoff Manager", "Module", "Manage agent-to-agent work handoffs")
+            Component(status_broadcaster, "Status Broadcaster", "Module", "Broadcast process status changes")
+        }
+        
+        Container_Boundary(communication, "Inter-Agent Communication") {
+            Component(message_bus, "Message Bus", "Module", "Handle inter-agent messaging via APS files")
+            Component(notification_system, "Notification System", "Module", "Notify agents of new work and status changes")
+            Component(coordination_protocol, "Coordination Protocol", "Module", "Implement APS communication protocol")
+        }
+        
+        Container_Boundary(workflow_execution, "Workflow Execution") {
+            Component(sequential_pipeline, "Sequential Pipeline", "Module", "PM → Architect → Developer → QA → DevOps flow")
+            Component(parallel_coordinator, "Parallel Coordinator", "Module", "Coordinate parallel agent work")
+            Component(workflow_validator, "Workflow Validator", "Module", "Validate workflow definitions and execution")
+            Component(stage_transitions, "Stage Transitions", "Module", "Manage workflow stage transitions")
+        }
+        
+        Container_Boundary(file_operations, "File System Operations") {
+            Component(aps_file_manager, "APS File Manager", "Module", "Read/write APS YAML files")
+            Component(file_watcher, "File Watcher", "GenServer", "Monitor APS file changes")
+            Component(role_assignment_tracker, "Role Assignment Tracker", "Module", "Manage .claude_role_assignment file")
+            Component(backup_manager, "Backup Manager", "Module", "Backup and restore APS process state")
+        }
+        
+        Container_Boundary(validation, "Validation & Quality") {
+            Component(yaml_validator, "YAML Schema Validator", "Module", "Validate APS YAML structure and content")
+            Component(gherkin_processor, "Gherkin Processor", "Module", "Process and validate Gherkin scenarios")
+            Component(role_validator, "Role Validator", "Module", "Validate agent roles and capabilities")
+            Component(dependency_checker, "Dependency Checker", "Module", "Check process dependencies and prerequisites")
+        }
+    }
+    
+    Container_Boundary(agent_roles, "Agent Role Implementations") {
+        Component(pm_agent, "PM Agent Template", "Module", "Product Manager agent behavior and tasks")
+        Component(architect_agent, "Architect Agent Template", "Module", "System Architect agent behavior and tasks")
+        Component(developer_agent, "Developer Agent Template", "Module", "Developer agent behavior and tasks")
+        Component(qa_agent, "QA Agent Template", "Module", "Quality Assurance agent behavior and tasks")
+        Component(devops_agent, "DevOps Agent Template", "Module", "DevOps agent behavior and tasks")
+    }
+    
+    ContainerDb(postgres, "PostgreSQL", "APS process state, agent assignments, and execution history")
+    Container(file_system, "File System", "APS YAML files, role assignments, and process definitions")
+    Container_Ext(claude_sessions, "Claude Code Sessions", "Multiple Claude Code CLI sessions for different agents")
+    Container(phoenix_app, "Phoenix Application", "Main application container")
+    
+    %% Core workflow engine interactions
+    Rel(aps_workflow_engine, aps_parser, "Parse APS files")
+    Rel(aps_workflow_engine, process_state, "Manage state")
+    Rel(aps_workflow_engine, message_bus, "Handle messages")
+    Rel(aps_workflow_engine, sequential_pipeline, "Execute workflows")
+    
+    %% Agent coordination
+    Rel(role_assigner, agent_assignment, "Create assignments")
+    Rel(session_manager, work_claimer, "Claim work")
+    Rel(work_claimer, agent_assignment, "Update claims")
+    Rel(session_manager, claude_sessions, "Manage sessions")
+    
+    %% Process management
+    Rel(process_tracker, process_state, "Track progress")
+    Rel(process_tracker, status_broadcaster, "Broadcast updates")
+    Rel(handoff_manager, notification_system, "Notify agents")
+    Rel(sequential_pipeline, stage_transitions, "Transition stages")
+    
+    %% Communication system
+    Rel(message_bus, coordination_protocol, "Protocol handling")
+    Rel(notification_system, phoenix_app, "Send notifications")
+    Rel(coordination_protocol, aps_file_manager, "Write messages")
+    
+    %% Parallel coordination
+    Rel(parallel_coordinator, work_claimer, "Distribute work")
+    Rel(parallel_coordinator, agent_assignment, "Track parallel work")
+    
+    %% File operations
+    Rel(aps_file_manager, file_system, "File I/O")
+    Rel(file_watcher, aps_workflow_engine, "Notify changes")
+    Rel(role_assignment_tracker, file_system, "Role tracking")
+    Rel(backup_manager, file_system, "Backup operations")
+    
+    %% Validation pipeline
+    Rel(aps_parser, yaml_validator, "Validate structure")
+    Rel(yaml_validator, gherkin_processor, "Process scenarios")
+    Rel(role_assigner, role_validator, "Validate roles")
+    Rel(workflow_validator, dependency_checker, "Check dependencies")
+    
+    %% Agent role templates
+    Rel(role_assigner, pm_agent, "Assign PM role")
+    Rel(role_assigner, architect_agent, "Assign Architect role")
+    Rel(role_assigner, developer_agent, "Assign Developer role")
+    Rel(role_assigner, qa_agent, "Assign QA role")
+    Rel(role_assigner, devops_agent, "Assign DevOps role")
+    
+    %% Database persistence
+    Rel(agent_assignment, postgres, "Persist assignments")
+    Rel(process_state, postgres, "Store process state")
+    Rel(process_tracker, postgres, "Log execution history")
+    
+    %% External integrations
+    Rel(aps_workflow_engine, phoenix_app, "Status updates")
+    Rel(session_manager, phoenix_app, "Session coordination")
+    
+    UpdateElementStyle(aps_workflow_engine, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(role_assigner, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(sequential_pipeline, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(message_bus, $fontColor="white", $bgColor="#C73E1D", $borderColor="#A1321B")
+    UpdateElementStyle(parallel_coordinator, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+    UpdateElementStyle(session_manager, $fontColor="white", $bgColor="#228B22", $borderColor="#1B6B1B")
+```

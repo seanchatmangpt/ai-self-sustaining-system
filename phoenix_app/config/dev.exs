@@ -3,10 +3,10 @@ import Config
 # Configure the database
 config :self_sustaining, SelfSustaining.Repo,
   database: "self_sustaining_dev",
-  username: "root",
-  password: "password",
+  username: "sac",
+  password: "",
   hostname: "localhost",
-  port: 5434,
+  port: 5432,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -37,7 +37,19 @@ config :self_sustaining, SelfSustainingWeb.Endpoint,
 config :self_sustaining, :dev_routes, true
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :console, 
+  format: "[$level] $message\n",
+  metadata: [:trace_id, :span_id, :request_id]
+
+# Configure OpenTelemetry for development
+config :opentelemetry,
+  traces_exporter: :console,
+  resource: [
+    service: [
+      name: "self_sustaining_system_dev",
+      version: "0.1.0"
+    ]
+  ]
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

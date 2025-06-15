@@ -1,0 +1,7 @@
+{
+  "installed": [
+    "uuid-ossp",
+    "citext",
+    "vector"
+  ]
+}

@@ -53,7 +53,26 @@ config :tailwind,
 # Configure logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:request_id, :trace_id, :span_id]
+
+# Configure OpenTelemetry
+config :opentelemetry, 
+  span_processor: :batch,
+  traces_exporter: :console,
+  resource: [
+    service: [
+      name: "self_sustaining_system",
+      version: "0.1.0"
+    ]
+  ]
+
+# Configure OpenTelemetry Phoenix
+config :opentelemetry_phoenix, 
+  endpoint: SelfSustainingWeb.Endpoint
+
+# Configure OpenTelemetry Ecto  
+config :opentelemetry_ecto,
+  repos: [SelfSustaining.Repo]
 
 # Import environment specific config
 import_config "#{config_env()}.exs"

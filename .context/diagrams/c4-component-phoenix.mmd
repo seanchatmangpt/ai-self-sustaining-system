@@ -1,0 +1,146 @@
+```mermaid
+C4Component
+    title Phoenix Web Application - Component Diagram
+    
+    Person(developers, "Developers", "System operators and developers")
+    Person(claude_user, "Claude User", "AI developer using MCP integration")
+    
+    Container_Boundary(phoenix_app, "Phoenix Web Application") {
+        Component(router, "Phoenix Router", "Phoenix.Router", "Routes HTTP requests to appropriate controllers and LiveViews")
+        Component(endpoint, "Phoenix Endpoint", "Phoenix.Endpoint", "HTTP server endpoint with middleware stack")
+        
+        Container_Boundary(web_layer, "Web Layer") {
+            Component(page_controller, "Page Controller", "Phoenix.Controller", "Basic page rendering and navigation")
+            Component(health_controller, "Health Controller", "Phoenix.Controller", "System health checks and status API")
+            Component(metrics_controller, "Metrics Controller", "Phoenix.Controller", "Metrics collection and reporting API")
+            Component(webhook_controller, "Webhook Controller", "Phoenix.Controller", "n8n workflow webhook handlers")
+            Component(workflow_controller, "Workflow Controller", "Phoenix.Controller", "Workflow management API endpoints")
+            
+            Component(dashboard_live, "Dashboard LiveView", "Phoenix.LiveView", "Real-time system dashboard with metrics")
+            Component(improvements_live, "Improvements LiveView", "Phoenix.LiveView", "AI improvements tracking interface")
+            Component(tasks_live, "Tasks LiveView", "Phoenix.LiveView", "Task management and monitoring")
+            Component(metrics_live, "Metrics LiveView", "Phoenix.LiveView", "Live metrics visualization")
+            Component(workflow_live, "Workflow LiveView", "Phoenix.LiveView", "Workflow management interface")
+        }
+        
+        Container_Boundary(ai_domain, "AI Domain Layer") {
+            Component(ai_domain_mod, "AI Domain", "Ash.Domain", "Main AI domain with resource definitions")
+            Component(improvement_resource, "Improvement Resource", "Ash.Resource", "AI improvement tracking and management")
+            Component(task_resource, "Task Resource", "Ash.Resource", "AI task execution and monitoring")
+            Component(metric_resource, "Metric Resource", "Ash.Resource", "Performance metrics collection")
+            Component(code_analysis_resource, "Code Analysis Resource", "Ash.Resource", "AI-powered code analysis results")
+            
+            Component(embedding_model, "Embedding Model", "Module", "Text embeddings for semantic search")
+            Component(self_improvement_orchestrator, "Self Improvement Orchestrator", "GenServer", "Orchestrates continuous improvement cycles")
+            Component(workflow_generator, "Workflow Generator", "Module", "Generates n8n workflows from requirements")
+        }
+        
+        Container_Boundary(aps_layer, "APS Layer") {
+            Component(aps_parser, "APS Parser", "Module", "Parse and validate APS YAML files")
+            Component(aps_workflow_engine, "APS Workflow Engine", "GenServer", "Execute APS workflows and agent coordination")
+            Component(aps_agent_assignment, "Agent Assignment Resource", "Ash.Resource", "Track agent assignments and status")
+            Component(aps_process_state, "Process State", "Module", "Manage process execution state")
+        }
+        
+        Container_Boundary(n8n_layer, "n8n Integration Layer") {
+            Component(workflow_manager, "Workflow Manager", "Module", "Manage n8n workflow compilation and deployment")
+            Component(n8n_reactor, "n8n Reactor", "Reactor", "Define workflows using Elixir DSL")
+            Component(reactor_dsl, "Reactor DSL", "Spark.Dsl", "DSL extension for workflow definition")
+            Component(node_executor, "Node Executor", "Module", "Execute individual workflow nodes")
+            Component(webhook_trigger, "Webhook Trigger", "Module", "Handle webhook-triggered workflows")
+            
+            Container_Boundary(transformers, "DSL Transformers") {
+                Component(validate_workflow, "Validate Workflow", "Transformer", "Ensure workflow correctness")
+                Component(generate_connections, "Generate Connections", "Transformer", "Auto-generate node connections")
+                Component(optimize_workflow, "Optimize Workflow", "Transformer", "Performance optimization")
+                Component(generate_json, "Generate JSON", "Transformer", "Convert DSL to n8n JSON format")
+            }
+        }
+        
+        Container_Boundary(integration_layer, "Integration Layer") {
+            Component(mcp_router, "MCP Router", "AshAi.Mcp.Router", "Model Context Protocol routing")
+            Component(claude_code, "Claude Code Integration", "GenServer", "CLI wrapper for Claude Code operations")
+            Component(pubsub, "Phoenix PubSub", "Phoenix.PubSub", "Real-time event broadcasting")
+            Component(telemetry, "Telemetry", "Telemetry", "System monitoring and metrics collection")
+        }
+        
+        Component(application, "Application Supervisor", "Application", "Main application supervisor tree")
+    }
+    
+    ContainerDb(postgres, "PostgreSQL", "Database for AI resources and APS state")
+    ContainerDb(qdrant, "Qdrant", "Vector database for embeddings")
+    Container_Ext(n8n_external, "n8n Instance", "External workflow engine")
+    Container_Ext(claude_cli, "Claude Code CLI", "AI assistance CLI")
+    
+    %% User interactions
+    Rel(developers, endpoint, "HTTP requests", "HTTPS")
+    Rel(claude_user, mcp_router, "MCP protocol", "JSON-RPC")
+    
+    %% HTTP routing
+    Rel(endpoint, router, "Routes requests")
+    Rel(router, page_controller, "Page requests")
+    Rel(router, health_controller, "Health checks")
+    Rel(router, metrics_controller, "Metrics API")
+    Rel(router, webhook_controller, "Webhook callbacks")
+    Rel(router, workflow_controller, "Workflow API")
+    Rel(router, dashboard_live, "Dashboard UI")
+    Rel(router, improvements_live, "Improvements UI")
+    Rel(router, tasks_live, "Tasks UI")
+    Rel(router, metrics_live, "Metrics UI")
+    Rel(router, workflow_live, "Workflow UI")
+    
+    %% AI Domain interactions
+    Rel(improvements_live, improvement_resource, "CRUD operations")
+    Rel(tasks_live, task_resource, "Task management")
+    Rel(metrics_live, metric_resource, "Metrics queries")
+    Rel(dashboard_live, ai_domain_mod, "System status")
+    
+    Rel(self_improvement_orchestrator, improvement_resource, "Create improvements")
+    Rel(self_improvement_orchestrator, task_resource, "Execute tasks") 
+    Rel(self_improvement_orchestrator, workflow_generator, "Generate workflows")
+    Rel(self_improvement_orchestrator, claude_code, "AI operations")
+    
+    %% APS Layer interactions
+    Rel(aps_workflow_engine, aps_parser, "Parse APS files")
+    Rel(aps_workflow_engine, aps_agent_assignment, "Manage assignments")
+    Rel(aps_workflow_engine, aps_process_state, "Track state")
+    
+    %% n8n Integration
+    Rel(workflow_controller, workflow_manager, "Workflow operations")
+    Rel(workflow_manager, n8n_reactor, "Compile workflows")
+    Rel(n8n_reactor, reactor_dsl, "DSL processing")
+    Rel(n8n_reactor, validate_workflow, "Validation")
+    Rel(n8n_reactor, generate_connections, "Connection generation")
+    Rel(n8n_reactor, optimize_workflow, "Optimization")
+    Rel(n8n_reactor, generate_json, "JSON export")
+    
+    Rel(webhook_controller, node_executor, "Execute nodes")
+    Rel(webhook_controller, webhook_trigger, "Handle triggers")
+    
+    %% External integrations
+    Rel(ai_domain_mod, postgres, "Data persistence")
+    Rel(aps_agent_assignment, postgres, "State tracking")
+    Rel(embedding_model, qdrant, "Vector operations")
+    Rel(workflow_manager, n8n_external, "Deploy workflows")
+    Rel(claude_code, claude_cli, "CLI operations")
+    
+    %% Real-time updates
+    Rel(self_improvement_orchestrator, pubsub, "Broadcast updates")
+    Rel(dashboard_live, pubsub, "Subscribe to updates")
+    Rel(improvements_live, pubsub, "Subscribe to updates")
+    Rel(tasks_live, pubsub, "Subscribe to updates")
+    
+    %% MCP Integration
+    Rel(mcp_router, ai_domain_mod, "Access AI resources")
+    
+    %% Application supervision
+    Rel(application, self_improvement_orchestrator, "Supervises")
+    Rel(application, aps_workflow_engine, "Supervises")
+    Rel(application, claude_code, "Supervises")
+    
+    UpdateElementStyle(ai_domain_mod, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(aps_workflow_engine, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(self_improvement_orchestrator, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(workflow_manager, $fontColor="white", $bgColor="#C73E1D", $borderColor="#A1321B")
+    UpdateElementStyle(mcp_router, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+```

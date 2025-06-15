@@ -1,0 +1,146 @@
+```mermaid
+C4Code
+    title Self Improvement Orchestrator - Code Level Diagram
+    
+    Container_Boundary(orchestrator_genserver, "SelfImprovementOrchestrator GenServer") {
+        Component(init_state, "init/1", "Function", "Initialize with cycle_interval: 3600000ms (1 hour)")
+        Component(handle_info_cycle, "handle_info(:improvement_cycle)", "Function", "Execute improvement discovery and implementation cycle")
+        Component(handle_call_discover, "handle_call(:discover_opportunities)", "Function", "Trigger immediate improvement discovery")
+        Component(handle_call_implement, "handle_call({:implement, improvement_id})", "Function", "Execute specific improvement implementation")
+        Component(handle_cast_optimize, "handle_cast(:optimize_workflows)", "Function", "Optimize existing n8n workflows")
+        
+        Component(state_map, "State", "Map", "%{last_cycle: datetime(), active_improvements: list(), metrics: map()}")
+    }
+    
+    Container_Boundary(enhancement_discovery, "EnhancementDiscovery Module") {
+        Component(discover_opportunities, "discover_opportunities/0", "Function", "Analyze system for improvement opportunities")
+        Component(analyze_performance, "analyze_performance_metrics/0", "Function", "Examine performance trends and bottlenecks")
+        Component(scan_error_logs, "scan_error_logs/0", "Function", "Parse logs for recurring issues")
+        Component(check_code_quality, "check_code_quality/0", "Function", "AI-powered code analysis for improvements")
+        Component(prioritize_improvements, "prioritize_improvements/1", "Function", "Rank improvements by impact and effort")
+    }
+    
+    Container_Boundary(auto_implementer, "AutoImplementer Module") {
+        Component(implement_improvement, "implement_improvement/1", "Function", "Autonomous implementation of specific improvement")
+        Component(generate_code_changes, "generate_code_changes/1", "Function", "Use Claude Code CLI to generate implementation")
+        Component(apply_file_modifications, "apply_file_modifications/1", "Function", "Apply generated changes to filesystem")
+        Component(create_migration, "create_migration_if_needed/1", "Function", "Generate database migrations for schema changes")
+        Component(validate_implementation, "validate_implementation/1", "Function", "Verify implementation meets requirements")
+    }
+    
+    Container_Boundary(auto_tester, "AutoTester Module") {
+        Component(generate_tests, "generate_tests_for_improvement/1", "Function", "AI-generated comprehensive test suite")
+        Component(execute_test_suite, "execute_test_suite/1", "Function", "Run generated tests and existing test suite")
+        Component(analyze_coverage, "analyze_test_coverage/1", "Function", "Measure and report test coverage")
+        Component(validate_regression, "validate_no_regression/1", "Function", "Ensure no existing functionality broken")
+        Component(performance_tests, "run_performance_tests/1", "Function", "Execute performance benchmarks")
+    }
+    
+    Container_Boundary(workflow_generator, "WorkflowGenerator Module") {
+        Component(generate_workflow, "generate_workflow_from_improvement/1", "Function", "Create n8n workflow for improvement process")
+        Component(define_workflow_dsl, "define_workflow_dsl/1", "Function", "Create Reactor DSL definition")
+        Component(optimize_workflow_structure, "optimize_workflow_structure/1", "Function", "Optimize workflow for performance")
+        Component(validate_workflow_syntax, "validate_workflow_syntax/1", "Function", "Ensure workflow DSL is valid")
+        Component(export_to_n8n, "export_to_n8n_format/1", "Function", "Convert to n8n JSON format")
+    }
+    
+    Container_Boundary(claude_code_integration, "ClaudeCode GenServer") {
+        Component(claude_init, "init/1", "Function", "Initialize CLI wrapper with streaming support")
+        Component(handle_call_prompt, "handle_call({:prompt, task, context})", "Function", "Execute AI prompt with specific task context")
+        Component(handle_call_analyze, "handle_call({:analyze_code, file_path})", "Function", "Perform AI code analysis")
+        Component(handle_call_generate, "handle_call({:generate_code, spec})", "Function", "Generate code from specifications")
+        Component(stream_response, "stream_large_response/1", "Function", "Handle large AI responses with streaming")
+        Component(parse_json_output, "parse_structured_output/1", "Function", "Parse AI output into structured data")
+        
+        Component(claude_state, "State", "Map", "%{cli_path: string(), active_tasks: list(), response_buffer: binary()}")
+    }
+    
+    Container_Boundary(improvement_resource, "Improvement Ash Resource") {
+        Component(improvement_schema, "Schema", "Attributes", "title, description, rationale, implementation_plan, risk_assessment, confidence, impact, effort, status, category")
+        Component(create_improvement, "create", "Ash.Action", "Create new improvement with AI-generated rationale")
+        Component(apply_improvement, "apply", "Ash.Action", "Execute improvement implementation")
+        Component(assess_risk, "assess_risk", "Ash.Action", "AI-powered risk assessment")
+        Component(generate_plan, "generate_plan", "Ash.Action", "Generate detailed implementation plan")
+        Component(vectorize_content, "vectorize", "Ash.Action", "Generate embeddings for semantic search")
+    }
+    
+    Container_Boundary(meta_enhancer, "MetaEnhancer Module") {
+        Component(analyze_improvement_system, "analyze_improvement_system/0", "Function", "Analyze the improvement system itself")
+        Component(identify_meta_improvements, "identify_meta_improvements/0", "Function", "Find ways to improve the improvement process")
+        Component(implement_self_enhancement, "implement_self_enhancement/1", "Function", "Apply improvements to improvement system")
+        Component(measure_enhancement_effectiveness, "measure_enhancement_effectiveness/0", "Function", "Track improvement system performance")
+    }
+    
+    ContainerDb(postgres_tables, "PostgreSQL Tables", "ai_improvements, ai_tasks, ai_metrics with full text search indexes")
+    ContainerDb(qdrant_vectors, "Qdrant Collections", "improvement_embeddings, code_analysis_embeddings")
+    Container_Ext(claude_cli_process, "Claude Code CLI Process", "External CLI process with stdio communication")
+    Container_Ext(n8n_api, "n8n API", "Workflow deployment and execution API")
+    
+    %% Orchestrator cycle flow
+    Rel(init_state, handle_info_cycle, "Schedule first cycle")
+    Rel(handle_info_cycle, discover_opportunities, "Start discovery")
+    Rel(handle_call_discover, analyze_performance, "Analyze metrics")
+    Rel(handle_call_implement, implement_improvement, "Execute implementation")
+    Rel(handle_cast_optimize, generate_workflow, "Optimize workflows")
+    
+    %% Enhancement Discovery flow
+    Rel(discover_opportunities, analyze_performance, "Check performance")
+    Rel(analyze_performance, scan_error_logs, "Scan errors")
+    Rel(scan_error_logs, check_code_quality, "Analyze code")
+    Rel(check_code_quality, prioritize_improvements, "Prioritize")
+    Rel(prioritize_improvements, create_improvement, "Create records")
+    
+    %% Implementation flow
+    Rel(implement_improvement, generate_code_changes, "Generate code")
+    Rel(generate_code_changes, apply_file_modifications, "Apply changes")
+    Rel(apply_file_modifications, create_migration, "Create migrations")
+    Rel(create_migration, validate_implementation, "Validate")
+    Rel(validate_implementation, generate_tests, "Create tests")
+    
+    %% Testing flow
+    Rel(generate_tests, execute_test_suite, "Run tests")
+    Rel(execute_test_suite, analyze_coverage, "Check coverage")
+    Rel(analyze_coverage, validate_regression, "Validate regression")
+    Rel(validate_regression, performance_tests, "Performance check")
+    
+    %% Workflow generation
+    Rel(generate_workflow, define_workflow_dsl, "Define DSL")
+    Rel(define_workflow_dsl, optimize_workflow_structure, "Optimize")
+    Rel(optimize_workflow_structure, validate_workflow_syntax, "Validate")
+    Rel(validate_workflow_syntax, export_to_n8n, "Export")
+    
+    %% Claude Code integration
+    Rel(generate_code_changes, handle_call_prompt, "AI code generation")
+    Rel(check_code_quality, handle_call_analyze, "AI code analysis")
+    Rel(generate_tests, handle_call_generate, "AI test generation")
+    Rel(handle_call_prompt, stream_response, "Handle large responses")
+    Rel(stream_response, parse_json_output, "Parse output")
+    
+    %% Resource interactions
+    Rel(create_improvement, improvement_schema, "Create record")
+    Rel(apply_improvement, assess_risk, "Risk assessment")
+    Rel(generate_plan, vectorize_content, "Generate embeddings")
+    
+    %% Meta enhancement
+    Rel(analyze_improvement_system, identify_meta_improvements, "Find meta improvements")
+    Rel(identify_meta_improvements, implement_self_enhancement, "Implement meta changes")
+    Rel(implement_self_enhancement, measure_enhancement_effectiveness, "Measure effectiveness")
+    
+    %% External integrations
+    Rel(improvement_schema, postgres_tables, "Persist improvements")
+    Rel(vectorize_content, qdrant_vectors, "Store embeddings")
+    Rel(handle_call_prompt, claude_cli_process, "CLI communication")
+    Rel(export_to_n8n, n8n_api, "Deploy workflows")
+    
+    %% Data flow connections
+    Rel(handle_info_cycle, state_map, "Update cycle state")
+    Rel(claude_init, claude_state, "Initialize CLI state")
+    Rel(parse_json_output, claude_state, "Update response buffer")
+    
+    UpdateElementStyle(handle_info_cycle, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(discover_opportunities, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(implement_improvement, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(handle_call_prompt, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+    UpdateElementStyle(generate_workflow, $fontColor="white", $bgColor="#C73E1D", $borderColor="#A1321B")
+    UpdateElementStyle(create_improvement, $fontColor="white", $bgColor="#228B22", $borderColor="#1B6B1B")
+```

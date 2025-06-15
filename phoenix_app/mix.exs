@@ -16,7 +16,7 @@ defmodule SelfSustaining.MixProject do
   def application do
     [
       mod: {SelfSustaining.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :opentelemetry, :opentelemetry_exporter]
     ]
   end
 
@@ -54,7 +54,17 @@ defmodule SelfSustaining.MixProject do
       {:httpoison, "~> 2.0"},
       {:file_system, "~> 1.0"},
       {:cachex, "~> 3.6"},
-      {:yaml_elixir, "~> 2.9"}
+      {:yaml_elixir, "~> 2.9"},
+      
+      # OpenTelemetry - using compatible versions
+      {:opentelemetry, "~> 1.3"},
+      {:opentelemetry_api, "~> 1.2"},
+      {:opentelemetry_exporter, "~> 1.6"},
+      {:opentelemetry_phoenix, "~> 1.1"},
+      {:opentelemetry_ecto, "~> 1.1"},
+      {:opentelemetry_cowboy, "~> 0.2"},
+      {:opentelemetry_liveview, "~> 1.0.0-rc.4"},
+      
     ]
   end
 

@@ -1,0 +1,131 @@
+```mermaid
+C4Component
+    title AI Domain Layer - Component Diagram
+    
+    Container_Boundary(ai_domain, "AI Domain Layer") {
+        Component(ai_domain_mod, "AI Domain", "Ash.Domain", "Main AI domain coordinating all AI resources and operations")
+        
+        Container_Boundary(ai_resources, "AI Resources (Ash Resources)") {
+            Component(improvement_resource, "Improvement Resource", "Ash.Resource", "AI improvement tracking with vectorization and auto-rationale")
+            Component(task_resource, "Task Resource", "Ash.Resource", "AI task execution and monitoring with progress tracking")
+            Component(metric_resource, "Metric Resource", "Ash.Resource", "Performance metrics collection with trend analysis")
+            Component(code_analysis_resource, "Code Analysis Resource", "Ash.Resource", "AI-powered code analysis with confidence scoring")
+        }
+        
+        Container_Boundary(ai_processing, "AI Processing Components") {
+            Component(self_improvement_orchestrator, "Self Improvement Orchestrator", "GenServer", "Orchestrates continuous self-improvement cycles every hour")
+            Component(enhancement_discovery, "Enhancement Discovery", "Module", "AI-powered issue detection and opportunity identification")
+            Component(auto_implementer, "Auto Implementer", "Module", "Autonomous code implementation using Claude Code CLI")
+            Component(auto_tester, "Auto Tester", "Module", "Comprehensive test generation and execution")
+            Component(meta_enhancer, "Meta Enhancer", "Module", "Self-improvement of the improvement system itself")
+        }
+        
+        Container_Boundary(ai_intelligence, "AI Intelligence Layer") {
+            Component(embedding_model, "Embedding Model", "Module", "Text embeddings using OpenAI text-embedding-3-small (1536 dims)")
+            Component(workflow_generator, "Workflow Generator", "Module", "AI-powered n8n workflow creation from requirements")
+            Component(claude_code_wrapper, "Claude Code Integration", "GenServer", "CLI wrapper with streaming, JSON parsing, error handling")
+            Component(ai_prompt_engine, "AI Prompt Engine", "Module", "Task-specific prompting for different AI operations")
+        }
+        
+        Container_Boundary(data_processing, "Data Processing") {
+            Component(vector_operations, "Vector Operations", "Module", "Cosine similarity, batch processing for embeddings")
+            Component(semantic_search, "Semantic Search", "Module", "AI-powered semantic search across improvements and code")
+            Component(trend_analyzer, "Trend Analyzer", "Module", "Analyze metric trends and performance patterns")
+            Component(risk_assessor, "Risk Assessor", "Module", "AI-powered risk assessment for improvements")
+        }
+        
+        Container_Boundary(ai_actions, "AI-Enhanced Actions") {
+            Component(generate_plan_action, "Generate Plan Action", "Ash.Action", "AI-generated implementation plans for improvements")
+            Component(assess_risk_action, "Assess Risk Action", "Ash.Action", "AI-powered risk assessment with confidence scoring")
+            Component(predict_impact_action, "Predict Impact Action", "Ash.Action", "Impact prediction using historical data and AI analysis")
+            Component(auto_rationale_action, "Auto Rationale Action", "Ash.Action", "Automatic rationale generation for improvements")
+            Component(analyze_code_action, "Analyze Code Action", "Ash.Action", "AI-powered code analysis with suggestions")
+        }
+        
+        Container_Boundary(supervision, "Supervision Tree") {
+            Component(ai_supervisor, "AI Supervisor", "Supervisor", "Supervises all AI GenServer processes")
+            Component(improvement_supervisor, "Improvement Supervisor", "Supervisor", "Supervises improvement-related processes")
+            Component(task_supervisor, "Task Supervisor", "DynamicSupervisor", "Dynamic supervision of AI tasks")
+        }
+    }
+    
+    ContainerDb(postgres, "PostgreSQL", "AI improvements, tasks, metrics, code analyses")
+    ContainerDb(qdrant, "Qdrant Vector DB", "Vector embeddings for semantic search")
+    Container_Ext(openai_api, "OpenAI Embeddings API", "Text embedding generation")
+    Container_Ext(claude_cli, "Claude Code CLI", "AI code analysis and generation")
+    Container_Ext(n8n_instance, "n8n Instance", "Workflow deployment target")
+    Container(phoenix_pubsub, "Phoenix PubSub", "Real-time event broadcasting")
+    
+    %% Domain coordination
+    Rel(ai_domain_mod, improvement_resource, "Manages")
+    Rel(ai_domain_mod, task_resource, "Manages")
+    Rel(ai_domain_mod, metric_resource, "Manages")
+    Rel(ai_domain_mod, code_analysis_resource, "Manages")
+    
+    %% Orchestrator coordination
+    Rel(self_improvement_orchestrator, enhancement_discovery, "Discovers opportunities")
+    Rel(self_improvement_orchestrator, auto_implementer, "Implements changes")
+    Rel(self_improvement_orchestrator, auto_tester, "Generates tests")
+    Rel(self_improvement_orchestrator, meta_enhancer, "Self-improves")
+    Rel(self_improvement_orchestrator, workflow_generator, "Generates workflows")
+    
+    %% AI Intelligence integration
+    Rel(enhancement_discovery, claude_code_wrapper, "AI analysis")
+    Rel(auto_implementer, claude_code_wrapper, "Code generation")
+    Rel(auto_tester, claude_code_wrapper, "Test generation")
+    Rel(workflow_generator, claude_code_wrapper, "Workflow planning")
+    
+    %% Resource interactions with AI actions
+    Rel(improvement_resource, generate_plan_action, "Generate implementation plans")
+    Rel(improvement_resource, assess_risk_action, "Assess risks")
+    Rel(improvement_resource, predict_impact_action, "Predict impacts")
+    Rel(improvement_resource, auto_rationale_action, "Generate rationales")
+    Rel(code_analysis_resource, analyze_code_action, "Analyze code")
+    
+    %% Data processing
+    Rel(improvement_resource, embedding_model, "Generate embeddings")
+    Rel(code_analysis_resource, embedding_model, "Generate embeddings")
+    Rel(semantic_search, vector_operations, "Similarity calculations")
+    Rel(metric_resource, trend_analyzer, "Analyze trends")
+    Rel(improvement_resource, risk_assessor, "Risk analysis")
+    
+    %% External integrations
+    Rel(embedding_model, openai_api, "Generate embeddings")
+    Rel(claude_code_wrapper, claude_cli, "CLI operations")
+    Rel(workflow_generator, n8n_instance, "Deploy workflows")
+    
+    %% Database operations
+    Rel(improvement_resource, postgres, "Persist improvements")
+    Rel(task_resource, postgres, "Persist tasks")
+    Rel(metric_resource, postgres, "Persist metrics")
+    Rel(code_analysis_resource, postgres, "Persist analyses")
+    
+    %% Vector operations
+    Rel(embedding_model, qdrant, "Store/query embeddings")
+    Rel(semantic_search, qdrant, "Vector similarity search")
+    
+    %% Real-time updates
+    Rel(self_improvement_orchestrator, phoenix_pubsub, "Broadcast updates")
+    Rel(task_resource, phoenix_pubsub, "Task progress updates")
+    Rel(improvement_resource, phoenix_pubsub, "Improvement updates")
+    
+    %% Supervision tree
+    Rel(ai_supervisor, improvement_supervisor, "Supervises")
+    Rel(ai_supervisor, task_supervisor, "Supervises")
+    Rel(improvement_supervisor, self_improvement_orchestrator, "Supervises")
+    Rel(improvement_supervisor, claude_code_wrapper, "Supervises")
+    Rel(task_supervisor, auto_implementer, "Dynamic supervision")
+    Rel(task_supervisor, auto_tester, "Dynamic supervision")
+    
+    %% Task relationships
+    Rel(task_resource, improvement_resource, "belongs_to relationship")
+    Rel(metric_resource, improvement_resource, "belongs_to relationship")
+    Rel(metric_resource, task_resource, "belongs_to relationship")
+    
+    UpdateElementStyle(ai_domain_mod, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(self_improvement_orchestrator, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(improvement_resource, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(claude_code_wrapper, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+    UpdateElementStyle(embedding_model, $fontColor="white", $bgColor="#228B22", $borderColor="#1B6B1B")
+    UpdateElementStyle(workflow_generator, $fontColor="white", $bgColor="#C73E1D", $borderColor="#A1321B")
+```

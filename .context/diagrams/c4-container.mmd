@@ -1,0 +1,79 @@
+```mermaid
+C4Container
+    title AI Self-Sustaining System - Container Diagram
+    
+    Person(developers, "Developers & Operators", "System administrators monitoring autonomous AI operations")
+    Person(claude_user, "Claude Code User", "AI developer using Claude Code CLI integration")
+    
+    System_Boundary(ai_system, "AI Self-Sustaining System") {
+        Container(phoenix_app, "Phoenix Web Application", "Elixir/Phoenix + Ash Framework", "Provides web interface, API endpoints, real-time dashboard, and coordinates all AI operations")
+        Container(aps_engine, "APS Workflow Engine", "Elixir GenServer", "Manages APS agent coordination, role assignment, and inter-agent communication workflows")
+        Container(ai_orchestrator, "AI Self-Improvement Orchestrator", "Elixir GenServer", "Orchestrates continuous self-improvement cycles and AI task execution")
+        Container(workflow_compiler, "N8N Workflow Compiler", "Elixir Reactor DSL", "Compiles Elixir DSL workflows to n8n JSON format for deployment")
+        Container(mcp_server, "MCP Protocol Server", "Elixir/Phoenix", "Model Context Protocol server for Claude Desktop integration")
+    }
+    
+    System_Boundary(data_layer, "Data Layer") {
+        ContainerDb(postgres, "PostgreSQL Database", "PostgreSQL 16 + Extensions", "Stores AI improvements, tasks, metrics, APS processes, and system state")
+        ContainerDb(qdrant, "Qdrant Vector DB", "Qdrant", "Vector embeddings for semantic search and AI-powered code analysis")
+        Container(file_system, "APS File System", "YAML Files", "APS process definitions, agent assignments, and coordination state")
+    }
+    
+    System_Boundary(ai_services, "AI & Processing Services") {
+        Container(ollama, "Ollama LLM Service", "Ollama + Llama3.2", "Local language model inference for text processing and AI operations")
+        Container_Ext(claude_cli, "Claude Code CLI", "Anthropic CLI", "AI code analysis, generation, and improvement suggestions")
+        Container_Ext(openai_api, "OpenAI Embeddings API", "OpenAI API", "Text embedding generation for semantic search")
+    }
+    
+    System_Boundary(workflow_layer, "Workflow Orchestration") {
+        Container(n8n_instance, "n8n Workflow Engine", "n8n Platform", "Executes compiled workflows for automation and process orchestration")
+        Container(n8n_db, "n8n Database", "PostgreSQL", "n8n workflow definitions, execution history, and configuration")
+    }
+    
+    System_Boundary(external_systems, "External Systems") {
+        System_Ext(github, "GitHub Repository", "Source code version control and CI/CD integration")
+        System_Ext(monitoring, "External Monitoring", "System health monitoring and alerting")
+    }
+    
+    %% User Interactions
+    Rel(developers, phoenix_app, "Monitors system, reviews improvements", "HTTPS/WebUI")
+    Rel(claude_user, mcp_server, "Interacts via MCP protocol", "MCP/JSON-RPC")
+    
+    %% Internal Container Communication
+    Rel(phoenix_app, aps_engine, "Triggers workflows, monitors status", "Elixir/GenServer")
+    Rel(phoenix_app, ai_orchestrator, "Manages improvement cycles", "Elixir/GenServer")
+    Rel(phoenix_app, workflow_compiler, "Compiles and deploys workflows", "Elixir/Reactor")
+    
+    Rel(aps_engine, file_system, "Reads/writes APS files", "File I/O")
+    Rel(ai_orchestrator, claude_cli, "Executes AI tasks", "CLI/Process")
+    Rel(workflow_compiler, n8n_instance, "Deploys compiled workflows", "HTTP/API")
+    
+    %% Data Layer Interactions
+    Rel(phoenix_app, postgres, "Stores/retrieves AI data", "PostgreSQL")
+    Rel(phoenix_app, qdrant, "Vector embeddings operations", "HTTP/gRPC")
+    Rel(aps_engine, postgres, "APS process state management", "PostgreSQL")
+    
+    %% AI Services Integration
+    Rel(ai_orchestrator, ollama, "Local LLM processing", "HTTP/API")
+    Rel(ai_orchestrator, openai_api, "Embedding generation", "HTTPS/API")
+    
+    %% Workflow Layer
+    Rel(n8n_instance, n8n_db, "Workflow persistence", "PostgreSQL")
+    Rel(n8n_instance, phoenix_app, "Webhook callbacks", "HTTP/Webhooks")
+    
+    %% External Integrations
+    Rel(phoenix_app, github, "Code commits, repository management", "Git/HTTPS")
+    Rel(phoenix_app, monitoring, "Metrics and alerts", "HTTP/Webhooks")
+    
+    %% MCP Server Interactions
+    Rel(mcp_server, phoenix_app, "AI resource access", "Elixir/Ash")
+    Rel(mcp_server, postgres, "Resource data access", "PostgreSQL")
+    
+    UpdateElementStyle(phoenix_app, $fontColor="white", $bgColor="#2E86AB", $borderColor="#1A5178")
+    UpdateElementStyle(aps_engine, $fontColor="white", $bgColor="#A23B72", $borderColor="#7A2C56")
+    UpdateElementStyle(ai_orchestrator, $fontColor="white", $bgColor="#F18F01", $borderColor="#C1760A")
+    UpdateElementStyle(workflow_compiler, $fontColor="white", $bgColor="#C73E1D", $borderColor="#A1321B")
+    UpdateElementStyle(mcp_server, $fontColor="white", $bgColor="#5D4E75", $borderColor="#453A5A")
+    UpdateElementStyle(postgres, $fontColor="white", $bgColor="#336791", $borderColor="#254B6F")
+    UpdateElementStyle(qdrant, $fontColor="white", $bgColor="#DC143C", $borderColor="#B01129")
+```

@@ -16,12 +16,12 @@ defmodule SelfSustaining.SelfImprovementTestHelpers do
   """
   def improvement_cycle_generator do
     gen all(
-      opportunity_count <- integer(1..10),
-      success_rate <- float(min: 0.0, max: 1.0),
-      cycle_duration <- integer(1000..30000),
-      resource_usage <- map_of(atom(:alphanumeric), float(min: 0.0, max: 1.0)),
-      error_patterns <- list_of(string(:alphanumeric), min_length: 0, max_length: 5)
-    ) do
+          opportunity_count <- integer(1..10),
+          success_rate <- float(min: 0.0, max: 1.0),
+          cycle_duration <- integer(1000..30000),
+          resource_usage <- map_of(atom(:alphanumeric), float(min: 0.0, max: 1.0)),
+          error_patterns <- list_of(string(:alphanumeric), min_length: 0, max_length: 5)
+        ) do
       %{
         opportunities_found: opportunity_count,
         success_rate: success_rate,

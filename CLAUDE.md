@@ -124,6 +124,195 @@ If a command fails or a test fails, report the error clearly and wait for instru
 
 ---
 
+## 6.1. ASH FRAMEWORK DATABASE MANAGEMENT
+
+### Database Migration Strategy
+This project uses **Ash Framework** with a dual migration approach for optimal flexibility:
+
+#### **Primary: Ash-Generated Migrations (Recommended)**
+```bash
+# Generate migrations from Ash resource changes
+mix ash_postgres.generate_migrations
+
+# Apply migrations (standard Ecto)
+mix ecto.migrate
+
+# Rollback if needed
+mix ecto.rollback
+```
+
+**When to Use:**
+- All Ash resource schema changes
+- Adding new Ash resources
+- Modifying resource attributes, relationships, or actions
+- PostgreSQL extension management
+
+#### **Secondary: Manual Ecto Migrations (Limited Use)**
+```bash
+# Create manual migration for non-Ash tables
+mix ecto.gen.migration create_custom_table
+
+# Edit migration file manually
+# Run standard: mix ecto.migrate
+```
+
+**When to Use:**
+- Non-Ash legacy tables (like APS workflow tables)
+- Complex SQL operations not supported by Ash
+- Database functions, triggers, or views
+
+### Ash Resource Development Workflow
+
+#### **1. Resource-First Design**
+Define schema in Ash resources, not migrations:
+
+```elixir
+# lib/self_sustaining/ai_domain/improvement.ex
+defmodule SelfSustaining.AI.Improvement do
+  use Ash.Resource,
+    domain: SelfSustaining.AIDomain,
+    data_layer: AshPostgres.DataLayer
+
+  attributes do
+    uuid_primary_key :id
+    attribute :title, :string, allow_nil?: false
+    attribute :description, :string
+    attribute :confidence_score, :decimal
+    attribute :full_text_vector, {:array, :float}, constraints: [items: [min: 1536, max: 1536]]
+    attribute :affected_files, {:array, :string}
+    
+    timestamps()
+  end
+
+  relationships do
+    belongs_to :task, SelfSustaining.AI.Task
+    has_many :metrics, SelfSustaining.AI.Metric
+  end
+
+  actions do
+    defaults [:read, :create, :update, :destroy]
+    
+    create :apply do
+      change set_attribute(:status, :applied)
+    end
+  end
+end
+```
+
+#### **2. Migration Generation Process**
+```bash
+# After modifying resources, generate migrations
+mix ash_postgres.generate_migrations
+
+# Review generated migration files in priv/repo/migrations/
+# Commit resource snapshots in priv/resource_snapshots/
+
+# Apply migrations
+mix ecto.migrate
+```
+
+#### **3. Resource Snapshot Management**
+Ash tracks resource changes via JSON snapshots:
+- **Location**: `priv/resource_snapshots/`
+- **Purpose**: Enable incremental migration generation
+- **Requirement**: Commit snapshots to version control
+- **Benefit**: Prevents migration conflicts between team members
+
+### Current Ash Setup
+
+#### **Domains and Resources**
+- **AI Domain** (`SelfSustaining.AIDomain`):
+  - `SelfSustaining.AI.Improvement` - System improvements
+  - `SelfSustaining.AI.Task` - AI task management
+  - `SelfSustaining.AI.Metric` - Performance metrics
+  - `SelfSustaining.AI.CodeAnalysis` - Code analysis results
+
+- **APS Domain** (`SelfSustaining.APSDomain`):
+  - `SelfSustaining.APS.Process` - Workflow processes
+  - `SelfSustaining.APS.AgentAssignment` - Agent coordination
+
+#### **Repository Configuration**
+```elixir
+# lib/self_sustaining/repo.ex
+defmodule SelfSustaining.Repo do
+  use AshPostgres.Repo, otp_app: :self_sustaining
+
+  def installed_extensions do
+    ["uuid-ossp", "citext", "vector"]  # AI/ML extensions
+  end
+
+  def min_pg_version do
+    %Version{major: 16, minor: 0, patch: 0}
+  end
+end
+```
+
+#### **AI/ML Specific Features**
+- **Vector Storage**: PostgreSQL `vector` extension for embeddings
+- **Semantic Search**: Full-text vectorization with 1536-dimension vectors
+- **AI Actions**: Custom resource actions for AI-powered operations
+- **UUID Primary Keys**: Auto-generated with `gen_random_uuid()`
+
+### Migration Best Practices
+
+#### **DO:**
+1. **Resource-First**: Define schema in Ash resources, generate migrations
+2. **Commit Snapshots**: Always commit `priv/resource_snapshots/` changes
+3. **Review Generated**: Check generated migrations before applying
+4. **Use Ash Types**: Leverage Ash's extended data types (vector, json, etc.)
+5. **Incremental Changes**: Make small, focused resource changes
+
+#### **DON'T:**
+1. **Manual Schema**: Don't manually create tables for Ash resources
+2. **Skip Snapshots**: Don't ignore resource snapshot changes
+3. **Mixed Approaches**: Don't mix manual and Ash migrations for same table
+4. **Large Batches**: Don't make massive resource changes at once
+
+#### **Developer_Agent Migration Checklist:**
+```bash
+# 1. Modify Ash resource definitions
+# 2. Generate migrations
+mix ash_postgres.generate_migrations
+
+# 3. Review generated files
+ls priv/repo/migrations/
+ls priv/resource_snapshots/
+
+# 4. Test migration
+mix ecto.migrate
+mix test
+
+# 5. Commit all changes (code + snapshots + migrations)
+git add lib/ priv/
+git commit -m "Add [feature]: resource changes with migrations"
+```
+
+### Troubleshooting Common Issues
+
+#### **Migration Conflicts**
+```bash
+# If snapshots are out of sync:
+mix ash_postgres.generate_migrations --check
+# Follow prompts to resolve conflicts
+```
+
+#### **Extension Issues**
+```bash
+# Verify PostgreSQL extensions
+mix ecto.migrate
+# Should auto-install: uuid-ossp, citext, vector
+```
+
+#### **Resource Validation**
+```bash
+# Validate resource definitions
+mix ash.codegen --check
+```
+
+This Ash-centric approach ensures type safety, automatic relationship management, and seamless AI/ML integration while maintaining database consistency across the agent swarm.
+
+---
+
 ## 7. AGENT INITIALIZATION & ROLE ASSIGNMENT
 
 When you start as a new Claude Code session, you must automatically determine your role using this intelligent assignment system:
@@ -261,10 +450,10 @@ The AI agent swarm is equipped with comprehensive slash commands that implement 
 
 ### 🤖 Agent Swarm Coordination Commands
 
-#### `/init-agent` - Agent Initialization & Role Assignment
+#### `/project:init-agent` - Agent Initialization & Role Assignment
 **Purpose**: Automatically determine and assign agent roles based on current system state.
 ```bash
-/init-agent
+/project:init-agent
 ```
 **Features**:
 - Reads `.claude_role_assignment` for current agent state
@@ -279,10 +468,10 @@ The AI agent swarm is equipped with comprehensive slash commands that implement 
 3. Assign next sequential role in active processes
 4. Default to PM_Agent for new processes
 
-#### `/create-aps` - APS Process Creation
+#### `/project:create-aps` - APS Process Creation
 **Purpose**: Generate structured APS YAML files for new processes.
 ```bash
-/create-aps [process_name] [description]
+/project:create-aps [process_name] [description]
 # Interactive mode if no arguments provided
 ```
 **Features**:
@@ -451,63 +640,63 @@ The AI agent swarm is equipped with comprehensive slash commands that implement 
 ### Agent Initialization Flow
 ```bash
 # 1. Initialize agent and determine role
-/init-agent
+/project:init-agent
 
 # 2. Check for pending work and coordination needs
-/check-handoffs
+/project:check-handoffs
 
 # 3. Claim specific work or create new process
-/claim-work [process_id]
+/project:claim-work [process_id]
 # OR
-/create-aps [new_process_name]
+/project:create-aps [new_process_name]
 
 # 4. Work on assigned tasks with appropriate tools
-/tdd-workflow          # For development work
-/debug-with-claude     # For troubleshooting
-/memory-workflow       # For documentation
+/project:tdd-cycle          # For development work
+/project:debug-system       # For troubleshooting
+/project:memory-session     # For documentation
 
 # 5. Coordinate with other agents
-/send-message [recipient] [subject] [content]
+/project:send-message [recipient] [subject] [content]
 
 # 6. Hand off completed work
-/check-handoffs        # Verify completion and next steps
+/project:check-handoffs     # Verify completion and next steps
 ```
 
 ### Development Workflow Integration
 ```bash
 # System health check before starting
-/system-status
+/project:system-health
 
 # TDD cycle for new features
-/tdd-workflow
+/project:tdd-cycle
 
 # Debug issues as they arise
-/debug-with-claude
+/project:debug-system
 
 # Document patterns and learnings
-/memory-workflow
+/project:memory-session
 
 # Coordinate with QA and DevOps
-/send-message QA_Agent "Feature Ready" "Implementation complete, tests passing"
+/project:send-message QA_Agent "Feature Ready" "Implementation complete, tests passing"
 ```
 
 ### Continuous Improvement Loop
 ```bash
 # Discover improvement opportunities
-/discover-improvements
+/project:discover-enhancements
 
 # Log hypotheses for testing
-/memory-workflow  # Select option 5: Log Improvement Hypotheses
+/project:memory-session  # Select option 5: Log Improvement Hypotheses
 
 # Implement improvements
-/implement-enhancement
+/project:implement-enhancement
 
 # Monitor system health
-/system-status
-/workflow-health
+/project:system-health
+/project:workflow-health
 
 # Update documentation
-/memory-workflow  # Select option 2: Update CLAUDE.md Documentation
+/project:memory-session  # Select option 2: Update CLAUDE.md Documentation
 ```
 
 ## 12. BEST PRACTICES FROM ANTHROPIC TEAMS
@@ -543,3 +732,45 @@ The AI agent swarm is equipped with comprehensive slash commands that implement 
 ---
 
 **Remember**: This constitution is immutable. All agents must strictly adhere to these protocols to ensure effective swarm coordination and successful system evolution. The slash commands are tools to implement these protocols efficiently while maintaining the integrity of the APS workflow.
+
+## 13. COMPLETE COMMAND REFERENCE
+
+### 🤖 Agent Swarm Coordination Commands
+- **`/project:init-agent`** - Initialize agent role and join swarm coordination system
+- **`/project:create-aps`** - Create new APS process specification for workflow coordination
+- **`/project:claim-work`** - Claim specific APS process to prevent agent conflicts
+- **`/project:send-message`** - Send structured message to another agent following APS protocol
+- **`/project:check-handoffs`** - Monitor pending work and inter-agent coordination status
+
+### 🛠️ Development & Debugging Commands
+- **`/project:debug-system`** - AI-assisted debugging across Phoenix, n8n, and infrastructure
+- **`/project:tdd-cycle`** - Test-driven development workflow following TDD best practices
+- **`/project:system-health`** - Comprehensive system status and health monitoring
+
+### 🚀 Enhancement & Optimization Commands
+- **`/project:discover-enhancements`** - AI-powered system improvement identification
+- **`/project:implement-enhancement`** - Automated enhancement implementation with quality gates
+- **`/project:next-enhancement`** - Get prioritized improvement recommendations
+- **`/project:workflow-health`** - n8n workflow engine monitoring and analysis
+
+### 🧠 Memory & Documentation Commands
+- **`/project:memory-session`** - Session memory and knowledge management for continuity
+
+### ⚡ Autonomous Operation Commands
+- **`/project:auto`** - Autonomous AI agent: analyze system state, think strategically, and act
+- **`/project:help`** - Show help and documentation for all available commands
+
+### Command Usage Syntax
+All commands follow the pattern: `/project:[command-name] [optional-arguments]`
+
+Examples:
+```bash
+/project:init-agent                           # No arguments - auto-determine role
+/project:create-aps "Login_Feature" "User authentication system"
+/project:claim-work 001                       # Claim specific process ID
+/project:send-message Developer_Agent "Bug Report" "Found issue in auth module"
+/project:debug-system phoenix                 # Debug specific component
+/project:auto performance                     # Focus autonomous mode on performance
+```
+
+The commands are implemented as Markdown files in `.claude/commands/` directory and leverage Claude Code's project-scoped slash command system for seamless integration with the AI agent swarm coordination protocol.
