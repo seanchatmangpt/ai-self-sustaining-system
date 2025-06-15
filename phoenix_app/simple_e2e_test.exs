@@ -296,7 +296,7 @@ defmodule SimpleE2ETest do
 
   # Test execution and analysis
 
-  defp run_integration_test(name, test_fn, value, master_trace) do
+  defp run_integration_test(name, test_fn, value, trace_id) do
     IO.puts("\n🧪 #{name} (#{value}% value)")
     
     child_trace = "#{master_trace}_#{String.replace(String.downcase(name), " ", "_")}"

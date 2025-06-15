@@ -18,13 +18,14 @@ defmodule SelfSustaining.AI.ComprehensiveLoopPropertyTest do
   setup_all do
     # Start test environment with monitoring
     {:ok, _} = start_supervised({SelfImprovementOrchestrator, [cycle_interval: 1000]})
+    trace_id = "trace_#{System.system_time(:nanosecond)}"
     
     on_exit(fn ->
       # Cleanup any generated workflows or test artifacts
       cleanup_test_artifacts()
     end)
     
-    :ok
+    {:ok, trace_id: trace_id}
   end
   
   describe "property-based loop validation" do

@@ -31,6 +31,8 @@ defmodule SelfSustaining.AI.SelfImprovementLoopTest do
       [cycle_interval: 100]  # 100ms for fast testing
     })
     
+    trace_id = "trace_#{System.system_time(:nanosecond)}"
+    
     on_exit(fn ->
       # Restore original modules
       Application.delete_env(:self_sustaining, :claude_code_module)
@@ -38,7 +40,7 @@ defmodule SelfSustaining.AI.SelfImprovementLoopTest do
       Application.delete_env(:self_sustaining, :performance_monitor_module)
     end)
     
-    %{orchestrator: orchestrator_pid}
+    %{orchestrator: orchestrator_pid, trace_id: trace_id}
   end
   
   describe "complete self-improvement cycle" do

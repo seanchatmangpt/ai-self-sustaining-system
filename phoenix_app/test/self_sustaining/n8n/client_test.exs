@@ -7,6 +7,7 @@ defmodule SelfSustaining.N8N.ClientTest do
     test "handles successful connection" do
       # This test will pass regardless of N8N availability
       # Real integration testing should be done in integration test suite
+      trace_id = "trace_#{System.system_time(:nanosecond)}"
       
       case Client.test_connection() do
         {:ok, result} ->

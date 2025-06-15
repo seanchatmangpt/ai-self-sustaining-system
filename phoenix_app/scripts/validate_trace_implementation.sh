@@ -305,6 +305,18 @@ check_test_coverage() {
     
     print_status "INFO" "Found $trace_test_files test files with trace_id tests out of $total_test_files total"
     
+    # Check for adequate test coverage percentage
+    if [[ $total_test_files -gt 0 ]]; then
+        local test_coverage=$((trace_test_files * 100 / total_test_files))
+        if [[ $test_coverage -ge 30 ]]; then
+            print_status "PASS" "Adequate trace test coverage ($test_coverage% of test files)"
+        elif [[ $test_coverage -ge 20 ]]; then
+            print_status "WARN" "Moderate trace test coverage ($test_coverage% of test files)"
+        else
+            print_status "FAIL" "Insufficient trace test coverage ($test_coverage% of test files)"
+        fi
+    fi
+    
     # Check for specific test patterns
     local test_patterns=(
         "trace.*consistency"
@@ -335,6 +347,31 @@ check_test_coverage() {
     else
         print_status "WARN" "No property-based trace tests found"
     fi
+    
+    # Check for integration test patterns
+    local integration_tests=$(find . -name "*test*.exs" | xargs grep -l "integration.*test\|e2e.*test\|end.*to.*end" 2>/dev/null || true)
+    local integration_with_trace=0
+    local integration_total=0
+    
+    for file in $integration_tests; do
+        if grep -q "trace_id" "$file"; then
+            integration_with_trace=$((integration_with_trace + 1))
+        fi
+        integration_total=$((integration_total + 1))
+    done
+    
+    if [[ $integration_total -gt 0 ]]; then
+        local integration_coverage=$((integration_with_trace * 100 / integration_total))
+        if [[ $integration_coverage -ge 70 ]]; then
+            print_status "PASS" "Integration tests have good trace coverage ($integration_with_trace/$integration_total files)"
+        elif [[ $integration_coverage -ge 40 ]]; then
+            print_status "WARN" "Integration tests have partial trace coverage ($integration_with_trace/$integration_total files)"
+        else
+            print_status "FAIL" "Integration tests missing trace coverage ($integration_with_trace/$integration_total files)"
+        fi
+    else
+        print_status "PASS" "No integration tests requiring trace coverage found"
+    fi
 }
 
 # Function to check error handling patterns
@@ -363,6 +400,31 @@ check_error_handling() {
         print_status "PASS" "Files with error handling include trace context"
     else
         print_status "INFO" "Files with error handling that might need trace context" "${missing_trace_errors[*]}"
+    fi
+    
+    # Check for trace context in GenServer operations
+    local genserver_files=$(find lib/ -name "*.ex" | xargs grep -l "GenServer\\.call\\|GenServer\\.cast" 2>/dev/null || true)
+    local genserver_with_trace=0
+    local genserver_total=0
+    
+    for file in $genserver_files; do
+        if grep -q "trace_id\\|context" "$file"; then
+            genserver_with_trace=$((genserver_with_trace + 1))
+        fi
+        genserver_total=$((genserver_total + 1))
+    done
+    
+    if [[ $genserver_total -gt 0 ]]; then
+        local genserver_coverage=$((genserver_with_trace * 100 / genserver_total))
+        if [[ $genserver_coverage -ge 70 ]]; then
+            print_status "PASS" "GenServer operations have good trace context ($genserver_with_trace/$genserver_total files)"
+        elif [[ $genserver_coverage -ge 40 ]]; then
+            print_status "WARN" "GenServer operations have partial trace context ($genserver_with_trace/$genserver_total files)"
+        else
+            print_status "FAIL" "GenServer operations missing trace context ($genserver_with_trace/$genserver_total files)"
+        fi
+    else
+        print_status "PASS" "No GenServer operations requiring trace context found"
     fi
     
     # Focus on super-critical Logger calls (coordination, middleware, error recovery)
@@ -480,6 +542,189 @@ check_configuration() {
         print_status "PASS" "Application-level trace support configured"
     else
         print_status "WARN" "No application-level trace support found in configuration"
+    fi
+    
+    # Check for trace context in async operations (Task.async, GenServer.cast, etc.)
+    local async_files=$(find lib/ -name "*.ex" | xargs grep -l "Task\.async\|GenServer\.cast\|Process\.send" 2>/dev/null || true)
+    local async_with_trace=0
+    local async_total=0
+    
+    for file in $async_files; do
+        local async_calls=$(grep -n "Task\.async\|GenServer\.cast\|Process\.send" "$file" | wc -l)
+        local trace_context=$(grep -n "trace_id\|context" "$file" | wc -l)
+        
+        async_total=$((async_total + async_calls))
+        if [[ $trace_context -gt 0 ]]; then
+            async_with_trace=$((async_with_trace + async_calls))
+        fi
+    done
+    
+    if [[ $async_total -gt 0 ]]; then
+        local async_coverage=$((async_with_trace * 100 / async_total))
+        if [[ $async_coverage -ge 60 ]]; then
+            print_status "PASS" "Async operations have good trace context coverage ($async_with_trace/$async_total = $async_coverage%)"
+        elif [[ $async_coverage -ge 30 ]]; then
+            print_status "WARN" "Async operations have partial trace context ($async_with_trace/$async_total = $async_coverage%)"
+        else
+            print_status "INFO" "Async operations with limited trace context ($async_with_trace/$async_total = $async_coverage%) - acceptable for simple operations"
+        fi
+    else
+        print_status "PASS" "No complex async operations requiring trace context found"
+    fi
+    
+    # Check for database operations with trace context
+    local db_files=$(find lib/ -name "*.ex" | xargs grep -l "Repo\\." 2>/dev/null || true)
+    local db_with_trace=0
+    local db_total=0
+    
+    for file in $db_files; do
+        if grep -q "trace_id\\|context" "$file"; then
+            db_with_trace=$((db_with_trace + 1))
+        fi
+        db_total=$((db_total + 1))
+    done
+    
+    if [[ $db_total -gt 0 ]]; then
+        local db_coverage=$((db_with_trace * 100 / db_total))
+        if [[ $db_coverage -ge 60 ]]; then
+            print_status "PASS" "Database operations have good trace context ($db_with_trace/$db_total files)"
+        elif [[ $db_coverage -ge 30 ]]; then
+            print_status "WARN" "Database operations have partial trace context ($db_with_trace/$db_total files)"
+        else
+            print_status "FAIL" "Database operations missing trace context ($db_with_trace/$db_total files)"
+        fi
+    else
+        print_status "PASS" "No database operations requiring trace context found"
+    fi
+    
+    # Check for HTTP client operations with trace context
+    local http_files=$(find lib/ -name "*.ex" | xargs grep -l "HTTPoison\\|Tesla\\|Finch\\|Req\\." 2>/dev/null || true)
+    local http_with_trace=0
+    local http_total=0
+    
+    for file in $http_files; do
+        if grep -q "trace_id\\|x-trace-id" "$file"; then
+            http_with_trace=$((http_with_trace + 1))
+        fi
+        http_total=$((http_total + 1))
+    done
+    
+    if [[ $http_total -gt 0 ]]; then
+        local http_coverage=$((http_with_trace * 100 / http_total))
+        if [[ $http_coverage -ge 60 ]]; then
+            print_status "PASS" "HTTP client operations have good trace context ($http_with_trace/$http_total files)"
+        elif [[ $http_coverage -ge 30 ]]; then
+            print_status "WARN" "HTTP client operations have partial trace context ($http_with_trace/$http_total files)"
+        else
+            print_status "FAIL" "HTTP client operations missing trace context ($http_with_trace/$http_total files)"
+        fi
+    else
+        print_status "PASS" "No HTTP client operations requiring trace context found"
+    fi
+    
+    # Check for trace context in process supervision and spawning
+    local supervision_files=$(find lib/ -name "*.ex" | xargs grep -l "Supervisor\\.start_link\\|DynamicSupervisor\\|Process\\.spawn" 2>/dev/null || true)
+    local supervision_with_trace=0
+    local supervision_total=0
+    
+    for file in $supervision_files; do
+        if grep -q "trace_id\\|context" "$file"; then
+            supervision_with_trace=$((supervision_with_trace + 1))
+        fi
+        supervision_total=$((supervision_total + 1))
+    done
+    
+    if [[ $supervision_total -gt 0 ]]; then
+        local supervision_coverage=$((supervision_with_trace * 100 / supervision_total))
+        if [[ $supervision_coverage -ge 60 ]]; then
+            print_status "PASS" "Process supervision has good trace context ($supervision_with_trace/$supervision_total files)"
+        elif [[ $supervision_coverage -ge 30 ]]; then
+            print_status "WARN" "Process supervision has partial trace context ($supervision_with_trace/$supervision_total files)"
+        else
+            print_status "FAIL" "Process supervision missing trace context ($supervision_with_trace/$supervision_total files)"
+        fi
+    else
+        print_status "PASS" "No complex process supervision requiring trace context found"
+    fi
+    
+    # Check for production-ready error boundaries with trace context
+    local error_boundary_patterns=$(find lib/ -name "*.ex" | xargs grep -l "try.*do\\|rescue.*->\\|catch.*->" 2>/dev/null || true)
+    local boundaries_with_trace=0
+    local boundaries_total=0
+    
+    for file in $error_boundary_patterns; do
+        # Only count files that have significant error handling (more than just basic try/rescue)
+        local error_blocks=$(grep -c "rescue\|catch" "$file" 2>/dev/null || echo "0")
+        error_blocks=$(echo "$error_blocks" | head -1)  # Take first line only
+        if [[ "${error_blocks:-0}" -ge 2 ]]; then
+            boundaries_total=$((boundaries_total + 1))
+            if grep -q "trace_id" "$file"; then
+                boundaries_with_trace=$((boundaries_with_trace + 1))
+            fi
+        fi
+    done
+    
+    if [[ $boundaries_total -gt 0 ]]; then
+        local boundary_coverage=$((boundaries_with_trace * 100 / boundaries_total))
+        if [[ $boundary_coverage -ge 70 ]]; then
+            print_status "PASS" "Error boundaries have good trace context ($boundaries_with_trace/$boundaries_total files)"
+        elif [[ $boundary_coverage -ge 40 ]]; then
+            print_status "WARN" "Error boundaries have partial trace context ($boundaries_with_trace/$boundaries_total files)"
+        else
+            print_status "FAIL" "Error boundaries missing trace context ($boundaries_with_trace/$boundaries_total files)"
+        fi
+    else
+        print_status "PASS" "No complex error boundaries requiring trace context found"
+    fi
+    
+    # Check for performance-critical operations with trace context
+    local perf_files=$(find lib/ -name "*.ex" | xargs grep -l "Enum\.reduce\\|Stream\\|Flow\\|Task\.async_stream" 2>/dev/null || true)
+    local perf_with_trace=0
+    local perf_total=0
+    
+    for file in $perf_files; do
+        if grep -q "trace_id\\|context" "$file"; then
+            perf_with_trace=$((perf_with_trace + 1))
+        fi
+        perf_total=$((perf_total + 1))
+    done
+    
+    if [[ $perf_total -gt 0 ]]; then
+        local perf_coverage=$((perf_with_trace * 100 / perf_total))
+        if [[ $perf_coverage -ge 50 ]]; then
+            print_status "PASS" "Performance-critical operations have trace context ($perf_with_trace/$perf_total files)"
+        elif [[ $perf_coverage -ge 25 ]]; then
+            print_status "WARN" "Performance-critical operations have partial trace context ($perf_with_trace/$perf_total files)"
+        else
+            print_status "FAIL" "Performance-critical operations missing trace context ($perf_with_trace/$perf_total files)"
+        fi
+    else
+        print_status "PASS" "No performance-critical operations requiring trace context found"
+    fi
+    
+    # Check for Phoenix endpoint/controller trace integration
+    local web_files=$(find lib/ -name "*.ex" | xargs grep -l "Phoenix\\.Controller\\|plug\\|Phoenix\\.Endpoint" 2>/dev/null || true)
+    local web_with_trace=0
+    local web_total=0
+    
+    for file in $web_files; do
+        if grep -q "trace_id\\|x-trace-id" "$file"; then
+            web_with_trace=$((web_with_trace + 1))
+        fi
+        web_total=$((web_total + 1))
+    done
+    
+    if [[ $web_total -gt 0 ]]; then
+        local web_coverage=$((web_with_trace * 100 / web_total))
+        if [[ $web_coverage -ge 40 ]]; then
+            print_status "PASS" "Web layer operations have trace context ($web_with_trace/$web_total files)"
+        elif [[ $web_coverage -ge 20 ]]; then
+            print_status "WARN" "Web layer operations have partial trace context ($web_with_trace/$web_total files)"
+        else
+            print_status "FAIL" "Web layer operations missing trace context ($web_with_trace/$web_total files)"
+        fi
+    else
+        print_status "PASS" "No web layer operations requiring trace context found"
     fi
 }
 

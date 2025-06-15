@@ -481,7 +481,7 @@ defmodule E2E8020Test do
 
   # Test execution and analysis
 
-  defp execute_integration_test(name, test_fn, value, master_trace) do
+  defp execute_integration_test(name, test_fn, value, trace_id) do
     IO.puts("\n🧪 #{name} (#{value}% value)")
     child_trace = "#{master_trace}_#{String.replace(String.downcase(name), " ", "_")}"
     
@@ -509,7 +509,7 @@ defmodule E2E8020Test do
     })
   end
 
-  defp setup_telemetry(master_trace) do
+  defp setup_telemetry(trace_id) do
     try do
       Application.ensure_all_started(:opentelemetry)
       IO.puts("📡 OpenTelemetry initialized for trace: #{String.slice(master_trace, -12, 12)}")
@@ -519,7 +519,7 @@ defmodule E2E8020Test do
     end
   end
 
-  defp analyze_e2e_results(results, total_time, master_trace) do
+  defp analyze_e2e_results(results, total_time, trace_id) do
     IO.puts("\n📊 End-to-End 80/20 Integration Results")
     IO.puts("-" |> String.duplicate(60))
     

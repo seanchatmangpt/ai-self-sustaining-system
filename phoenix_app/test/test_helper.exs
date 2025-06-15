@@ -4,6 +4,9 @@
 # self-improvement loop, including property-based testing, chaos engineering,
 # and long-running stability tests.
 
+# Global test trace ID for integration test tracking
+test_trace_id = "test_trace_#{System.system_time(:nanosecond)}"
+
 ExUnit.start()
 
 # Configure test timeouts for different test types

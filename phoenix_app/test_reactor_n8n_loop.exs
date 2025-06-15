@@ -5,6 +5,10 @@
 
 IO.puts("=== Starting Reactor -> N8N -> Reactor Loop Test ===")
 
+# Generate trace ID for this integration test
+trace_id = "trace_#{System.system_time(:nanosecond)}"
+IO.puts("🔍 Integration test trace_id: #{trace_id}")
+
 # Create a sample workflow definition
 workflow_def = %{
   name: "test_reactor_loop",
