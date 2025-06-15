@@ -53,10 +53,12 @@ defmodule SelfSustaining.MixProject do
       
       # Reactor for workflow orchestration
       {:reactor, "~> 0.15.4"},
+      {:reactor_req, "~> 0.1.4"},
       
       # Additional dependencies
       {:tidewave, "~> 0.1"},
       {:httpoison, "~> 2.0"},
+      {:req, "~> 0.5.0"},
       {:file_system, "~> 1.0"},
       {:cachex, "~> 3.6"},
       {:yaml_elixir, "~> 2.9"},

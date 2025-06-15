@@ -5,5 +5,26 @@
     "agent_id": "agent_1750004228737440000",
     "result": "success",
     "velocity_points": 3
+  },
+  {
+    "work_item_id": "work_1750005223118853000",
+    "completed_at": "2025-06-15T16:34:34Z",
+    "agent_id": "agent_1750005274558791000",
+    "result": "success",
+    "velocity_points": 8
+  },
+  {
+    "work_item_id": "work_1750005206593715000",
+    "completed_at": "2025-06-15T16:34:47Z",
+    "agent_id": "agent_1750005287494303000",
+    "result": "success",
+    "velocity_points": 12
+  },
+  {
+    "work_item_id": "work_1750005214900569000",
+    "completed_at": "2025-06-15T16:34:55Z",
+    "agent_id": "agent_1750005295320261000",
+    "result": "success",
+    "velocity_points": 10
   }
 ]

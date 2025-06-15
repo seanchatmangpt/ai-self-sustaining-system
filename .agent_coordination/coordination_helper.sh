@@ -256,6 +256,487 @@ update_team_velocity() {
     echo "$(date -u +%Y-%m-%dT%H:%M:%SZ): Team $team +$points velocity points" >> "$COORDINATION_DIR/velocity_log.txt"
 }
 
+# ============================================================================
+# CLAUDE INTELLIGENCE INTEGRATION - Unix-style utility for S@S coordination
+# ============================================================================
+
+# Claude-powered intelligent work prioritization with structured output
+claude_analyze_work_priorities() {
+    local work_claims_path="$COORDINATION_DIR/$WORK_CLAIMS_FILE"
+    
+    echo "🧠 Claude Intelligence: Analyzing work priorities with structured output..."
+    
+    if [ ! -f "$work_claims_path" ] || [ ! -s "$work_claims_path" ]; then
+        echo "📊 No active work items to analyze"
+        return 0
+    fi
+    
+    # Enhanced structured prompt with JSON schema specification
+    local priority_analysis
+    priority_analysis=$(cat "$work_claims_path" | claude -p "
+Analyze this Scrum at Scale work coordination data and provide intelligent prioritization recommendations.
+
+Context: This is a JSON array of active work items in an AI agent swarm using nanosecond-precision coordination.
+
+REQUIRED OUTPUT SCHEMA:
+{
+  \"analysis_timestamp\": \"ISO_8601_timestamp\",
+  \"system_health\": \"healthy|degraded|critical\",
+  \"priorities\": {
+    \"critical\": [\"work_item_id_1\", \"work_item_id_2\"],
+    \"high\": [\"work_item_id_3\"],
+    \"medium\": [\"work_item_id_4\", \"work_item_id_5\"],
+    \"low\": [\"work_item_id_6\"]
+  },
+  \"recommendations\": {
+    \"immediate\": [\"action_1\", \"action_2\"],
+    \"short_term\": [\"action_3\"],
+    \"long_term\": [\"action_4\"]
+  },
+  \"team_formation\": {
+    \"suggested_teams\": [
+      {\"team_name\": \"string\", \"focus\": \"string\", \"members_needed\": number}
+    ]
+  },
+  \"bottlenecks\": [
+    {\"type\": \"coordination|resource|dependency\", \"description\": \"string\", \"severity\": \"low|medium|high\"}
+  ],
+  \"confidence_score\": number_0_to_1
+}
+
+Output ONLY valid JSON matching this exact schema.
+" --output-format json 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ -n "$priority_analysis" ]; then
+        # Validate JSON structure before saving
+        if echo "$priority_analysis" | jq empty 2>/dev/null; then
+            echo "✅ Claude Priority Analysis Complete with validated JSON"
+            echo "$priority_analysis" > "$COORDINATION_DIR/claude_priority_analysis.json"
+            
+            # Extract and display immediate actions using structured output
+            local immediate_actions
+            immediate_actions=$(echo "$priority_analysis" | jq -r '.recommendations.immediate[]? // empty' 2>/dev/null)
+            if [ -n "$immediate_actions" ]; then
+                echo "⚡ IMMEDIATE ACTIONS RECOMMENDED:"
+                echo "$immediate_actions" | sed 's/^/  • /'
+            fi
+            return 0
+        else
+            echo "⚠️ Claude returned invalid JSON - using fallback analysis"
+            claude_fallback_priority_analysis "$work_claims_path"
+            return 1
+        fi
+    else
+        echo "⚠️ Claude analysis unavailable - using fallback prioritization"
+        claude_fallback_priority_analysis "$work_claims_path"
+        return 1
+    fi
+}
+
+# Fallback priority analysis when Claude is unavailable
+claude_fallback_priority_analysis() {
+    local work_claims_path="$1"
+    
+    echo "🔄 Using fallback priority analysis..."
+    
+    # Create basic JSON structure using shell commands and jq
+    local fallback_analysis
+    fallback_analysis=$(cat <<EOF
+{
+  "analysis_timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "system_health": "unknown",
+  "priorities": {
+    "critical": $(jq '[.[] | select(.priority == "critical") | .work_item_id]' "$work_claims_path" 2>/dev/null || echo "[]"),
+    "high": $(jq '[.[] | select(.priority == "high") | .work_item_id]' "$work_claims_path" 2>/dev/null || echo "[]"),
+    "medium": $(jq '[.[] | select(.priority == "medium") | .work_item_id]' "$work_claims_path" 2>/dev/null || echo "[]"),
+    "low": $(jq '[.[] | select(.priority == "low") | .work_item_id]' "$work_claims_path" 2>/dev/null || echo "[]")
+  },
+  "recommendations": {
+    "immediate": ["Review critical priority items", "Check system coordination"],
+    "short_term": ["Balance workload distribution"],
+    "long_term": ["Optimize team formation"]
+  },
+  "team_formation": {
+    "suggested_teams": []
+  },
+  "bottlenecks": [],
+  "confidence_score": 0.3
+}
+EOF
+    )
+    
+    echo "$fallback_analysis" > "$COORDINATION_DIR/claude_priority_analysis.json"
+    echo "📋 Fallback analysis saved with basic prioritization"
+}
+
+# Real-time Claude intelligence stream for live coordination
+claude_realtime_coordination_stream() {
+    local focus_area="$1"
+    local max_duration="${2:-30}"  # seconds
+    
+    echo "🔄 Starting real-time Claude coordination stream for $max_duration seconds..."
+    
+    # Combine multiple coordination files for comprehensive analysis
+    local combined_data
+    combined_data=$(cat <<EOF
+{
+  "work_claims": $(cat "$COORDINATION_DIR/$WORK_CLAIMS_FILE" 2>/dev/null || echo "[]"),
+  "agent_status": $(cat "$COORDINATION_DIR/$AGENT_STATUS_FILE" 2>/dev/null || echo "[]"),
+  "coordination_log": $(cat "$COORDINATION_DIR/$COORDINATION_LOG_FILE" 2>/dev/null || echo "[]"),
+  "focus_area": "$focus_area",
+  "stream_start": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+    )
+    
+    # Use Claude with stream-json for real-time insights
+    echo "$combined_data" | claude -p "
+Provide real-time coordination insights for this AI agent swarm focusing on: $focus_area
+
+Monitor the coordination state and provide actionable insights in this JSON format:
+{
+  \"timestamp\": \"ISO_8601\",
+  \"focus_area\": \"$focus_area\",
+  \"urgent_actions\": [\"action1\", \"action2\"],
+  \"system_status\": \"optimal|warning|critical\",
+  \"next_recommendation\": \"specific_action\"
+}
+
+Keep responses concise and immediately actionable.
+" --output-format stream-json | while IFS= read -r line; do
+        # Process each streamed JSON response
+        if echo "$line" | jq empty 2>/dev/null; then
+            local timestamp=$(echo "$line" | jq -r '.timestamp // "unknown"')
+            local urgent_actions=$(echo "$line" | jq -r '.urgent_actions[]? // empty' | head -3)
+            local system_status=$(echo "$line" | jq -r '.system_status // "unknown"')
+            local next_rec=$(echo "$line" | jq -r '.next_recommendation // "continue monitoring"')
+            
+            echo "⚡ [$timestamp] Status: $system_status"
+            if [ -n "$urgent_actions" ]; then
+                echo "  🚨 Urgent: $urgent_actions"
+            fi
+            echo "  💡 Next: $next_rec"
+        fi
+    done &
+    
+    local stream_pid=$!
+    sleep "$max_duration"
+    kill "$stream_pid" 2>/dev/null
+    echo "✅ Real-time coordination stream completed"
+}
+
+# Unix-style utility: Pipe work data through Claude for instant analysis
+claude_pipe_analyzer() {
+    local analysis_type="${1:-general}"
+    
+    echo "🔍 Claude Pipe Analyzer ($analysis_type) - Reading from stdin..."
+    
+    # Read from stdin and analyze with Claude
+    local input_data
+    input_data=$(cat)
+    
+    if [ -z "$input_data" ]; then
+        echo "❌ No input data received"
+        return 1
+    fi
+    
+    # Determine analysis prompt based on type
+    local analysis_prompt
+    case "$analysis_type" in
+        "priorities")
+            analysis_prompt="Analyze this coordination data and list top 3 priority actions in JSON format: {\"actions\": [\"action1\", \"action2\", \"action3\"]}"
+            ;;
+        "bottlenecks")
+            analysis_prompt="Identify coordination bottlenecks in this data. Output JSON: {\"bottlenecks\": [{\"type\": \"string\", \"severity\": \"low|medium|high\", \"description\": \"string\"}]}"
+            ;;
+        "recommendations")
+            analysis_prompt="Provide immediate recommendations for this coordination state. Output JSON: {\"immediate\": [\"rec1\"], \"short_term\": [\"rec2\"], \"long_term\": [\"rec3\"]}"
+            ;;
+        *)
+            analysis_prompt="Analyze this coordination data and provide structured insights in JSON format with keys: status, issues, recommendations"
+            ;;
+    esac
+    
+    # Pipe through Claude with structured output
+    echo "$input_data" | claude -p "$analysis_prompt" --output-format json
+}
+
+# Enhanced Claude intelligence with error handling and retry logic
+claude_enhanced_analysis() {
+    local analysis_type="$1"
+    local input_file="$2"
+    local output_file="$3"
+    local max_retries="${4:-3}"
+    
+    echo "🧠 Enhanced Claude Analysis: $analysis_type"
+    
+    local retry_count=0
+    local success=false
+    
+    while [[ $retry_count -lt $max_retries ]] && [[ "$success" != "true" ]]; do
+        echo "🔄 Attempt $((retry_count + 1))/$max_retries"
+        
+        if cat "$input_file" | claude_pipe_analyzer "$analysis_type" > "$output_file" 2>/dev/null; then
+            # Validate output
+            if [ -s "$output_file" ] && jq empty "$output_file" 2>/dev/null; then
+                echo "✅ Analysis successful on attempt $((retry_count + 1))"
+                success=true
+            else
+                echo "⚠️ Invalid output on attempt $((retry_count + 1))"
+                ((retry_count++))
+                sleep 2
+            fi
+        else
+            echo "❌ Analysis failed on attempt $((retry_count + 1))"
+            ((retry_count++))
+            sleep 2
+        fi
+    done
+    
+    if [[ "$success" != "true" ]]; then
+        echo "❌ All attempts failed - generating fallback analysis"
+        echo '{"status": "fallback", "message": "Claude analysis unavailable", "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' > "$output_file"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Claude-powered team formation intelligence with enhanced structured output
+claude_suggest_team_formation() {
+    local agent_status_path="$COORDINATION_DIR/$AGENT_STATUS_FILE"
+    local work_claims_path="$COORDINATION_DIR/$WORK_CLAIMS_FILE"
+    
+    echo "👥 Claude Intelligence: Analyzing optimal team formation..."
+    
+    # Combine agent status and work claims for comprehensive analysis
+    local combined_data
+    combined_data=$(cat <<EOF
+{
+  "agent_status": $(cat "$agent_status_path" 2>/dev/null || echo "[]"),
+  "work_claims": $(cat "$work_claims_path" 2>/dev/null || echo "[]"),
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+    )
+    
+    # Use Claude for intelligent team formation analysis
+    local team_analysis
+    team_analysis=$(echo "$combined_data" | claude -p "
+Analyze this AI agent swarm coordination data to suggest optimal team formation for Scrum at Scale.
+
+The data includes current agent assignments and active work items. 
+
+Please provide:
+1. Current team utilization analysis
+2. Skill gap identification based on work types
+3. Optimal team rebalancing recommendations
+4. Cross-team dependency coordination suggestions
+5. Capacity planning for upcoming work
+6. Risk assessment for current team structure
+
+Focus on maximizing team velocity while maintaining quality and coordination efficiency.
+
+Output format: JSON with team formation recommendations and rationale.
+" --output-format json 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ -n "$team_analysis" ]; then
+        echo "✅ Claude Team Analysis Complete"
+        echo "$team_analysis" > "$COORDINATION_DIR/claude_team_analysis.json"
+        return 0
+    else
+        echo "⚠️ Claude team analysis unavailable - using current formation"
+        return 1
+    fi
+}
+
+# Claude-powered system health and coordination analysis
+claude_analyze_system_health() {
+    local coordination_log_path="$COORDINATION_DIR/$COORDINATION_LOG_FILE"
+    
+    echo "🔍 Claude Intelligence: Analyzing system health and coordination patterns..."
+    
+    # Combine all coordination data for comprehensive health analysis
+    local system_data
+    system_data=$(cat <<EOF
+{
+  "work_claims": $(cat "$COORDINATION_DIR/$WORK_CLAIMS_FILE" 2>/dev/null || echo "[]"),
+  "agent_status": $(cat "$COORDINATION_DIR/$AGENT_STATUS_FILE" 2>/dev/null || echo "[]"),
+  "coordination_log": $(cat "$coordination_log_path" 2>/dev/null || echo "[]"),
+  "velocity_log": "$(tail -10 "$COORDINATION_DIR/velocity_log.txt" 2>/dev/null || echo "")",
+  "analysis_timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+    )
+    
+    # Use Claude for comprehensive system health analysis
+    local health_analysis
+    health_analysis=$(echo "$system_data" | claude -p "
+Analyze this Scrum at Scale AI agent swarm coordination system health data.
+
+Please provide comprehensive analysis including:
+
+1. **Coordination Efficiency**:
+   - Work claiming conflicts and resolution times
+   - Agent coordination overhead and bottlenecks
+   - Cross-team dependency management effectiveness
+
+2. **Team Performance**:
+   - Velocity trends and consistency
+   - Work completion rates and quality
+   - Team utilization and capacity planning
+
+3. **System Reliability**:
+   - Agent availability and responsiveness  
+   - Coordination system stability
+   - Error rates and recovery patterns
+
+4. **Business Value Delivery**:
+   - PI objective progress assessment
+   - Sprint goal achievement likelihood
+   - Customer value delivery optimization
+
+5. **Recommendations**:
+   - Immediate actions for critical issues
+   - Medium-term optimizations
+   - Long-term architectural improvements
+
+Output format: JSON with detailed health analysis and prioritized recommendations.
+" --output-format json 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ -n "$health_analysis" ]; then
+        echo "✅ Claude System Health Analysis Complete"
+        echo "$health_analysis" > "$COORDINATION_DIR/claude_health_analysis.json"
+        
+        # Extract critical recommendations for immediate display
+        if command -v jq >/dev/null 2>&1; then
+            echo ""
+            echo "🚨 CRITICAL RECOMMENDATIONS:"
+            jq -r '.recommendations.immediate[]? // empty' "$COORDINATION_DIR/claude_health_analysis.json" 2>/dev/null | head -3 | sed 's/^/  ⚡ /'
+        fi
+        
+        return 0
+    else
+        echo "⚠️ Claude health analysis unavailable - using basic monitoring"
+        return 1
+    fi
+}
+
+# Claude-powered intelligent work claiming decision support
+claude_recommend_work_claim() {
+    local agent_id="${AGENT_ID:-$(generate_agent_id)}"
+    local requested_work_type="$1"
+    
+    echo "🎯 Claude Intelligence: Analyzing optimal work claim for agent $agent_id..."
+    
+    # Gather current system state for intelligent recommendation
+    local system_state
+    system_state=$(cat <<EOF
+{
+  "requesting_agent": "$agent_id",
+  "requested_work_type": "$requested_work_type",
+  "current_work_claims": $(cat "$COORDINATION_DIR/$WORK_CLAIMS_FILE" 2>/dev/null || echo "[]"),
+  "agent_status": $(cat "$COORDINATION_DIR/$AGENT_STATUS_FILE" 2>/dev/null || echo "[]"),
+  "system_timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
+    )
+    
+    # Use Claude for intelligent work recommendation
+    local work_recommendation
+    work_recommendation=$(echo "$system_state" | claude -p "
+Analyze this AI agent swarm state to recommend optimal work claiming strategy.
+
+Consider:
+1. Current team workload distribution
+2. Agent specialization and capabilities  
+3. Work type priority and urgency
+4. Cross-team dependencies and coordination needs
+5. Sprint goals and PI objective alignment
+
+Provide specific recommendation for this agent including:
+- Should they claim the requested work type or choose different work?
+- What priority level is most appropriate?
+- Which team assignment would be optimal?
+- Any coordination considerations or dependencies?
+- Risk assessment and mitigation strategies?
+
+Output format: JSON with specific work claiming recommendation and rationale.
+" --output-format json 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ -n "$work_recommendation" ]; then
+        echo "✅ Claude Work Recommendation Available"
+        echo "$work_recommendation" > "$COORDINATION_DIR/claude_work_recommendation_${agent_id}.json"
+        
+        # Extract key recommendation for immediate display
+        if command -v jq >/dev/null 2>&1; then
+            local recommended_action
+            recommended_action=$(jq -r '.recommendation.action // "proceed with requested work"' "$COORDINATION_DIR/claude_work_recommendation_${agent_id}.json" 2>/dev/null)
+            echo "💡 Recommendation: $recommended_action"
+        fi
+        
+        return 0
+    else
+        echo "⚠️ Claude work recommendation unavailable - proceeding with requested work"
+        return 1
+    fi
+}
+
+# Enhanced claim work function with Claude intelligence
+claim_work_with_intelligence() {
+    local work_type="$1"
+    local description="$2"
+    local priority="${3:-medium}"
+    local team="${4:-autonomous_team}"
+    
+    # Get Claude recommendation before claiming work
+    if claude_recommend_work_claim "$work_type"; then
+        echo "🤖 Proceeding with intelligent work claiming..."
+    fi
+    
+    # Use original claim_work function with potentially adjusted parameters
+    claim_work "$work_type" "$description" "$priority" "$team"
+}
+
+# Claude-powered coordination intelligence dashboard
+show_claude_intelligence_dashboard() {
+    echo ""
+    echo "🧠 CLAUDE INTELLIGENCE COORDINATION DASHBOARD"
+    echo "=============================================="
+    
+    # Show available Claude analysis files
+    echo ""
+    echo "📊 AVAILABLE INTELLIGENCE REPORTS:"
+    
+    local reports_found=0
+    
+    if [ -f "$COORDINATION_DIR/claude_priority_analysis.json" ]; then
+        echo "  🎯 Work Priority Analysis: Available"
+        reports_found=$((reports_found + 1))
+    fi
+    
+    if [ -f "$COORDINATION_DIR/claude_team_analysis.json" ]; then
+        echo "  👥 Team Formation Analysis: Available"
+        reports_found=$((reports_found + 1))
+    fi
+    
+    if [ -f "$COORDINATION_DIR/claude_health_analysis.json" ]; then
+        echo "  🔍 System Health Analysis: Available"
+        reports_found=$((reports_found + 1))
+    fi
+    
+    if [ "$reports_found" -eq 0 ]; then
+        echo "  📋 No intelligence reports available - run analysis commands to generate"
+    fi
+    
+    echo ""
+    echo "🚀 INTELLIGENCE COMMANDS:"
+    echo "  claude-analyze-priorities    - Analyze work priority optimization"
+    echo "  claude-suggest-teams        - Generate team formation recommendations"
+    echo "  claude-analyze-health       - Comprehensive system health analysis"
+    echo "  claude-recommend-work <type> - Get intelligent work claiming advice"
+}
+
 # Scrum at Scale dashboard
 show_scrum_dashboard() {
     echo "🚀 SCRUM AT SCALE DASHBOARD"
@@ -390,7 +871,7 @@ run_innovation_planning() {
     echo "=========================================="
     
     echo ""
-    echo "📅 IP Iteration Week: $(date +%Y-%m-%d) - $(date -d '+5 days' +%Y-%m-%d)"
+    echo "📅 IP Iteration Week: $(date +%Y-%m-%d) - $(date -v+5d +%Y-%m-%d 2>/dev/null || date +%Y-%m-%d)"
     echo "🎯 ART: AI Self-Sustaining Agile Release Train"
     
     echo ""
@@ -501,7 +982,7 @@ art_sync() {
     echo "🎯 PROGRAM RISKS AND DEPENDENCIES:"
     echo "  🔴 HIGH RISK: External API dependency for N8n integration"
     echo "     • Mitigation: Implement fallback coordination mechanism"
-    echo "     • Owner: Platform Team | Due: $(date -d '+3 days' +%Y-%m-%d)"
+    echo "     • Owner: Platform Team | Due: $(date -v+3d +%Y-%m-%d 2>/dev/null || date +%Y-%m-%d)"
     echo ""
     echo "  🟡 MEDIUM RISK: Agent coordination scalability at 1000+ agents"
     echo "     • Mitigation: Implement distributed coordination layer"
@@ -708,6 +1189,33 @@ case "${1:-help}" in
     "value-stream"|"vsm")
         value_stream_mapping
         ;;
+    "claude-analyze-priorities"|"claude-priorities")
+        claude_analyze_work_priorities
+        ;;
+    "claude-suggest-teams"|"claude-teams")
+        claude_suggest_team_formation
+        ;;
+    "claude-analyze-health"|"claude-health")
+        claude_analyze_system_health
+        ;;
+    "claude-recommend-work"|"claude-recommend")
+        claude_recommend_work_claim "$2"
+        ;;
+    "claude-dashboard"|"intelligence")
+        show_claude_intelligence_dashboard
+        ;;
+    "claim-intelligent"|"claim-ai")
+        claim_work_with_intelligence "$2" "$3" "$4" "$5"
+        ;;
+    "claude-stream"|"stream")
+        claude_realtime_coordination_stream "$2" "$3"
+        ;;
+    "claude-pipe"|"pipe")
+        claude_pipe_analyzer "$2"
+        ;;
+    "claude-enhanced"|"enhanced")
+        claude_enhanced_analysis "$2" "$3" "$4" "$5"
+        ;;
     "generate-id")
         generate_agent_id
         ;;
@@ -717,9 +1225,23 @@ case "${1:-help}" in
         echo ""
         echo "🎯 Work Management Commands:"
         echo "  claim <work_type> <description> [priority] [team]  - Claim work with nanosecond ID"
+        echo "  claim-intelligent <work_type> <description> [priority] [team] - AI-enhanced work claiming"
         echo "  progress <work_id> <percent> [status]              - Update work progress"  
         echo "  complete <work_id> [result] [velocity_points]      - Complete work and update velocity"
         echo "  register <agent_id> [team] [capacity] [spec]       - Register agent in Scrum team"
+        echo ""
+        echo "🧠 Claude Intelligence Commands:"
+        echo "  claude-analyze-priorities | claude-priorities      - AI work priority analysis with structured JSON"
+        echo "  claude-suggest-teams | claude-teams               - AI team formation recommendations"
+        echo "  claude-analyze-health | claude-health             - AI system health analysis"
+        echo "  claude-recommend-work <type> | claude-recommend   - AI work claiming advice"
+        echo "  claude-dashboard | intelligence                    - Show AI intelligence dashboard"
+        echo ""
+        echo "⚡ Enhanced Claude Utilities (Unix-style):"
+        echo "  claude-stream <focus> [duration] | stream         - Real-time coordination insights stream"
+        echo "  claude-pipe <analysis_type> | pipe                - Pipe data through Claude for analysis"
+        echo "  claude-enhanced <type> <input> <output> | enhanced - Enhanced analysis with retry logic"
+        echo "    Analysis types: priorities, bottlenecks, recommendations, general"
         echo ""
         echo "📊 Scrum at Scale Commands:"
         echo "  dashboard                                           - Show Scrum at Scale dashboard"
@@ -744,6 +1266,21 @@ case "${1:-help}" in
         echo "  ✅ Compatible with Reactor middleware telemetry"
         echo "  ✅ Team coordination and basic metrics tracking"
         echo "  ✅ jq-based JSON processing with fallback support"
+        echo "  ✅ Claude structured output with JSON schema validation"
+        echo "  ✅ Real-time intelligence streaming and Unix-style piping"
+        echo ""
+        echo "💡 Example Usage Patterns:"
+        echo "  # Real-time monitoring:"
+        echo "    ./coordination_helper.sh claude-stream performance 60"
+        echo ""
+        echo "  # Unix-style analysis pipeline:"
+        echo "    cat work_claims.json | ./coordination_helper.sh claude-pipe priorities"
+        echo ""
+        echo "  # Enhanced analysis with retry:"
+        echo "    ./coordination_helper.sh claude-enhanced bottlenecks work_claims.json analysis.json"
+        echo ""
+        echo "  # Combined workflow:"
+        echo "    ./coordination_helper.sh claude-priorities && ./coordination_helper.sh claude-stream system 30"
         echo ""
         echo "Environment Variables:"
         echo "  AGENT_ID     - Nanosecond-based unique agent identifier"

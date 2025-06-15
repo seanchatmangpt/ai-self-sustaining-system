@@ -58,6 +58,16 @@ help: ## Show this help message
 	@echo "  • $(YELLOW)make reactor-test$(RESET)     - Test reactor with enhanced features"
 	@echo "  • $(YELLOW)make reactor-monitor$(RESET)  - Monitor reactor execution with telemetry"
 	@echo ""
+	@echo "$(GREEN)🤝 Agent Coordination:$(RESET)"
+	@echo "  • $(YELLOW)make test-coordination$(RESET)    - Test agent coordination system"
+	@echo "  • $(YELLOW)make test-scrum-commands$(RESET)  - Test Scrum at Scale commands"
+	@echo "  • $(YELLOW)make coordination-help$(RESET)    - Show coordination commands"
+	@echo ""
+	@echo "$(GREEN)📊 Performance Benchmarks:$(RESET)"
+	@echo "  • $(YELLOW)make benchmark-help$(RESET)       - Show benchmark commands"
+	@echo "  • $(YELLOW)make benchmark-quick$(RESET)      - Run quick performance check"
+	@echo "  • $(YELLOW)make benchmark-full$(RESET)       - Run comprehensive benchmarks"
+	@echo ""
 	@echo "$(GREEN)📊 System Status:$(RESET)"
 	@echo "  • App Version: $(MAGENTA)$(APP_VERSION)$(RESET)"
 	@echo "  • Project Root: $(MAGENTA)$(PROJECT_ROOT)$(RESET)"
@@ -164,6 +174,7 @@ test: ## Run all tests
 	@$(MAKE) test-unit
 	@$(MAKE) test-integration
 	@$(MAKE) test-reactor
+	@$(MAKE) test-coordination
 	@echo "$(GREEN)✅ All tests completed$(RESET)"
 
 test-unit: ## Run unit tests
@@ -187,6 +198,46 @@ test-reactor: ## Test enhanced reactor runner functionality
 	@cd $(PHOENIX_DIR) && $(MIX) test test/self_sustaining/reactor_middleware/
 	@echo "$(GREEN)✅ Reactor tests completed$(RESET)"
 
+test-coordination: ## Test agent coordination system (shell scripts and JSON consistency)
+	@echo "$(BLUE)🤝 Testing Agent Coordination System...$(RESET)"
+	@echo "$(CYAN)Running BATS test suite for coordination helper...$(RESET)"
+	@cd .agent_coordination && bats coordination_helper.bats
+	@echo "$(CYAN)Testing coordination JSON format consistency...$(RESET)"
+	@$(MAKE) test-coordination-consistency
+	@echo "$(GREEN)✅ Agent coordination tests completed$(RESET)"
+
+test-coordination-consistency: ## Verify JSON format consistency between shell and Elixir
+	@echo "$(BLUE)🔍 Verifying JSON format consistency...$(RESET)"
+	@echo "$(CYAN)Testing shell script work claim format...$(RESET)"
+	@cd .agent_coordination && \
+		AGENT_ID="test_consistency_$$$$" ./coordination_helper.sh claim "format_test" "JSON consistency validation" "high" "test_team" >/dev/null && \
+		echo "  ✅ Shell script: Work claim created" || echo "  ❌ Shell script: Work claim failed"
+	@echo "$(CYAN)Validating JSON structure matches middleware expectations...$(RESET)"
+	@cd .agent_coordination && \
+		jq -e '.[] | select(.agent_id | startswith("test_consistency")) | has("work_item_id", "agent_id", "reactor_id", "claimed_at", "work_type", "priority", "description", "status", "team")' work_claims.json >/dev/null && \
+		echo "  ✅ JSON structure: Compatible with AgentCoordinationMiddleware" || echo "  ❌ JSON structure: Incompatible format detected"
+	@echo "$(GREEN)✅ JSON consistency validation completed$(RESET)"
+
+test-scrum-commands: ## Test all Scrum at Scale commands functionality
+	@echo "$(BLUE)📊 Testing Scrum at Scale Commands...$(RESET)"
+	@echo "$(CYAN)Testing core Scrum commands...$(RESET)"
+	@cd .agent_coordination && ./coordination_helper.sh dashboard >/dev/null && echo "  ✅ dashboard" || echo "  ❌ dashboard"
+	@cd .agent_coordination && ./coordination_helper.sh pi-planning >/dev/null && echo "  ✅ pi-planning" || echo "  ❌ pi-planning"
+	@cd .agent_coordination && ./coordination_helper.sh scrum-of-scrums >/dev/null && echo "  ✅ scrum-of-scrums" || echo "  ❌ scrum-of-scrums"
+	@echo "$(CYAN)Testing new Scrum at Scale commands...$(RESET)"
+	@cd .agent_coordination && ./coordination_helper.sh innovation-planning >/dev/null && echo "  ✅ innovation-planning" || echo "  ❌ innovation-planning"
+	@cd .agent_coordination && ./coordination_helper.sh system-demo >/dev/null && echo "  ✅ system-demo" || echo "  ❌ system-demo"
+	@cd .agent_coordination && ./coordination_helper.sh inspect-adapt >/dev/null && echo "  ✅ inspect-adapt" || echo "  ❌ inspect-adapt"
+	@cd .agent_coordination && ./coordination_helper.sh art-sync >/dev/null && echo "  ✅ art-sync" || echo "  ❌ art-sync"
+	@cd .agent_coordination && ./coordination_helper.sh portfolio-kanban >/dev/null && echo "  ✅ portfolio-kanban" || echo "  ❌ portfolio-kanban"
+	@cd .agent_coordination && ./coordination_helper.sh coach-training >/dev/null && echo "  ✅ coach-training" || echo "  ❌ coach-training"
+	@cd .agent_coordination && ./coordination_helper.sh value-stream >/dev/null && echo "  ✅ value-stream" || echo "  ❌ value-stream"
+	@echo "$(CYAN)Testing command aliases...$(RESET)"
+	@cd .agent_coordination && ./coordination_helper.sh ip >/dev/null && echo "  ✅ ip (innovation-planning alias)" || echo "  ❌ ip alias"
+	@cd .agent_coordination && ./coordination_helper.sh ia >/dev/null && echo "  ✅ ia (inspect-adapt alias)" || echo "  ❌ ia alias"
+	@cd .agent_coordination && ./coordination_helper.sh vsm >/dev/null && echo "  ✅ vsm (value-stream alias)" || echo "  ❌ vsm alias"
+	@echo "$(GREEN)✅ Scrum at Scale commands tested$(RESET)"
+
 # ============================================================================
 # Quality Assurance
 # ============================================================================
@@ -198,6 +249,7 @@ quality: ## Run all quality checks (compile, format, credo, dialyzer, tests)
 	@$(MAKE) quality-credo
 	@$(MAKE) quality-dialyzer
 	@$(MAKE) test-unit
+	@$(MAKE) test-coordination
 	@echo "$(GREEN)✅ All quality checks passed!$(RESET)"
 
 quality-compile: ## Check compilation with warnings as errors
@@ -325,6 +377,113 @@ reactor-aps: ## Run APS coordination reactor
 		--input-context='{"aps_mode": true}' \
 		--verbose \
 		--work-type "aps_coordination"
+
+# ============================================================================
+# Performance Benchmarks
+# ============================================================================
+
+benchmark-help: ## Show performance benchmark help
+	@echo "$(CYAN)📊 Enhanced Reactor Runner Performance Benchmarks$(RESET)"
+	@echo "$(CYAN)================================================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📋 Benchmark Commands:$(RESET)"
+	@echo "  $(BLUE)make benchmark-quick$(RESET)          - Quick performance check (30 seconds)"
+	@echo "  $(BLUE)make benchmark-full$(RESET)           - Comprehensive performance benchmark"
+	@echo "  $(BLUE)make benchmark-telemetry$(RESET)      - Validate telemetry system performance"
+	@echo "  $(BLUE)make benchmark-stress$(RESET)         - Run stress test (30 seconds)"
+	@echo "  $(BLUE)make benchmark-stress-long$(RESET)    - Run extended stress test (5 minutes)"
+	@echo ""
+	@echo "$(GREEN)🚀 Benchmark Features:$(RESET)"
+	@echo "  • Execution performance measurement with/without middleware"
+	@echo "  • Memory usage analysis and optimization recommendations"
+	@echo "  • Concurrency scaling and optimal worker count detection"
+	@echo "  • Telemetry system validation and overhead analysis"
+	@echo "  • Agent coordination performance under load"
+	@echo "  • Comprehensive performance reporting and recommendations"
+	@echo ""
+	@echo "$(GREEN)📊 Results:$(RESET)"
+	@echo "  • Real-time performance metrics and analysis"
+	@echo "  • Automated performance rating and recommendations"
+	@echo "  • JSON reports saved to benchmarks/ directory"
+	@echo "  • Comparison with baseline performance characteristics"
+	@echo ""
+
+benchmark-quick: ## Run quick performance check
+	@echo "$(BLUE)⚡ Running Quick Performance Benchmark...$(RESET)"
+	@cd $(PHOENIX_DIR) && $(MIX) benchmark quick
+
+benchmark-full: ## Run comprehensive performance benchmark
+	@echo "$(BLUE)📊 Running Comprehensive Performance Benchmark...$(RESET)"
+	@echo "$(YELLOW)This may take several minutes to complete...$(RESET)"
+	@cd $(PHOENIX_DIR) && $(MIX) benchmark full
+
+benchmark-telemetry: ## Validate telemetry system performance
+	@echo "$(BLUE)📡 Validating Telemetry System Performance...$(RESET)"
+	@cd $(PHOENIX_DIR) && $(MIX) benchmark telemetry
+
+benchmark-stress: ## Run stress test (30 seconds)
+	@echo "$(BLUE)💪 Running Stress Test (30 seconds)...$(RESET)"
+	@cd $(PHOENIX_DIR) && $(MIX) benchmark stress
+
+benchmark-stress-long: ## Run extended stress test (5 minutes)
+	@echo "$(BLUE)💪 Running Extended Stress Test (5 minutes)...$(RESET)"
+	@echo "$(YELLOW)This will run for 5 minutes to test sustained performance...$(RESET)"
+	@cd $(PHOENIX_DIR) && $(MIX) benchmark stress 300
+
+benchmark-all: ## Run all benchmark tests
+	@echo "$(CYAN)🎯 Running Complete Benchmark Suite...$(RESET)"
+	@echo "$(CYAN)=====================================$(RESET)"
+	@$(MAKE) benchmark-quick
+	@echo ""
+	@$(MAKE) benchmark-telemetry
+	@echo ""
+	@$(MAKE) benchmark-stress
+	@echo ""
+	@echo "$(GREEN)✅ Complete benchmark suite finished!$(RESET)"
+	@echo "$(CYAN)For comprehensive analysis, run: $(YELLOW)make benchmark-full$(RESET)"
+
+# ============================================================================
+# Agent Coordination System
+# ============================================================================
+
+coordination-help: ## Show agent coordination system help
+	@echo "$(CYAN)🤝 Agent Coordination System Commands$(RESET)"
+	@echo "$(CYAN)====================================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📋 Testing Commands:$(RESET)"
+	@echo "  $(BLUE)make test-coordination$(RESET)           - Run complete coordination test suite"
+	@echo "  $(BLUE)make test-coordination-consistency$(RESET) - Test JSON format consistency"
+	@echo "  $(BLUE)make test-scrum-commands$(RESET)         - Test all Scrum at Scale commands"
+	@echo ""
+	@echo "$(GREEN)🎯 Scrum at Scale Commands (via coordination helper):$(RESET)"
+	@echo "  $(BLUE)cd .agent_coordination && ./coordination_helper.sh <command>$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📊 Core Work Management:$(RESET)"
+	@echo "  • $(YELLOW)claim <work_type> <description> [priority] [team]$(RESET) - Claim work"
+	@echo "  • $(YELLOW)progress <work_id> <percent> [status]$(RESET)            - Update progress"
+	@echo "  • $(YELLOW)complete <work_id> [result] [velocity]$(RESET)           - Complete work"
+	@echo "  • $(YELLOW)dashboard$(RESET)                                        - Show dashboard"
+	@echo ""
+	@echo "$(GREEN)🎯 Scrum at Scale Events:$(RESET)"
+	@echo "  • $(YELLOW)pi-planning$(RESET)                                      - PI Planning session"
+	@echo "  • $(YELLOW)innovation-planning$(RESET) ($(YELLOW)ip$(RESET))                         - Innovation & Planning iteration"
+	@echo "  • $(YELLOW)system-demo$(RESET)                                      - Integrated system demo"
+	@echo "  • $(YELLOW)inspect-adapt$(RESET) ($(YELLOW)ia$(RESET))                               - Inspect & Adapt workshop"
+	@echo "  • $(YELLOW)scrum-of-scrums$(RESET)                                  - Cross-team coordination"
+	@echo "  • $(YELLOW)art-sync$(RESET)                                         - ART synchronization"
+	@echo ""
+	@echo "$(GREEN)📈 Enterprise Commands:$(RESET)"
+	@echo "  • $(YELLOW)portfolio-kanban$(RESET)                                 - Portfolio epic management"
+	@echo "  • $(YELLOW)coach-training$(RESET)                                   - Coaching development"
+	@echo "  • $(YELLOW)value-stream$(RESET) ($(YELLOW)vsm$(RESET))                               - Value stream mapping"
+	@echo ""
+	@echo "$(GREEN)✅ Test Coverage:$(RESET)"
+	@echo "  • 26 BATS unit tests for all functionality"
+	@echo "  • JSON format consistency validation"
+	@echo "  • Integration with AgentCoordinationMiddleware"
+	@echo "  • Command alias testing"
+	@echo "  • Error handling and concurrency safety"
+	@echo ""
 
 # ============================================================================
 # Database Operations

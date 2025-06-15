@@ -1,34 +1,69 @@
-Claim specific APS process for work to prevent conflicts between parallel agents.
+Autonomous work claiming using enterprise Scrum at Scale coordination system with nanosecond precision.
 
-Target process: $ARGUMENTS
+**No Arguments Required**: Agent swarm autonomously determines optimal work to claim based on system analysis, team capacity, and business value priorities.
 
-Steps:
-1. **List Available Processes**: Show all `*.aps.yaml` files with:
-   - Process name and current status
-   - Currently assigned agent (if any)
-   - Availability (claimed/unclaimed)
+**Intelligent Work Discovery and Claiming**:
 
-2. **Validate Selection**: Ensure the process is appropriate for your current agent role:
-   - PM_Agent: Can claim "initialized" processes
-   - Architect_Agent: Can claim "requirements_complete" processes  
-   - Developer_Agent: Can claim "architecture_complete" or "blocked" processes
-   - QA_Agent: Can claim "implementation_complete" processes
-   - DevOps_Agent: Can claim "testing_complete" processes
+1. **System State Analysis**: Automatically analyze current system state:
+   - Active work items and their priorities
+   - Team capacity and specialization requirements
+   - Sprint goals and PI objective progress
+   - Critical dependencies and blockers
+   - Customer value delivery opportunities (JTBD)
 
-3. **Check for Conflicts**: Verify no other agent has active claim on the same process
-
-4. **Add Claim Information**: Update APS file with:
-   ```yaml
-   claim:
-     claimed_by: "[session_id]"
-     agent_role: "[your_role]"
-     claimed_at: "[ISO_timestamp]"
-     estimated_completion: "[estimated_time]"
-     status: "claimed"
+2. **Priority-Based Work Selection**: Use intelligent ranking algorithm:
+   ```bash
+   # Autonomous work prioritization
+   work_priority_ranking() {
+       # Critical: PI objectives at risk
+       critical_pi_work=$(analyze_pi_objective_risks)
+       
+       # High: Sprint goal threatened
+       sprint_goal_work=$(analyze_sprint_goal_threats)
+       
+       # High: Customer value opportunities
+       customer_value_work=$(analyze_jtbd_opportunities)
+       
+       # Medium: Technical debt and quality
+       quality_improvement_work=$(analyze_quality_gaps)
+       
+       # Low: Proactive improvements
+       enhancement_work=$(analyze_improvement_opportunities)
+   }
    ```
 
-5. **Provide Task Guidance**: Show role-specific tasks and next steps based on the process status
+3. **Enterprise Coordination Claiming**: Use S@S coordination system:
+   ```bash
+   # Claim work through enterprise coordination
+   claim_optimal_work() {
+       local agent_id="auto_$(date +%s%N)"
+       local coordination_dir="/.agent_coordination"
+       
+       # Claim highest priority available work
+       AGENT_ID="$agent_id" "$coordination_dir/coordination_helper.sh" claim \
+           "$optimal_work_type" \
+           "$work_description" \
+           "$priority_level" \
+           "$team_assignment"
+   }
+   ```
 
-6. **Update Assignment**: Record claim in `.claude_role_assignment` system
+4. **Atomic Work Assignment**: Guarantee zero conflicts:
+   - Nanosecond-precision agent IDs ensure uniqueness
+   - File-based atomic locking prevents race conditions
+   - Real-time coordination state synchronization
+   - Automatic conflict detection and resolution
 
-Follow work claiming protocol from CLAUDE.md section 8 to ensure proper coordination.
+5. **Team Coordination Integration**: Full Scrum at Scale alignment:
+   - Register with appropriate team (coordination, development, platform)
+   - Update team capacity and specialization
+   - Participate in Scrum events (standups, planning, demos)
+   - Coordinate cross-team dependencies
+
+6. **Progress Tracking Automation**: Continuous telemetry:
+   - Real-time work progress updates
+   - Team velocity contribution measurement
+   - Business value delivery tracking
+   - Quality gate compliance monitoring
+
+The system ensures optimal work distribution while maintaining enterprise coordination and preventing conflicts through mathematical guarantees and intelligent automation.

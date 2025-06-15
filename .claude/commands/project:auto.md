@@ -1,10 +1,12 @@
-# Enterprise Autonomous AI Agent Operation (Scrum at Scale)
+# Enterprise Autonomous AI Agent Swarm Operation
 
-**Purpose**: Autonomous AI agent operation with nanosecond IDs, YAML-first configuration, and enterprise Scrum at Scale coordination.
+**Purpose**: Fully autonomous AI agent swarm with self-coordination, nanosecond precision IDs, and enterprise Scrum at Scale integration.
 
 ```bash
-/project:auto [focus_area] [team_preference]
+/project:auto
 ```
+
+**No Arguments Required**: The AI agent swarm autonomously determines optimal focus areas, team formation, and work prioritization through intelligent analysis and Scrum at Scale coordination.
 
 ## Enterprise Autonomous Agent Framework
 
@@ -351,29 +353,34 @@ continuous_improvement_cycle() {
 
 ## Usage Examples
 
-### Team-Specific Autonomous Operation
+### Autonomous Swarm Operation - Intelligence-Driven
+
 ```bash
-/project:auto coordination_team        # Focus on coordination and impediment removal
-/project:auto development_team         # Focus on feature development and quality
-/project:auto platform_team            # Focus on infrastructure and reliability
-/project:auto cross_team              # Multi-team coordination focus
+/project:auto  # Single command - agents autonomously:
 ```
 
-### PI and Sprint Context Operation
-```bash
-/project:auto pi_planning             # Focus on PI planning and objective setting
-/project:auto sprint_execution        # Focus on current sprint goal achievement
-/project:auto quality_improvement     # Focus on technical debt and quality
-/project:auto emergency_response      # Focus on critical issue resolution
-```
+**The AI swarm will automatically:**
+1. **Analyze System State**: Assess current health, priorities, and capabilities
+2. **Form Optimal Teams**: Create specialized teams (coordination, development, platform, innovation)
+3. **Determine Focus Areas**: Select highest-impact work based on:
+   - Critical PI objectives at risk
+   - Sprint goal progress and threats
+   - Cross-team dependency blockers
+   - Team velocity trends and impediments
+   - Quality gate failures and technical debt
+   - Customer value delivery opportunities (JTBD)
+4. **Coordinate Work Distribution**: Use Scrum at Scale methodology for enterprise coordination
+5. **Execute with Telemetry**: Provide real-time progress tracking and business value measurement
+6. **Adapt Dynamically**: Respond to changing conditions and emergent priorities
 
-### Continuous Operation Management
-```bash
-/project:auto                         # Standard autonomous operation
-/project:auto --max-cycles 100        # Limited cycle operation
-/project:auto --focus-area security   # Security-focused autonomous operation
-/project:auto --team-rotation         # Rotate between teams based on needs
-```
+### Intelligence-Driven Decision Making
+
+The swarm uses collective intelligence to determine:
+- **Team Formation**: Based on current capability gaps and workload analysis
+- **Work Prioritization**: Using business value, risk assessment, and strategic alignment
+- **Resource Allocation**: Optimizing for PI objectives and sprint goals
+- **Emergency Response**: Automatic escalation and resource reallocation when critical issues arise
+- **Continuous Improvement**: Proactive enhancement initiatives during low-priority periods
 
 ## Enterprise Success Metrics & KPIs
 

@@ -1,15 +1,16 @@
-Show help and documentation for AI Self-Sustaining System slash commands.
+Show help and documentation for AI Self-Sustaining System autonomous agent swarm commands.
 
-Help topic: $ARGUMENTS (optional: specific command name for detailed help)
+**Autonomous Command System**: All commands operate without arguments - agents intelligently determine optimal parameters through system analysis and Scrum at Scale coordination.
 
 Available Commands:
 
 ## 🤖 Agent Swarm Coordination
-- **`/project:init-agent`** - Initialize agent role and join swarm coordination
-- **`/project:create-aps`** - Create new APS process for agent workflow  
-- **`/project:claim-work`** - Claim specific APS process to prevent conflicts
-- **`/project:send-message`** - Send structured message to another agent
-- **`/project:check-handoffs`** - Monitor pending work and coordination status
+- **`/project:auto`** - **Primary Command**: Autonomous swarm operation with S@S coordination
+- **`/project:swarm-coordinate`** - Advanced swarm team formation and collective intelligence
+- **`/project:claim-work`** - Intelligent work claiming using enterprise coordination
+- **`/project:init-agent`** - Initialize agent and join swarm coordination  
+- **`/project:send-message`** - Structured inter-agent communication
+- **`/project:check-handoffs`** - Monitor coordination status and work distribution
 
 ## 🛠️ Development & Debugging  
 - **`/project:debug-system`** - AI-assisted debugging across Phoenix, n8n, infrastructure
@@ -31,33 +32,38 @@ Available Commands:
 
 ## 📚 Command Usage Patterns
 
-### Agent Initialization Flow:
+### Primary Autonomous Operation:
 ```bash
-/project:init-agent              # Determine role and join swarm
-/project:check-handoffs          # Check coordination status
-/project:claim-work              # Take on specific work
-/project:send-message            # Coordinate with other agents
+/project:auto                    # Complete autonomous swarm operation
+                                # - Analyzes system state automatically
+                                # - Forms optimal teams based on needs
+                                # - Claims and executes highest-value work
+                                # - Coordinates via Scrum at Scale
+                                # - Adapts to changing priorities
 ```
 
-### Development Workflow:
+### Advanced Swarm Coordination:
 ```bash
-/project:system-health           # Check system before starting
-/project:tdd-cycle               # Follow test-driven development
-/project:debug-system            # Resolve issues as they arise
-/project:memory-session          # Document patterns and learnings
+/project:swarm-coordinate        # Advanced team formation and collective intelligence
+/project:claim-work              # Intelligent work discovery and claiming
+/project:check-handoffs          # Monitor swarm coordination status
 ```
 
-### Continuous Improvement:
+### Supporting Operations:
 ```bash
-/project:discover-enhancements   # Find improvement opportunities
-/project:next-enhancement        # Get prioritized recommendations
-/project:implement-enhancement   # Execute improvements
-/project:workflow-health         # Monitor automation effectiveness
+/project:system-health           # Comprehensive system analysis
+/project:debug-system            # AI-assisted issue resolution
+/project:discover-enhancements   # Proactive improvement identification
+/project:memory-session          # Knowledge preservation and learning
 ```
 
-### Autonomous Mode:
+### Enterprise Integration:
 ```bash
-/project:auto                    # Let AI analyze and act intelligently
+# All commands integrate with:
+# - Scrum at Scale events (PI Planning, System Demos, etc.)
+# - Enterprise coordination system (nanosecond precision)
+# - JTBD workflows (customer value optimization)
+# - Real-time telemetry and business value measurement
 ```
 
 ## 🎯 Command Categories
