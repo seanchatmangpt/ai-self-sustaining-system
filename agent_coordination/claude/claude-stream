@@ -1,0 +1,44 @@
+#!/bin/bash
+# Minimal Claude Stream - 80/20 implementation
+
+set -euo pipefail
+
+echo "🤖 AI Coordination Stream (minimal version)"
+echo "Type 'help' for commands, 'exit' to quit"
+
+while true; do
+    echo -n "coordination> "
+    read -r query
+    
+    case "$query" in
+        "exit"|"quit")
+            echo "👋 Coordination stream ended"
+            break
+            ;;
+        "help")
+            echo "Available commands: health, priorities, status, exit"
+            ;;
+        "health")
+            ../claude/claude-health-analysis
+            ;;
+        "priorities")  
+            ../claude/claude-analyze-priorities
+            ;;
+        "status")
+            echo "System Status: $(date)"
+            echo "Agents: $(jq 'length' ../agent_status.json 2>/dev/null || echo "0")"
+            echo "Work: $(jq 'length' ../work_claims.json 2>/dev/null || echo "0")"
+            ;;
+        "")
+            continue
+            ;;
+        *)
+            if command -v claude >/dev/null 2>&1; then
+                echo "Coordination query: $query" | claude --max-tokens 100 2>/dev/null || echo "Query processing failed"
+            else
+                echo "💡 Query received: $query"
+                echo "Install Claude CLI for AI processing"
+            fi
+            ;;
+    esac
+done

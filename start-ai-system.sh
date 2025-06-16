@@ -1,7 +1,48 @@
 #!/bin/bash
 
-# AI Self-Sustaining System Startup Script
-# Starts n8n AI Starter Kit with appropriate profile for the system
+##############################################################################
+# AI Self-Sustaining System Docker Startup Script
+##############################################################################
+#
+# DESCRIPTION:
+#   Starts the complete AI Self-Sustaining system using Docker Compose with
+#   intelligent hardware detection and optimized container orchestration.
+#
+# FEATURES:
+#   - Automatic GPU/CPU hardware detection
+#   - Docker Compose profile selection (gpu/cpu/cpu-generic)
+#   - n8n AI Starter Kit integration
+#   - Container health monitoring and startup validation
+#   - Graceful shutdown and cleanup handling
+#   - Multi-platform support (x86_64, ARM64, Apple Silicon)
+#
+# USAGE:
+#   ./start-ai-system.sh [PROFILE] [OPTIONS]
+#
+# PROFILES:
+#   gpu         - GPU-accelerated AI workloads (NVIDIA/AMD)
+#   cpu         - Optimized CPU-only processing
+#   cpu-generic - Generic CPU fallback for compatibility
+#   auto        - Automatic detection (default)
+#
+# OPTIONS:
+#   --detach, -d     Run containers in background
+#   --build          Rebuild containers before starting
+#   --no-gpu         Force CPU-only mode regardless of hardware
+#   --verbose        Enable verbose logging output
+#
+# REQUIREMENTS:
+#   - Docker 20+ with Docker Compose V2
+#   - 8GB+ RAM recommended for AI workloads  
+#   - GPU drivers installed (for GPU profile)
+#   - n8n AI Starter Kit configuration files
+#
+# ENVIRONMENT VARIABLES:
+#   DOCKER_BUILDKIT=1 - Enable BuildKit for optimized builds
+#   COMPOSE_PROFILES  - Override automatic profile detection
+#   N8N_PORT         - n8n web interface port (default: 5678)
+#
+##############################################################################
 
 echo "🚀 Starting AI Self-Sustaining System..."
 echo "========================================"

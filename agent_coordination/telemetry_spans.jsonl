@@ -916,3 +916,54 @@
   "s2s.recommendations_count": 3
 }
 }
+{
+  "timestamp": "2025-06-16T04:09:13.3NZ",
+  "trace_id": "00181b8ef4b5c1e22e27d3f8b7bb340c",
+  "span_id": "a906b97269631358",
+  "operation_name": "s2s.claude_headless.stream_analyze",
+  "duration_ms": 7412,
+  "status": "failed",
+  "attributes": {
+    "claude.version": "headless_v1.0",
+    "system.component": "agent_coordination",
+    "observability.pattern": "engineering_elixir_applications"
+  }
+}
+{
+  "timestamp": "2025-06-16T04:09:13.3NZ",
+  "trace_id": "6a7759e253199b577546c2b4a2bd8899",
+  "span_id": "4e1059968b63fd5a",
+  "operation_name": "s2s.claude_headless.engineering_fallback",
+  "duration_ms": 20,
+  "status": "success",
+  "attributes": {
+    "claude.version": "headless_v1.0",
+    "system.component": "agent_coordination",
+    "observability.pattern": "engineering_elixir_applications"
+  }
+}
+{
+  "trace_id": "09ee82f0833744bc4600f65938f450c4",
+  "span_id": "f69bf260085eed89",
+  "parent_span_id": "",
+  "operation_name": "s2s.claude.priority_analysis",
+  "span_kind": "internal",
+  "status": "ok",
+  "start_time": "2025-06-16T04:09:13.9905Z",
+  "duration_ms": 7653,
+  "service": {
+    "name": "e2e-validation",
+    "version": "1.0.0"
+  },
+  "resource_attributes": {
+    "service.name": "e2e-validation",
+    "service.version": "1.0.0",
+    "s2s.component": "coordination_helper",
+    "deployment.environment": "development"
+  },
+  "span_attributes": {
+  "s2s.analysis_type": "priority_analysis",
+  "s2s.claude_available": true,
+  "s2s.recommendations_count": 3
+}
+}

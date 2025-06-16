@@ -1,6 +1,44 @@
 #!/bin/bash
+
+##############################################################################
 # AI Self-Sustaining System Setup Script
-# This script bootstraps the entire self-sustaining AI system
+##############################################################################
+#
+# DESCRIPTION:
+#   Complete system bootstrap for the AI Self-Sustaining development ecosystem.
+#   Sets up Phoenix app, agent coordination, telemetry, and all dependencies.
+#
+# FEATURES:
+#   - Elixir/Phoenix application setup with dependencies
+#   - PostgreSQL database initialization and migrations
+#   - Agent coordination system with nanosecond precision IDs
+#   - OpenTelemetry distributed tracing configuration
+#   - Claude AI integration and API key setup
+#   - Development environment configuration
+#   - LiveBook Teams integration for notebooks
+#
+# USAGE:
+#   ./scripts/setup.sh [--skip-deps] [--skip-db] [--dev-only]
+#
+# OPTIONS:
+#   --skip-deps    Skip dependency installation (mix deps.get, npm install)
+#   --skip-db      Skip database setup (assumes PostgreSQL already configured)
+#   --dev-only     Setup for development only (skip production configurations)
+#
+# REQUIREMENTS:
+#   - Elixir 1.15+ with OTP 26+
+#   - PostgreSQL 14+ running locally
+#   - Node.js 18+ for asset compilation
+#   - Git for dependency management
+#   - Optional: Claude API key for AI features
+#
+# ENVIRONMENT:
+#   - Creates .env file from .env.example
+#   - Configures DATABASE_URL for local PostgreSQL
+#   - Sets up PHOENIX_SECRET_KEY_BASE
+#   - Configures OpenTelemetry endpoints if available
+#
+##############################################################################
 
 set -e  # Exit on error
 

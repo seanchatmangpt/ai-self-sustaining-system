@@ -1,0 +1,223 @@
+# BEAMOPS v3 Development Environment
+# Following Engineering Elixir Applications Chapter 5 patterns
+# Final stage: 09_extra_mile (production-like development)
+
+version: "3.9"
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15.5
+    container_name: beamops_v3_db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: ["CMD", "pg_isready", "--username=postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: beamops_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgrespassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    secrets:
+      - postgrespassword
+    networks:
+      - beamops_network
+
+  # Redis for Coordination Cache
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: beamops_v3_redis
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes
+    networks:
+      - beamops_network
+
+  # BEAMOPS v3 Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder  # Use builder stage for development
+    container_name: beamops_v3_app
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      DATABASE_URL_FILE: /run/secrets/databaseurl
+      SECRET_KEY_BASE_FILE: /run/secrets/secretkeybase
+      REDIS_URL: "redis://redis:6379"
+      PHX_HOST: "localhost"
+      PHX_PORT: "4000"
+      PROMEX_PORT: "9568"
+      MIX_ENV: "dev"
+      # Agent coordination settings
+      COORDINATION_BASE_PATH: "/app/coordination"
+      MAX_AGENT_COUNT: "${MAX_AGENT_COUNT:-10}"
+      COORDINATION_POLL_INTERVAL: "${COORDINATION_POLL_INTERVAL:-10000}"
+    ports:
+      - "4000:4000"    # Phoenix application
+      - "9568:9568"    # PromEx metrics
+    volumes:
+      # Mount source code for development
+      - .:/app
+      - build_cache:/app/_build
+      - deps_cache:/app/deps
+      # Mount coordination files
+      - ./agent_coordination:/app/coordination
+    command: >
+      bash -c "mix deps.get && 
+               mix ecto.create && 
+               mix ecto.migrate && 
+               mix phx.server"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    secrets:
+      - databaseurl
+      - secretkeybase
+    networks:
+      - beamops_network
+
+  # Prometheus for Metrics Collection
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    container_name: beamops_v3_prometheus
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    networks:
+      - beamops_network
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: beamops_v3_grafana
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafanapassword
+      GF_INSTALL_PLUGINS: "grafana-piechart-panel"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    secrets:
+      - grafanapassword
+    depends_on:
+      - prometheus
+    networks:
+      - beamops_network
+
+  # Jaeger for Distributed Tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.51
+    container_name: beamops_v3_jaeger
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # Jaeger HTTP collector
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+    volumes:
+      - jaeger_data:/badger
+    networks:
+      - beamops_network
+
+  # Adminer for Database Management (Development only)
+  adminer:
+    image: adminer:4.8.1
+    container_name: beamops_v3_adminer
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+    networks:
+      - beamops_network
+    profiles:
+      - dev-tools
+
+# Named Volumes
+volumes:
+  db_data:
+    name: beamops_v3_db_data
+  redis_data:
+    name: beamops_v3_redis_data
+  prometheus_data:
+    name: beamops_v3_prometheus_data
+  grafana_data:
+    name: beamops_v3_grafana_data
+  jaeger_data:
+    name: beamops_v3_jaeger_data
+  build_cache:
+    name: beamops_v3_build_cache
+  deps_cache:
+    name: beamops_v3_deps_cache
+
+# Secrets Management
+secrets:
+  postgrespassword:
+    file: ./secrets/.postgrespassword
+  secretkeybase:
+    file: ./secrets/.secretkeybase
+  databaseurl:
+    file: ./secrets/.databaseurl
+  grafanapassword:
+    file: ./secrets/.grafanapassword
+
+# Networks
+networks:
+  beamops_network:
+    name: beamops_v3_network
+    driver: bridge

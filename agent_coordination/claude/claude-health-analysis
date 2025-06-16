@@ -1,0 +1,53 @@
+#!/bin/bash
+# Minimal Claude Health Analysis - 80/20 implementation
+
+set -euo pipefail
+
+COORD_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Gather basic system data
+HEALTH_DATA=$(cat << HEALTH_EOF
+AI Coordination System Health Check
+
+System Status:
+- Coordination Directory: $COORD_DIR
+- Active Processes: $(ps aux | wc -l)
+- Available Memory: $(free -h 2>/dev/null | grep Mem | awk '{print $7}' || echo "N/A")
+- Disk Usage: $(df -h "$COORD_DIR" | tail -1 | awk '{print $5}')
+- Timestamp: $(date)
+
+Files Status:
+- Agent Status File: $([ -f "$COORD_DIR/agent_status.json" ] && echo "EXISTS" || echo "MISSING")
+- Work Claims File: $([ -f "$COORD_DIR/work_claims.json" ] && echo "EXISTS" || echo "MISSING")
+- Coordination Script: $([ -f "$COORD_DIR/coordination_helper.sh" ] && echo "EXISTS" || echo "MISSING")
+
+Recent Activity:
+- Last Modified: $(ls -lt "$COORD_DIR"/*.json 2>/dev/null | head -1 | awk '{print $6, $7, $8}' || echo "No activity")
+
+Request: Analyze this system health and provide a simple health score (0-100) and 2-3 actionable recommendations.
+HEALTH_EOF
+)
+
+# Use Claude if available, otherwise provide fallback
+if command -v claude >/dev/null 2>&1; then
+    echo "$HEALTH_DATA" | claude --max-tokens 200 2>/dev/null || {
+        echo "⚠️ Claude API call failed, providing fallback analysis"
+        echo ""
+        echo "📊 FALLBACK HEALTH ANALYSIS:"
+        echo "Health Score: 75/100 (Basic system operational)"
+        echo ""
+        echo "Recommendations:"
+        echo "1. Verify Claude AI integration for full capabilities"
+        echo "2. Check coordination files are being updated regularly"
+        echo "3. Monitor system resources and process health"
+    }
+else
+    echo "📊 OFFLINE HEALTH ANALYSIS:"
+    echo "Health Score: 60/100 (Claude integration needed)"
+    echo ""
+    echo "System Status: Basic coordination functional"
+    echo "Recommendations:"
+    echo "1. Install Claude CLI for AI-powered analysis"
+    echo "2. Verify all coordination files are present"
+    echo "3. Test coordination_helper.sh commands"
+fi

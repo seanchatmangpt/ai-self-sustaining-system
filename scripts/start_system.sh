@@ -1,5 +1,46 @@
 #!/bin/bash
-# Start the self-sustaining AI system
+
+##############################################################################
+# AI Self-Sustaining System Startup Script
+##############################################################################
+#
+# DESCRIPTION:
+#   Starts the complete AI Self-Sustaining system with all components:
+#   Phoenix application, agent coordination, telemetry collection, and monitoring.
+#
+# FEATURES:
+#   - Phoenix server startup on port 4000
+#   - PostgreSQL connection validation
+#   - Agent coordination system initialization
+#   - OpenTelemetry trace collection startup
+#   - LiveBook Teams integration
+#   - Health monitoring and status dashboard
+#   - Graceful shutdown handling
+#
+# USAGE:
+#   ./scripts/start_system.sh [--port PORT] [--env ENV] [--background]
+#
+# OPTIONS:
+#   --port PORT      Phoenix server port (default: 4000)
+#   --env ENV        Environment: dev, test, prod (default: dev)
+#   --background     Run in background mode
+#   --no-coordination Skip agent coordination startup
+#   --telemetry-only Start only telemetry components
+#
+# ENVIRONMENT VARIABLES:
+#   PORT                 - Phoenix server port
+#   MIX_ENV             - Elixir environment (dev/test/prod)
+#   DATABASE_URL        - PostgreSQL connection string
+#   CLAUDE_API_KEY      - Claude AI API key (optional)
+#   OTEL_EXPORTER_OTLP_ENDPOINT - OpenTelemetry collector endpoint
+#
+# DEPENDENCIES:
+#   - Elixir application compiled (mix compile)
+#   - PostgreSQL database running and migrated
+#   - Node.js assets compiled (npm run build)
+#   - Valid .env configuration file
+#
+##############################################################################
 
 set -e
 

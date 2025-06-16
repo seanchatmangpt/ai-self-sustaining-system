@@ -1,0 +1,29 @@
+#!/bin/bash
+# Minimal Claude Priority Analysis - 80/20 implementation
+
+set -euo pipefail
+
+COORD_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Simple priority analysis
+PRIORITY_DATA="AI Coordination Priority Analysis Request: 
+
+Current Work Status:
+- Work Queue: $(jq 'length' "$COORD_DIR/work_claims.json" 2>/dev/null || echo "0") items
+- Active Agents: $(jq 'length' "$COORD_DIR/agent_status.json" 2>/dev/null || echo "0") agents
+
+Please provide 3 specific priority recommendations for optimizing this AI coordination system."
+
+if command -v claude >/dev/null 2>&1; then
+    echo "$PRIORITY_DATA" | claude --max-tokens 150 2>/dev/null || {
+        echo "📋 FALLBACK PRIORITY ANALYSIS:"
+        echo "1. Ensure all coordination scripts are functional"
+        echo "2. Monitor agent performance and resolve conflicts"
+        echo "3. Optimize work distribution algorithms"
+    }
+else
+    echo "📋 OFFLINE PRIORITY ANALYSIS:"
+    echo "1. Restore Claude AI integration for intelligent analysis"
+    echo "2. Validate coordination_helper.sh command functionality"
+    echo "3. Monitor system health and performance metrics"
+fi

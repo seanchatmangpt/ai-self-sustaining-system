@@ -1,0 +1,20 @@
+#!/bin/bash
+# Minimal Claude Assignment Optimization - 80/20 implementation
+
+set -euo pipefail
+
+echo "🎯 AI Assignment Optimization"
+
+if command -v claude >/dev/null 2>&1; then
+    echo "Coordination optimization request: Analyze current agent workload and provide specific assignment recommendations." | claude --max-tokens 100 2>/dev/null || {
+        echo "📋 FALLBACK OPTIMIZATION:"
+        echo "- Balance workload across available agents"
+        echo "- Prioritize high-value coordination tasks"
+        echo "- Monitor for assignment conflicts"
+    }
+else
+    echo "📋 OFFLINE OPTIMIZATION:"
+    echo "- Review agent status and capacity"
+    echo "- Balance work distribution manually"
+    echo "- Install Claude for AI-powered optimization"
+fi
