@@ -1367,9 +1367,42 @@ claude_analyze_work_priorities() {
 EOF
     )
     
-    # Use Claude Code CLI with structured output
+    # Use Claude Code streaming JSON I/O with performance monitoring
     local claude_analysis
-    if command -v claude >/dev/null 2>&1; then
+    echo "🚀 Attempting Claude Code streaming analysis..."
+    
+    # Use Claude Code headless integration (v3.0 Engineering Elixir Applications)
+    local headless_script="$(dirname "$0")/claude_code_headless.sh"
+    if [ -f "$headless_script" ]; then
+        echo "🚀 Using Claude Code headless integration (Engineering Elixir Applications)"
+        
+        local analysis_prompt="You are an expert Scrum at Scale coordination analyst with Engineering Elixir Applications observability expertise.
+
+Analyze this S@S coordination data and provide structured recommendations for:
+1. Work item prioritization based on dependencies and impact
+2. Optimal agent assignments based on specialization and capacity  
+3. Resource optimization opportunities with Promex + Grafana metrics
+4. Critical path analysis with OpenTelemetry trace correlation
+5. Potential bottlenecks and mitigation strategies
+
+Return JSON with:
+- recommendations: [{work_type, priority_score (1-100), reasoning, recommended_action, observability_focus}]
+- optimization_opportunities: [{type, description, impact_score (0.0-1.0), observability_metrics}]
+- performance_insights: {coordination_efficiency, trace_correlation_points, metric_collection_gaps}
+- confidence: float (0.0-1.0)
+- analysis_metadata: {analysis_version, duration_ms, data_quality_score}
+
+Focus on Engineering Elixir Applications patterns for comprehensive observability."
+
+        # Attempt headless Claude analysis with Engineering fallback
+        if claude_analysis=$("$headless_script" stream "$context_data" "$analysis_prompt" 2>/dev/null); then
+            echo "✅ Claude Code headless analysis completed successfully"
+        else
+            echo "⚠️  Headless analysis failed, using direct Engineering fallback"
+            claude_analysis=$("$headless_script" fallback 2>/dev/null)
+        fi
+    elif command -v claude >/dev/null 2>&1; then
+        echo "⚠️  Using legacy Claude CLI (non-streaming)"
         claude_analysis=$(echo "$context_data" | claude --input-format json --output-format json --prompt "
 Analyze the S@S coordination data and provide structured recommendations for:
 1. Work item prioritization based on dependencies and impact
@@ -1378,29 +1411,78 @@ Analyze the S@S coordination data and provide structured recommendations for:
 4. Critical path analysis
 5. Potential bottlenecks and mitigation strategies
 
-Return a JSON response with recommendations, reasoning, and confidence scores.")
-    else
-        # Fallback analysis without Claude
+Return a JSON response with recommendations, reasoning, and confidence scores." 2>/dev/null)
+        
+        # Check if claude analysis is empty or failed
+        if [ -z "$claude_analysis" ] || ! echo "$claude_analysis" | jq . >/dev/null 2>&1; then
+            echo "⚠️  Legacy Claude CLI failed, using engineered fallback"
+            claude_analysis=""
+        fi
+    fi
+    
+    # Use Engineering Elixir Applications fallback if no valid Claude analysis
+    if [ -z "$claude_analysis" ]; then
+        echo "❌ No Claude available - using Engineering Elixir Applications fallback analysis"
+        # Engineering Elixir Applications-inspired fallback analysis
         claude_analysis=$(cat <<EOF
 {
-  "analysis_type": "priority_analysis",
+  "analysis_type": "priority_analysis_fallback",
   "recommendations": [
     {
-      "work_type": "critical_path_analysis",
+      "work_type": "observability_metrics",
       "priority_score": 95,
-      "reasoning": "Critical path blocking other work items",
-      "recommended_action": "prioritize_immediate"
+      "reasoning": "Engineering Elixir Applications: Implement Promex + Grafana for coordination visibility",
+      "recommended_action": "implement_custom_metrics",
+      "observability_focus": "coordination_performance"
+    },
+    {
+      "work_type": "telemetry_correlation",
+      "priority_score": 90,
+      "reasoning": "Critical path: OpenTelemetry trace correlation for distributed coordination",
+      "recommended_action": "enhance_trace_context",
+      "observability_focus": "distributed_tracing"
+    },
+    {
+      "work_type": "performance_monitoring",
+      "priority_score": 85,
+      "reasoning": "Engineering pattern: Real-time dashboard for coordination bottlenecks",
+      "recommended_action": "build_live_dashboard",
+      "observability_focus": "real_time_metrics"
     }
   ],
   "optimization_opportunities": [
     {
-      "type": "load_balancing",
-      "description": "Redistribute work across available agents",
-      "impact_score": 0.75
+      "type": "promex_integration", 
+      "description": "Add custom Promex metrics for agent coordination performance",
+      "impact_score": 0.85,
+      "observability_metrics": ["coordination_latency", "agent_utilization", "work_queue_depth"]
+    },
+    {
+      "type": "grafana_dashboards",
+      "description": "Engineering Elixir Applications: Real-time coordination monitoring",
+      "impact_score": 0.80,
+      "observability_metrics": ["system_health", "coordination_velocity", "error_rates"]
+    },
+    {
+      "type": "trace_correlation",
+      "description": "OpenTelemetry correlation between coordination events and system performance", 
+      "impact_score": 0.75,
+      "observability_metrics": ["trace_completion_rates", "span_duration", "error_correlation"]
     }
   ],
-  "confidence": 0.85,
-  "claude_available": false
+  "performance_insights": {
+    "coordination_efficiency": "needs_observability_baseline",
+    "trace_correlation_points": ["work_claim", "progress_update", "completion"],
+    "metric_collection_gaps": ["agent_response_time", "coordination_throughput", "error_patterns"]
+  },
+  "confidence": 0.60,
+  "claude_available": false,
+  "fallback_reason": "engineering_elixir_applications_patterns",
+  "analysis_metadata": {
+    "fallback_version": "v3.0_engineering_elixir", 
+    "pattern_source": "promex_grafana_observability",
+    "data_quality_score": 0.4
+  }
 }
 EOF
         )

@@ -1,0 +1,182 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "BEAMOPS v3 - Container Architecture (Engineering Elixir Applications)"
+        direction TB
+        
+        %% External Systems
+        PROMETHEUS[📊 Prometheus<br/>Metrics Database]
+        GRAFANA[📈 Grafana<br/>Dashboards]
+        JAEGER[🔍 Jaeger<br/>Tracing]
+        XAVOS_APP[🚀 XAVOS Application<br/>Port 4002]
+        PHOENIX_APP[🔥 Phoenix Application<br/>Main System]
+        AGENT_COORD[🎯 Agent Coordination<br/>coordination_helper.sh]
+        
+        %% BEAMOPS Core Container Boundary
+        subgraph BEAMOPS_CONTAINER["🚀 BEAMOPS Container (Engineering Elixir Applications)"]
+            direction TB
+            
+            %% Promex Core System
+            subgraph PROMEX_SYSTEM["⚡ Promex Metrics System"]
+                direction TB
+                
+                PROMEX_CORE[⚡ Promex Core<br/>lib/beamops/promex.ex<br/>- Metric definitions<br/>- Registry management<br/>- Export endpoint (/metrics)<br/>- Custom collectors]
+                
+                PROMEX_PLUGINS[🔌 Promex Plugins<br/>Metric Collectors<br/>- BEAM VM plugin<br/>- Phoenix plugin<br/>- Ecto plugin<br/>- Custom plugin]
+                
+                PROMEX_REGISTRY[📊 Promex Registry<br/>Metric Storage<br/>- Counter metrics<br/>- Gauge metrics<br/>- Histogram metrics<br/>- Summary metrics]
+                
+                CUSTOM_COLLECTORS[📈 Custom Collectors<br/>Business Metrics<br/>- Agent coordination metrics<br/>- S@S ceremony tracking<br/>- Work completion rates<br/>- System health scores]
+                
+                PROMEX_CORE -.->|configures| PROMEX_PLUGINS
+                PROMEX_CORE -.->|manages| PROMEX_REGISTRY
+                PROMEX_CORE -.->|collects| CUSTOM_COLLECTORS
+                PROMEX_PLUGINS -.->|registers| PROMEX_REGISTRY
+                CUSTOM_COLLECTORS -.->|stores| PROMEX_REGISTRY
+            end
+            
+            %% BEAM VM Monitoring
+            subgraph BEAM_MONITORING["🔋 BEAM VM Monitoring"]
+                direction TB
+                
+                VM_METRICS[🔋 VM Metrics Collector<br/>lib/beamops/vm_monitor.ex<br/>- Process monitoring<br/>- Memory tracking<br/>- Scheduler utilization<br/>- GC statistics]
+                
+                PROCESS_INSPECTOR[🔍 Process Inspector<br/>Process Analysis<br/>- Process tree visualization<br/>- Memory usage per process<br/>- Message queue lengths<br/>- Process lifecycle tracking]
+                
+                MEMORY_ANALYZER[💾 Memory Analyzer<br/>Memory Management<br/>- Heap analysis<br/>- Binary memory tracking<br/>- ETS table monitoring<br/>- Memory leak detection]
+                
+                SCHEDULER_MONITOR[⚙️ Scheduler Monitor<br/>Scheduler Analysis<br/>- Scheduler utilization<br/>- Run queue lengths<br/>- Process distribution<br/>- Performance bottlenecks]
+                
+                VM_METRICS -.->|analyzes| PROCESS_INSPECTOR
+                VM_METRICS -.->|tracks| MEMORY_ANALYZER
+                VM_METRICS -.->|monitors| SCHEDULER_MONITOR
+            end
+            
+            %% Enhanced LiveDashboard
+            subgraph LIVEDASHBOARD_ENHANCED["📱 Enhanced LiveDashboard"]
+                direction TB
+                
+                DASHBOARD_CORE[📱 LiveDashboard Core<br/>Real-time Web Interface<br/>- System overview<br/>- Live metrics display<br/>- Interactive controls<br/>- Custom pages]
+                
+                BEAMOPS_PAGES[📊 BEAMOPS Pages<br/>Custom Dashboard Pages<br/>- Agent coordination page<br/>- Performance profiling page<br/>- Custom metrics page<br/>- Alert management page]
+                
+                METRICS_VISUALIZER[📈 Metrics Visualizer<br/>Live Chart Components<br/>- Real-time charts<br/>- Metric correlation<br/>- Historical trends<br/>- Performance graphs]
+                
+                ALERT_DASHBOARD[🚨 Alert Dashboard<br/>Alert Management UI<br/>- Active alerts view<br/>- Alert history<br/>- Alert configuration<br/>- Escalation tracking]
+                
+                DASHBOARD_CORE -.->|hosts| BEAMOPS_PAGES
+                DASHBOARD_CORE -.->|displays| METRICS_VISUALIZER
+                DASHBOARD_CORE -.->|shows| ALERT_DASHBOARD
+            end
+            
+            %% Performance Profiling System
+            subgraph PERFORMANCE_SYSTEM["🔬 Performance Profiling System"]
+                direction TB
+                
+                PROFILER_CORE[🔬 Profiler Core<br/>lib/beamops/profiler.ex<br/>- Function profiling<br/>- Performance sampling<br/>- Call stack analysis<br/>- Bottleneck detection]
+                
+                FLAME_GRAPH[🔥 Flame Graph Generator<br/>Performance Visualization<br/>- Call stack visualization<br/>- Time-based analysis<br/>- Interactive exploration<br/>- Performance hotspots]
+                
+                BENCHMARK_RUNNER[⏱️ Benchmark Runner<br/>Performance Testing<br/>- Automated benchmarks<br/>- Performance regression testing<br/>- Load testing<br/>- Stress testing]
+                
+                PERFORMANCE_ANALYZER[📊 Performance Analyzer<br/>Analysis Engine<br/>- Performance pattern detection<br/>- Optimization recommendations<br/>- Trend analysis<br/>- Capacity planning]
+                
+                PROFILER_CORE -.->|generates| FLAME_GRAPH
+                PROFILER_CORE -.->|feeds| PERFORMANCE_ANALYZER
+                BENCHMARK_RUNNER -.->|results to| PERFORMANCE_ANALYZER
+            end
+            
+            %% Agent Coordination Metrics
+            subgraph AGENT_METRICS_SYSTEM["🎯 Agent Coordination Metrics"]
+                direction TB
+                
+                COORD_METRICS[🎯 Coordination Metrics<br/>lib/beamops/coordination_metrics.ex<br/>- Work claim latency<br/>- Agent utilization<br/>- Task completion rates<br/>- Team performance]
+                
+                SAS_METRICS[📋 S@S Metrics<br/>Scrum at Scale Tracking<br/>- PI planning metrics<br/>- ART synchronization<br/>- Value stream flow<br/>- Innovation accounting]
+                
+                TEAM_ANALYTICS[👥 Team Analytics<br/>Team Performance Analysis<br/>- Velocity tracking<br/>- Collaboration metrics<br/>- Skill utilization<br/>- Performance trends]
+                
+                WORK_FLOW_METRICS[📊 Work Flow Metrics<br/>Kanban Flow Analysis<br/>- Cycle time<br/>- Lead time<br/>- Throughput<br/>- Work-in-progress limits]
+                
+                COORD_METRICS -.->|aggregates| SAS_METRICS
+                COORD_METRICS -.->|analyzes| TEAM_ANALYTICS
+                COORD_METRICS -.->|tracks| WORK_FLOW_METRICS
+            end
+            
+            %% Error Tracking and Alerting
+            subgraph ERROR_ALERT_SYSTEM["🐛 Error Tracking & Alerting"]
+                direction TB
+                
+                ERROR_TRACKER[🐛 Error Tracker<br/>lib/beamops/error_tracker.ex<br/>- Exception capturing<br/>- Error categorization<br/>- Stack trace analysis<br/>- Error correlation]
+                
+                ALERT_ENGINE[🚨 Alert Engine<br/>Intelligent Alerting<br/>- Rule-based alerts<br/>- ML-based anomaly detection<br/>- Alert correlation<br/>- Noise reduction]
+                
+                NOTIFICATION_ROUTER[📬 Notification Router<br/>Alert Distribution<br/>- Multi-channel notifications<br/>- Escalation policies<br/>- On-call management<br/>- Alert acknowledgment]
+                
+                SLA_MONITOR[⏱️ SLA Monitor<br/>Service Level Monitoring<br/>- SLA tracking<br/>- Performance targets<br/>- Availability monitoring<br/>- Breach detection]
+                
+                ERROR_TRACKER -.->|triggers| ALERT_ENGINE
+                ALERT_ENGINE -.->|routes via| NOTIFICATION_ROUTER
+                SLA_MONITOR -.->|alerts via| ALERT_ENGINE
+            end
+            
+            %% Integration and Configuration
+            subgraph INTEGRATION_LAYER["🔗 Integration & Configuration"]
+                direction TB
+                
+                TELEMETRY_BRIDGE[📊 Telemetry Bridge<br/>Integration Layer<br/>- OpenTelemetry integration<br/>- Metrics correlation<br/>- Event aggregation<br/>- Data transformation]
+                
+                CONFIG_MANAGER[⚙️ Configuration Manager<br/>lib/beamops/config.ex<br/>- Metric configuration<br/>- Alert rule management<br/>- Dashboard configuration<br/>- System settings]
+                
+                EXPORT_MANAGER[📤 Export Manager<br/>Data Export Layer<br/>- Prometheus export<br/>- OTLP export<br/>- Custom export formats<br/>- Data streaming]
+                
+                HEALTH_CHECKER[🏥 Health Checker<br/>System Health Monitoring<br/>- Component health checks<br/>- Dependency monitoring<br/>- Service discovery<br/>- Health reporting]
+                
+                TELEMETRY_BRIDGE -.->|configures| CONFIG_MANAGER
+                CONFIG_MANAGER -.->|manages| EXPORT_MANAGER
+                HEALTH_CHECKER -.->|monitors| CONFIG_MANAGER
+            end
+            
+            %% Cross-System Connections
+            PROMEX_REGISTRY -.->|exports to| EXPORT_MANAGER
+            VM_METRICS -.->|feeds| CUSTOM_COLLECTORS
+            COORD_METRICS -.->|metrics to| PROMEX_REGISTRY
+            ERROR_TRACKER -.->|correlates with| TELEMETRY_BRIDGE
+            PROFILER_CORE -.->|performance data| METRICS_VISUALIZER
+            BEAMOPS_PAGES -.->|displays| COORD_METRICS
+            ALERT_DASHBOARD -.->|shows| ALERT_ENGINE
+            SLA_MONITOR -.->|metrics to| PROMEX_REGISTRY
+        end
+        
+        %% External Connections
+        PROMETHEUS -->|scrapes /metrics| EXPORT_MANAGER
+        GRAFANA -->|queries| PROMETHEUS
+        GRAFANA -->|displays| DASHBOARD_CORE
+        JAEGER <-->|traces| TELEMETRY_BRIDGE
+        
+        XAVOS_APP -->|coordination data| COORD_METRICS
+        PHOENIX_APP -->|application metrics| PROMEX_PLUGINS
+        AGENT_COORD -->|work metrics| COORD_METRICS
+        
+        %% Data Flow Annotations
+        EXPORT_MANAGER -.->|"Prometheus format → scraping endpoint"| PROMETHEUS
+        COORD_METRICS -.->|"agent performance → business metrics"| PROMEX_REGISTRY
+        ERROR_TRACKER -.->|"errors → alerts → notifications"| NOTIFICATION_ROUTER
+        VM_METRICS -.->|"BEAM data → performance insights"| PERFORMANCE_ANALYZER
+    end
+
+    %% Styling
+    classDef container fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef promexContainer fill:#4C566A,stroke:#EBCB8B,stroke-width:2px,color:#ECEFF4
+    classDef monitoringContainer fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef dashboardContainer fill:#434C5E,stroke:#A3BE8C,stroke-width:2px,color:#ECEFF4
+    classDef alertContainer fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef external fill:#434C5E,stroke:#D08770,stroke-width:2px,color:#ECEFF4
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    
+    class BEAMOPS_CONTAINER systemBoundary
+    class PROMEX_SYSTEM,PROMEX_CORE,PROMEX_PLUGINS,PROMEX_REGISTRY,CUSTOM_COLLECTORS promexContainer
+    class BEAM_MONITORING,VM_METRICS,PROCESS_INSPECTOR,MEMORY_ANALYZER,SCHEDULER_MONITOR,PERFORMANCE_SYSTEM,PROFILER_CORE,FLAME_GRAPH,BENCHMARK_RUNNER,PERFORMANCE_ANALYZER monitoringContainer
+    class LIVEDASHBOARD_ENHANCED,DASHBOARD_CORE,BEAMOPS_PAGES,METRICS_VISUALIZER dashboardContainer
+    class ERROR_ALERT_SYSTEM,ERROR_TRACKER,ALERT_ENGINE,NOTIFICATION_ROUTER,SLA_MONITOR,ALERT_DASHBOARD alertContainer
+    class AGENT_METRICS_SYSTEM,COORD_METRICS,SAS_METRICS,TEAM_ANALYTICS,WORK_FLOW_METRICS,INTEGRATION_LAYER,TELEMETRY_BRIDGE,CONFIG_MANAGER,EXPORT_MANAGER,HEALTH_CHECKER container
+    class PROMETHEUS,GRAFANA,JAEGER,XAVOS_APP,PHOENIX_APP,AGENT_COORD external

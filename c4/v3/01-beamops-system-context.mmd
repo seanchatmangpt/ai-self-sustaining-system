@@ -1,0 +1,149 @@
+%%{init: {"theme": "dark", "themeVariables": {"primaryColor": "#4C566A", "primaryTextColor": "#fff", "primaryBorderColor": "#5E81AC", "lineColor": "#81A1C1"}}}%%
+graph TB
+    subgraph "BEAMOPS v3 - Engineering Elixir Applications System Context"
+        direction TB
+        
+        %% External Users and Operators
+        SRE[👤 SRE/DevOps<br/>Site Reliability Engineer<br/>- System monitoring<br/>- Alert management<br/>- Performance optimization]
+        
+        DEV[👨‍💻 Elixir Developer<br/>Application Developer<br/>- Code instrumentation<br/>- Custom metrics<br/>- Performance debugging]
+        
+        BUSINESS[📊 Business Stakeholder<br/>Product/Business Owner<br/>- Business metrics<br/>- SLA monitoring<br/>- Performance insights]
+        
+        DATA_SCIENTIST[🔬 Data Scientist<br/>Performance Analyst<br/>- Performance analysis<br/>- Capacity planning<br/>- Optimization insights]
+        
+        %% External BEAMOPS Infrastructure
+        PROMETHEUS[📊 Prometheus<br/>Metrics Storage & Alerting<br/>- Time-series database<br/>- Alerting rules<br/>- Data retention<br/>- PromQL queries]
+        
+        GRAFANA[📈 Grafana<br/>Visualization & Dashboards<br/>- Real-time dashboards<br/>- Alert visualization<br/>- Custom panels<br/>- Data correlation]
+        
+        JAEGER[🔍 Jaeger<br/>Distributed Tracing<br/>- Trace storage<br/>- Trace visualization<br/>- Performance analysis<br/>- Service map]
+        
+        ALERTMANAGER[🚨 AlertManager<br/>Alert Routing & Management<br/>- Alert routing<br/>- Notification channels<br/>- Alert grouping<br/>- Escalation policies]
+        
+        EXTERNAL_APM[📱 External APM<br/>Third-party Monitoring<br/>- AppSignal/NewRelic<br/>- Error tracking<br/>- Performance monitoring<br/>- Business insights]
+        
+        LOGSTASH[📝 ELK Stack<br/>Log Management<br/>- Log aggregation<br/>- Search & analysis<br/>- Log correlation<br/>- Pattern detection]
+        
+        %% Core BEAMOPS System Boundary
+        subgraph BEAMOPS_CORE["🚀 BEAMOPS v3 Core System (Engineering Elixir Applications)"]
+            direction TB
+            
+            %% Primary BEAMOPS Subsystems
+            PROMEX_CORE[⚡ Promex Core<br/>Custom Metrics Engine<br/>- Custom business metrics<br/>- BEAM VM instrumentation<br/>- Agent coordination metrics<br/>- Performance counters]
+            
+            BEAM_MONITOR[🔋 BEAM VM Monitor<br/>VM Observability<br/>- Process monitoring<br/>- Memory management<br/>- Scheduler utilization<br/>- GC performance]
+            
+            LIVEDASHBOARD[📱 LiveDashboard<br/>Real-time Monitoring<br/>- Live system metrics<br/>- Process inspector<br/>- ETS table browser<br/>- Application tree]
+            
+            TELEMETRY_ENHANCED[📊 Enhanced Telemetry<br/>Unified Telemetry System<br/>- Event aggregation<br/>- Metric collection<br/>- Trace correlation<br/>- Business events]
+            
+            PERF_PROFILER[🔬 Performance Profiler<br/>Deep Performance Analysis<br/>- Function profiling<br/>- Memory profiling<br/>- Process analysis<br/>- Bottleneck detection]
+            
+            CUSTOM_METRICS[📈 Custom Metrics<br/>Business Intelligence<br/>- Agent coordination KPIs<br/>- S@S ceremony metrics<br/>- Work completion rates<br/>- System health scores]
+            
+            ERROR_TRACKER[🐛 Error Tracker<br/>Error Management<br/>- Exception tracking<br/>- Error correlation<br/>- Alert generation<br/>- Error analytics]
+            
+            SLA_MONITOR[⏱️ SLA Monitor<br/>Service Level Management<br/>- SLA tracking<br/>- Performance targets<br/>- Availability monitoring<br/>- Response time analysis]
+            
+            CAPACITY_PLANNER[📊 Capacity Planner<br/>Resource Planning<br/>- Resource utilization<br/>- Growth prediction<br/>- Scaling recommendations<br/>- Cost optimization]
+            
+            ALERT_ORCHESTRATOR[🚨 Alert Orchestrator<br/>Intelligent Alerting<br/>- Smart alert routing<br/>- Alert correlation<br/>- Noise reduction<br/>- Escalation logic]
+            
+            %% BEAMOPS Integration Components
+            XAVOS_BEAMOPS[🚀 XAVOS BEAMOPS<br/>Autonomous Monitoring<br/>- Self-healing systems<br/>- Predictive alerts<br/>- Auto-optimization<br/>- ML-driven insights]
+            
+            AGENT_COORD_METRICS[🎯 Agent Coordination<br/>Metrics & Monitoring<br/>- Work claim latency<br/>- Agent utilization<br/>- Coordination efficiency<br/>- Team performance]
+            
+            PHOENIX_APM[🔥 Phoenix APM<br/>Web Application Monitoring<br/>- Request tracing<br/>- Database monitoring<br/>- LiveView performance<br/>- User experience]
+            
+            REACTOR_METRICS[⚡ Reactor Metrics<br/>Workflow Monitoring<br/>- Pipeline performance<br/>- Step execution time<br/>- Error rates<br/>- Resource consumption]
+            
+            %% Internal BEAMOPS Connections
+            PROMEX_CORE -.->|metrics| BEAM_MONITOR
+            PROMEX_CORE -.->|metrics| CUSTOM_METRICS
+            PROMEX_CORE -.->|metrics| AGENT_COORD_METRICS
+            
+            TELEMETRY_ENHANCED -.->|aggregates| PROMEX_CORE
+            TELEMETRY_ENHANCED -.->|feeds| PERF_PROFILER
+            TELEMETRY_ENHANCED -.->|correlates| ERROR_TRACKER
+            
+            LIVEDASHBOARD -.->|displays| BEAM_MONITOR
+            LIVEDASHBOARD -.->|shows| CUSTOM_METRICS
+            
+            SLA_MONITOR -.->|analyzes| PHOENIX_APM
+            SLA_MONITOR -.->|monitors| REACTOR_METRICS
+            
+            CAPACITY_PLANNER -.->|analyzes| BEAM_MONITOR
+            CAPACITY_PLANNER -.->|plans from| CUSTOM_METRICS
+            
+            ALERT_ORCHESTRATOR -.->|processes| ERROR_TRACKER
+            ALERT_ORCHESTRATOR -.->|manages| SLA_MONITOR
+            
+            XAVOS_BEAMOPS -.->|orchestrates| ALERT_ORCHESTRATOR
+            XAVOS_BEAMOPS -.->|optimizes| CAPACITY_PLANNER
+            
+            AGENT_COORD_METRICS -.->|integrates| XAVOS_BEAMOPS
+            PHOENIX_APM -.->|traces to| TELEMETRY_ENHANCED
+            REACTOR_METRICS -.->|feeds| TELEMETRY_ENHANCED
+        end
+        
+        %% External BEAMOPS Connections
+        SRE -->|configures| BEAMOPS_CORE
+        SRE -->|monitors via| GRAFANA
+        SRE -->|responds to| ALERTMANAGER
+        
+        DEV -->|instruments| PROMEX_CORE
+        DEV -->|debugs with| LIVEDASHBOARD
+        DEV -->|profiles with| PERF_PROFILER
+        
+        BUSINESS -->|views KPIs| CUSTOM_METRICS
+        BUSINESS -->|monitors SLAs| SLA_MONITOR
+        
+        DATA_SCIENTIST -->|analyzes| CAPACITY_PLANNER
+        DATA_SCIENTIST -->|insights from| PERF_PROFILER
+        
+        %% Infrastructure Connections
+        PROMETHEUS <-->|scrapes metrics| PROMEX_CORE
+        PROMETHEUS <-->|stores metrics| CUSTOM_METRICS
+        PROMETHEUS <-->|alert rules| ALERT_ORCHESTRATOR
+        
+        GRAFANA <-->|visualizes| PROMETHEUS
+        GRAFANA -->|displays| LIVEDASHBOARD
+        GRAFANA -->|dashboards| CUSTOM_METRICS
+        
+        JAEGER <-->|traces| TELEMETRY_ENHANCED
+        JAEGER <-->|trace data| PHOENIX_APM
+        JAEGER <-->|workflow traces| REACTOR_METRICS
+        
+        ALERTMANAGER <-->|receives alerts| ALERT_ORCHESTRATOR
+        ALERTMANAGER <-->|Prometheus alerts| PROMETHEUS
+        
+        EXTERNAL_APM <-->|error data| ERROR_TRACKER
+        EXTERNAL_APM <-->|performance data| PHOENIX_APM
+        
+        LOGSTASH <-->|log correlation| ERROR_TRACKER
+        LOGSTASH <-->|system logs| BEAM_MONITOR
+        
+        %% Data Flow Annotations
+        PROMEX_CORE -.->|"custom metrics → Prometheus"| PROMETHEUS
+        LIVEDASHBOARD -.->|"live data → Grafana"| GRAFANA
+        ERROR_TRACKER -.->|"alerts → AlertManager"| ALERTMANAGER
+        XAVOS_BEAMOPS -.->|"autonomous decisions → system optimization"| BEAMOPS_CORE
+    end
+
+    %% Styling
+    classDef systemBoundary fill:#2E3440,stroke:#5E81AC,stroke-width:3px,color:#ECEFF4
+    classDef beamopsCore fill:#3B4252,stroke:#81A1C1,stroke-width:2px,color:#ECEFF4
+    classDef promexComponent fill:#4C566A,stroke:#EBCB8B,stroke-width:2px,color:#ECEFF4
+    classDef monitoringComponent fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef external fill:#434C5E,stroke:#BF616A,stroke-width:2px,color:#ECEFF4
+    classDef user fill:#5E81AC,stroke:#88C0D0,stroke-width:2px,color:#2E3440
+    classDef infrastructure fill:#434C5E,stroke:#D08770,stroke-width:2px,color:#ECEFF4
+    
+    class BEAMOPS_CORE systemBoundary
+    class PROMEX_CORE,CUSTOM_METRICS,AGENT_COORD_METRICS promexComponent
+    class BEAM_MONITOR,LIVEDASHBOARD,TELEMETRY_ENHANCED,PERF_PROFILER,ERROR_TRACKER,SLA_MONITOR,CAPACITY_PLANNER,ALERT_ORCHESTRATOR monitoringComponent
+    class XAVOS_BEAMOPS,PHOENIX_APM,REACTOR_METRICS beamopsCore
+    class PROMETHEUS,GRAFANA,JAEGER,ALERTMANAGER,EXTERNAL_APM,LOGSTASH infrastructure
+    class SRE,DEV,BUSINESS,DATA_SCIENTIST user
