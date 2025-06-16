@@ -19,7 +19,7 @@ mix compile --warnings-as-errors && mix test && mix format --check-formatted
 ## SYSTEM OVERVIEW
 
 **Location**: `/Users/sac/dev/ai-self-sustaining-system`
-**Performance**: 105.8/100 health score, 148 ops/hour, zero conflicts
+**Performance**: 22.5% information retention, 92.6% success rate, 7.4% error rate
 **Architecture**: Reactor Engine + S@S Coordination + Claude AI + Phoenix/Ash Stack
 
 ## COORDINATION COMMANDS (HIGH-IMPACT)

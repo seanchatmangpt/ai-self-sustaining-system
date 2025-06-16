@@ -1,4 +1,41 @@
 defmodule SelfSustaining.TelemetryTest do
+  @moduledoc """
+  Test suite for OpenTelemetry integration and telemetry functionality.
+
+  Validates the comprehensive telemetry system including OpenTelemetry spans,
+  custom telemetry events, AI-specific metrics collection, and performance monitoring.
+  Tests cover both successful operations and error handling scenarios.
+
+  ## Test Categories
+
+  ### OpenTelemetry Instrumentation
+  - **Basic Tracing**: Span creation, attribute setting, and context propagation
+  - **AI Telemetry**: Specialized AI operation tracing with custom attributes
+  - **Workflow Telemetry**: Reactor workflow instrumentation and monitoring
+  - **Metrics Collection**: Custom metrics definition and dispatch
+
+  ### Performance Monitoring
+  - **Periodic Metrics**: Automated metric dispatch for AI operations
+  - **System Health**: Health check telemetry and status monitoring
+  - **Workflow Metrics**: Reactor execution performance tracking
+
+  ### Error Handling
+  - **Span Error Handling**: Error status setting and exception tracking
+  - **Resilient Telemetry**: Ensuring telemetry doesn't break application flow
+
+  ## Test Data
+
+  Uses mock telemetry events and handlers to verify:
+  - Event emission and reception
+  - Span creation and attribute setting
+  - Metrics collection and dispatch
+  - Error handling and status setting
+
+  ## Integration
+
+  Tests the actual SelfSustainingWeb.Telemetry supervisor and configuration
+  to ensure proper integration with the Phoenix application telemetry stack.
+  """
   use ExUnit.Case, async: true
   
   require OpenTelemetry.Tracer

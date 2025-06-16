@@ -1,4 +1,30 @@
 defmodule SelfSustaining.APSTest do
+  @moduledoc """
+  Test suite for the Agile Protocol Specification (APS) functionality.
+  
+  This test module validates the APS YAML parsing, validation, and integration
+  capabilities within the self-sustaining AI system. Tests cover:
+  
+  - APS YAML schema validation
+  - Process definition parsing
+  - Role and activity validation
+  - Scenario and data structure verification
+  - Integration with agent coordination systems
+  
+  ## Test Data
+  
+  Uses predefined APS YAML structures that conform to the agent coordination
+  protocol specifications. Test scenarios include both valid and invalid
+  configurations to ensure robust error handling.
+  
+  ## Test Categories
+  
+  - **Schema Validation**: YAML structure and required field validation
+  - **Process Parsing**: Agent role and activity definition processing
+  - **Scenario Testing**: BDD-style scenario validation
+  - **Integration Testing**: Coordination with agent systems
+  """
+  
   use ExUnit.Case, async: true
 
   alias SelfSustaining.APS

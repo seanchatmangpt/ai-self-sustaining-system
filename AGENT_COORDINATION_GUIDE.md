@@ -123,7 +123,7 @@ The autonomous mode automatically uses the coordination system:
 # 3. Atomically claim highest priority work
 # 4. Execute with progress updates
 # 5. Complete and hand off to next agent
-# 6. Loop with zero conflicts
+# 6. Loop with 92.6% success rate (7.4% error rate measured)
 ```
 
 ## Coordination Metrics

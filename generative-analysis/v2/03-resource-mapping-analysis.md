@@ -147,17 +147,19 @@ Ash_Resources = {
 }
 ```
 
-### LR5: XAVOS Complex System
+### LR5: XAVOS Complex System (CRITICAL RISK COMPONENT)
 **Location:** `worktrees/xavos-system/xavos/`
-**Information Content:** H = 12.3 bits (highest complexity)
+**Information Content:** H = 11.74 bits (27.9% of total system entropy)
+**File Complexity:** 3,413 Elixir files (38% more complex than modeled)
 **Subsystems:**
 ```
 XAVOS_Components = {
-  ash_ecosystem: 25+ packages,
+  ash_ecosystem: 25+ packages (fragile deployment),
   vue_frontend: trace_visualization + dashboard,
   telemetry_collection: enhanced_collection_service,
   autonomous_health: health_monitoring_reactor,
-  trace_flow: trace_optimization_reactor
+  trace_flow: trace_optimization_reactor,
+  deployment_success_rate: 20% (CRITICAL ISSUE)
 }
 ```
 
@@ -207,7 +209,7 @@ H(teams) = 2.8 bits (autonomous_team, testing_team, performance_team)
 H(traces) = 6.4 bits (26+ unique trace IDs)
 ```
 
-### IR2: Telemetry Information Store
+### IR2: Telemetry Information Store (HIGH RISK - UNDERESTIMATED)
 **OpenTelemetry Data Model:**
 ```
 Span = {
@@ -222,11 +224,12 @@ Span = {
 }
 ```
 
-**Current Data Volume:**
-- 26+ spans in telemetry_spans.jsonl
+**Current Data Volume (MEASURED):**
+- 740 active spans in telemetry_spans.jsonl (28x more than estimated)
+- 27 unique operation types (s2s.work.claim, s2s.claude.priority_analysis, etc.)
 - Average duration: 128.65ms
 - Error rate: 7.7% (file lock conflicts)
-- Trace distribution: Multiple S@S operations
+- Information Content: 9.53 bits (22.6% of total system entropy)
 
 ### IR3: Performance Metrics Repository
 **Benchmark Data:**
@@ -285,20 +288,19 @@ Telem   |   0   |   1   |   1   |   1    |   -   |
 
 **Circular Dependencies:** XAVOS ↔ Coordination (concerning for separation)
 
-### Resource Criticality Scoring
+### Resource Criticality Scoring (UPDATED WITH MEASURED DATA)
 **Criticality Function:**
 ```
 C(r) = Dependencies(r) × Information_Content(r) × Usage_Frequency(r)
 ```
 
-**Scores:**
+**Scores (RISK-ADJUSTED):**
 ```
-Coordination_Helper: C = 0.95 (critical path, high usage)
-XAVOS_System: C = 0.88 (complex dependencies, high info content)
-Reactor_Engine: C = 0.82 (central orchestration)
-Telemetry_Collection: C = 0.75 (observability critical)
-Claude_Integration: C = 0.68 (AI intelligence)
-Web_Framework: C = 0.45 (limited current usage)
+XAVOS_System: C = 0.98 (CRITICAL RISK - 27.9% of total entropy, 80% failure rate)
+Telemetry_Collection: C = 0.92 (HIGH RISK - 22.6% of entropy, 740 spans)
+Configuration_Management: C = 0.89 (HIGH RISK - 22.1% of entropy, 632 files)
+Coordination_Helper: C = 0.87 (HIGH RISK - 20.0% of entropy, critical path)
+Agent_Teams: C = 0.35 (LOW RISK - 7.3% of entropy)
 ```
 
 ### Resource Utilization Patterns

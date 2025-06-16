@@ -1,10 +1,48 @@
 #!/usr/bin/env elixir
 
+# Reactor Simulation Performance Benchmark
+#
+# This script provides performance benchmarking for the Reactor-based agent
+# coordination system, simulating real-world load patterns and measuring
+# system responsiveness under various scenarios.
+#
+# Features:
+# - Agent coordination simulation with nanosecond precision IDs
+# - Work claiming performance testing with JSON serialization
+# - Telemetry collection and analysis
+# - Memory usage tracking and optimization
+# - Concurrent operation stress testing
+#
+# Usage:
+#   elixir reactor_simulation_benchmark.exs
+#   elixir reactor_simulation_benchmark.exs --iterations 1000
+#   elixir reactor_simulation_benchmark.exs --concurrent-agents 50
+#
+# Performance Targets:
+# - Work claiming: < 50ms per operation
+# - Agent registration: < 20ms per operation  
+# - JSON serialization: < 5ms per operation
+# - Memory usage: < 100MB for 1000 agents
+#
+# Output:
+# - Performance metrics with percentiles
+# - Memory usage analysis
+# - Bottleneck identification
+# - Optimization recommendations
+
 IO.puts("🚀 Reactor Simulation Performance Benchmark")
 IO.puts("===========================================")
 
 # Simulate Agent Coordination functionality
 defmodule AgentCoordinationSimulation do
+  @moduledoc """
+  Simulates agent coordination operations for performance testing.
+  
+  Provides realistic simulation of the coordination_helper.sh operations
+  including work claiming, agent registration, and telemetry collection.
+  All operations use nanosecond precision timing and JSON serialization
+  to match the production system behavior.
+  """
   def generate_agent_id do
     "agent_#{System.system_time(:nanosecond)}"
   end

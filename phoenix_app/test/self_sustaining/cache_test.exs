@@ -1,4 +1,56 @@
 defmodule SelfSustaining.CacheTest do
+  @moduledoc """
+  Test suite for the SelfSustaining.Cache module.
+
+  Validates comprehensive caching functionality including basic operations,
+  TTL (Time To Live) expiration, fetch-and-compute patterns, statistics tracking,
+  and specialized convenience functions for system optimization.
+
+  ## Test Categories
+
+  ### Basic Cache Operations
+  - **put/get**: Core storage and retrieval functionality
+  - **delete**: Cache entry removal and cleanup
+  - **clear**: Complete cache reset operations
+  - **get with defaults**: Fallback value handling
+
+  ### TTL (Time To Live) Functionality
+  - **Expiration Testing**: Values expire after specified TTL
+  - **TTL Validation**: Values remain valid within TTL window
+  - **Automatic Cleanup**: Expired entries are automatically removed
+
+  ### Fetch-and-Compute Operations
+  - **Lazy Computation**: Compute values only when needed
+  - **Cache Efficiency**: Avoid recomputation for cached values
+  - **Function Composition**: Higher-order function support
+
+  ### Statistics and Monitoring
+  - **Hit/Miss Tracking**: Cache performance metrics
+  - **Size Monitoring**: Cache entry count tracking
+  - **Hit Rate Calculation**: Performance optimization insights
+
+  ### Convenience Functions
+  Specialized caching for system components:
+  - **Enhancement Discovery**: AI enhancement caching with prefix
+  - **Database Queries**: Query result caching with hash keys
+  - **Workflow Generation**: Generated workflow caching with SHA256 keys
+  - **Performance Metrics**: System metrics caching with TTL
+
+  ### Error Handling
+  - **Graceful Failures**: Compute function error handling
+  - **Cache Consistency**: Failed computations don't corrupt cache
+  - **Exception Propagation**: Proper error bubbling
+
+  ### Performance Characteristics
+  - **Large Dataset Handling**: Efficiency with many cache entries
+  - **Response Time**: Consistent performance under load
+  - **Memory Management**: Proper cleanup and resource usage
+
+  ## Test Setup
+
+  Each test starts with a fresh cache instance using `start_supervised/1`
+  to ensure test isolation and proper cleanup between test runs.
+  """
   use ExUnit.Case, async: true
   
   alias SelfSustaining.Cache

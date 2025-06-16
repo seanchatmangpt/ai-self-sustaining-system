@@ -1,4 +1,47 @@
 defmodule SelfSustaining.ReactorMiddleware.DebugMiddlewareTest do
+  @moduledoc """
+  Test suite for the SelfSustaining Reactor Debug Middleware.
+
+  Validates comprehensive logging and debugging capabilities for Reactor workflows
+  including execution tracing, context information display, and error handling.
+  Tests ensure proper integration with the Reactor middleware stack.
+
+  ## Test Categories
+
+  ### Execution Logging
+  - **Basic Logging**: Standard execution events and step completion
+  - **Verbose Logging**: Detailed context information when verbose mode enabled
+  - **Error Logging**: Proper error handling and failure reporting
+
+  ### Test Reactors
+
+  Includes custom test reactors:
+  - **TestReactor**: Simple two-step workflow for basic testing
+  - **FailingReactor**: Intentionally failing reactor for error testing
+
+  ## Middleware Integration
+
+  Tests verify the debug middleware properly:
+  - Integrates with Reactor.Builder.add_middleware/2
+  - Logs execution events at appropriate levels
+  - Handles verbose context information display
+  - Captures and reports step failures
+
+  ## Log Verification
+
+  Uses ExUnit.CaptureLog to verify:
+  - Proper log message formatting with emojis
+  - Context information inclusion when verbose
+  - Error messages and failure reporting
+  - Step-by-step execution tracking
+
+  ## Usage Patterns
+
+  Tests cover realistic usage scenarios including:
+  - Standard workflow execution with debug middleware
+  - Verbose debugging for troubleshooting
+  - Error handling and failure diagnosis
+  """
   use ExUnit.Case, async: true
   
   import ExUnit.CaptureLog
