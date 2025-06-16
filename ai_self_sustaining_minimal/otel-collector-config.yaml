@@ -1,0 +1,57 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Government-specific processors
+  attributes/government:
+    actions:
+      - key: government.deployment.environment
+        action: upsert
+        value: "e2e-validation"
+      - key: government.validation.session
+        action: upsert
+        value: "${E2E_SESSION_ID}"
+      - key: government.trace.validation
+        action: upsert
+        value: true
+        
+  resource/government:
+    attributes:
+      - key: service.name
+        value: "government-claude-code-e2e"
+        action: upsert
+      - key: service.version
+        value: "1.0.0"
+        action: upsert
+
+  # Batch processor for performance
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+
+exporters:
+  # Jaeger exporter for visualization
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+      
+  # File exporter for validation
+  file:
+    path: /tmp/otel-traces.jsonl
+    
+  # Logging for debugging
+  logging:
+    loglevel: info
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [attributes/government, resource/government, batch]
+      exporters: [jaeger, file, logging]

@@ -1,0 +1,88 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "*"
+          allowed_headers:
+            - "*"
+
+processors:
+  # Government security processor
+  attributes/government_security:
+    actions:
+      - key: government.validation.session
+        action: upsert
+        value: "bulletproof_e2e_${VALIDATION_SESSION_ID}"
+      - key: government.infrastructure.type
+        action: upsert
+        value: "production_grade"
+      - key: government.trace.validation.enabled
+        action: upsert
+        value: true
+      - key: government.compliance.validated
+        action: upsert
+        value: true
+        
+  # Resource processor for service identification
+  resource/government:
+    attributes:
+      - key: service.name
+        value: "government-bulletproof-e2e"
+        action: upsert
+      - key: service.version
+        value: "2.0.0"
+        action: upsert
+      - key: deployment.environment
+        value: "bulletproof-validation"
+        action: upsert
+
+  # Batch processor for optimal performance
+  batch:
+    timeout: 500ms
+    send_batch_size: 512
+    send_batch_max_size: 1024
+
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    limit_mib: 256
+    check_interval: 1s
+
+exporters:
+  # OTLP exporter to Jaeger's OTLP endpoint
+  otlp/jaeger:
+    endpoint: http://jaeger:14268/api/traces
+    tls:
+      insecure: true
+      
+  # File exporter for backup validation
+  file:
+    path: /tmp/otel-bulletproof-traces.jsonl
+    rotation:
+      max_megabytes: 10
+      max_days: 1
+    
+  # Logging exporter for real-time monitoring
+  logging:
+    loglevel: info
+    sampling_initial: 2
+    sampling_thereafter: 500
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes/government_security, resource/government, batch]
+      exporters: [otlp/jaeger, file, logging]
+  
+  extensions: []
+  
+  telemetry:
+    logs:
+      level: "info"
+    metrics:
+      level: "basic"

@@ -1,0 +1,1003 @@
+{
+  "timestamp": 1750047771161227000,
+  "agent_id": "validator_1750047771158545000",
+  "event": "validation_start",
+  "status": "started",
+  "operation": "validation_root",
+  "trace_context": {"trace_id":"144ca6c9724c4b771e70f3f00a9faf66","span_id":"0f0f4feb461d8fa0","parent_span_id":"f087bf387411c420","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047771172361000,
+  "agent_id": "validator_1750047771158545000",
+  "event": "test_1_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"144ca6c9724c4b771e70f3f00a9faf66","span_id":"26e0fd5aee4c1c77","parent_span_id":"f087bf387411c420","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047771913689000,
+  "agent_id": "validator_1750047771158545000",
+  "event": "basic_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"144ca6c9724c4b771e70f3f00a9faf66","span_id":"90aadd9e808dbb87","parent_span_id":"f087bf387411c420","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047771924568000,
+  "agent_id": "validator_1750047771158545000",
+  "event": "file_validation",
+  "status": "failed",
+  "operation": "validation",
+  "trace_context": {"trace_id":"144ca6c9724c4b771e70f3f00a9faf66","span_id":"6245e5d941986072","parent_span_id":"f087bf387411c420","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047817696994000,
+  "agent_id": "validator_1750047817694546000",
+  "event": "validation_start",
+  "status": "started",
+  "operation": "validation_root",
+  "trace_context": {"trace_id":"bd841c0aa25b2d0679426f5138733b2d","span_id":"4b6531be6ae703cc","parent_span_id":"4c24033c8ef0eee9","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047817708645000,
+  "agent_id": "validator_1750047817694546000",
+  "event": "test_1_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"bd841c0aa25b2d0679426f5138733b2d","span_id":"abeb318b3f56d79f","parent_span_id":"4c24033c8ef0eee9","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047818569812000,
+  "agent_id": "validator_1750047817694546000",
+  "event": "basic_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"bd841c0aa25b2d0679426f5138733b2d","span_id":"70624db46441f0ef","parent_span_id":"4c24033c8ef0eee9","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047818580883000,
+  "agent_id": "validator_1750047817694546000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"bd841c0aa25b2d0679426f5138733b2d","span_id":"3c9ecbf9d03dbd6f","parent_span_id":"4c24033c8ef0eee9","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047819172829000,
+  "agent_id": "validator_1750047817694546000",
+  "event": "compilation",
+  "status": "failed",
+  "operation": "validation",
+  "trace_context": {"trace_id":"bd841c0aa25b2d0679426f5138733b2d","span_id":"3edac4e1a3b46fc7","parent_span_id":"4c24033c8ef0eee9","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047835274455000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "validation_start",
+  "status": "started",
+  "operation": "validation_root",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"7e9adbef49546a82","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047835286419000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "test_1_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"1812e9469cff4b69","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047835938293000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "basic_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"ec7f9cf548bd8ccb","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047835949444000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"46602a790d7c4a84","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047836755465000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"b36f38690f9550bd","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047836766685000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "test_2_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"872eb4ee3c92d26f","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047837412264000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "domain_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"e8108fea36580dd2","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047837423445000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"26504cf4581097e2","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047838236188000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"eee46251a876311b","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047838247412000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "test_3_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"687c841eeb138f3b","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047838273833000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "dsl_structure",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"ece6e9ec21ed47dd","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047838284145000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "test_4_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"037d9511b4c233c1","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047838605335000,
+  "agent_id": "validator_1750047835272023000",
+  "event": "telemetry_integration",
+  "status": "failed",
+  "operation": "validation",
+  "trace_context": {"trace_id":"9825102559a0b14dfbc0b2d8a873285e","span_id":"2b26f1b6999c94a7","parent_span_id":"2b359f6549abf234","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047878808677000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "validation_start",
+  "status": "started",
+  "operation": "validation_root",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"19d93ad5f4fecfb0","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047878820836000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "test_1_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"f9d463a2531fb123","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047879494094000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "basic_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"4458bc6031fb3c53","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047879505065000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"8b5e79368e5e8e56","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047880349938000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"a506976604839957","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047880361041000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "test_2_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"3c5f4ac861c30253","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047880993595000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "domain_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"e3cc8c2a33fd5279","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047881005248000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"41f31aa4032103b7","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047881884474000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"c1d30c758bebb3c9","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047881896334000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "test_3_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"3a371b7905362b32","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047881924489000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "dsl_structure",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"b88873c4fab5a7dd","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047881935604000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "test_4_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"f4cfc41cec6f68a2","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047882282530000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "telemetry_integration",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"69d37b70ea032585","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047882297751000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "test_5_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"14d2a821f9e864ab","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047886059197000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "performance_test",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"f69b28eeafbf5bb7","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047886071462000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "test_6_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"9f9dcade90d681f4","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047886707218000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"6d2659d15dec4fc7","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047886752568000,
+  "agent_id": "validator_1750047878806235000",
+  "event": "final_integration",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"aadf8b7a2994ba3c66968abe01d6678e","span_id":"d38d6c6f1b39aaa4","parent_span_id":"3d58a473e09ae2c2","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047957668587000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "validation_start",
+  "status": "started",
+  "operation": "validation_root",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"937d3002af5e6ecb","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047957678699000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "test_1_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"56a9cbd4da98a67a","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047958334810000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "basic_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"881dee0cf29053ea","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047958346313000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"b5599b6a9e285429","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047959154052000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"9b2098e4e78a45e5","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047959164860000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "test_2_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"690a02650bc12269","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047959797324000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "domain_generation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"9fcb6f3a70c7a219","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047959808150000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "file_validation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"42a98218146d9db8","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047960612688000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"79fdbf1cc78bf147","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047960626713000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "test_3_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"0fcbb0c4aa64ef66","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047960657884000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "dsl_structure",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"1d84c39ee269cefb","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047960669537000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "test_4_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"a22be86034566c5b","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047960990596000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "telemetry_integration",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"056b46b357467b4c","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047961004329000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "test_5_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"db8520b65f0326c7","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047964141386000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "performance_test",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"f07a6a8904edf699","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047964152518000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "test_6_start",
+  "status": "started",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"dc49d59721640621","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047964753576000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "compilation",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"81c0014d9ea41c3d","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047964764658000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "final_integration",
+  "status": "success",
+  "operation": "validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"bfc0df981d0f3195","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}
+{
+  "timestamp": 1750047964800882000,
+  "agent_id": "validator_1750047957666086000",
+  "event": "validation_complete",
+  "status": "failed",
+  "operation": "final_validation",
+  "trace_context": {"trace_id":"cc2deb816c4749f149296e846c74ea41","span_id":"660bdb6ead6e820d","parent_span_id":"37803e0250ce5283","trace_flags":"01","trace_state":""},
+  "resource": {
+    "service.name": "spark-dsl-generator-validator",
+    "service.version": "1.0.0",
+    "deployment.environment": "validation"
+  },
+  "instrumentation_scope": {
+    "name": "spark-dsl-validator",
+    "version": "1.0.0"
+  }
+}

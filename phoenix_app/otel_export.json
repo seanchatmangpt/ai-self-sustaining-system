@@ -1,0 +1,38 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {"key": "service.name", "value": {"stringValue": "spark-dsl-generator-validator"}},
+          {"key": "service.version", "value": {"stringValue": "1.0.0"}},
+          {"key": "deployment.environment", "value": {"stringValue": "validation"}}
+        ]
+      },
+      "instrumentationLibrarySpans": [
+        {
+          "instrumentationLibrary": {
+            "name": "spark-dsl-validator",
+            "version": "1.0.0"
+          },
+          "spans": [
+            {
+              "traceId": "cc2deb816c4749f149296e846c74ea41",
+              "spanId": "37803e0250ce5283",
+              "name": "spark-dsl-generator-validation",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": 1750047957664011000,
+              "endTimeUnixNano": 1750047964796913000,
+              "attributes": [
+                {"key": "agent.id", "value": {"stringValue": "validator_1750047957666086000"}},
+                {"key": "validation.events.total", "value": {"intValue":      986}},
+                {"key": "validation.events.success", "value": {"intValue":       32}},
+                {"key": "validation.events.failed", "value": {"intValue":        3}},
+                {"key": "validation.trace.propagation", "value": {"stringValue": "partial"}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BEAMOPS_ROOT="$(dirname "$SCRIPT_DIR")"
-COORDINATION_ROOT="$BEAMOPS_ROOT/../agent_coordination"
+COORDINATION_ROOT="$(dirname "$(dirname "$BEAMOPS_ROOT")")/agent_coordination"
 GRAFANA_CONFIG="$BEAMOPS_ROOT/grafana"
 DASHBOARDS_DIR="$BEAMOPS_ROOT/priv/grafana_dashboards"
 

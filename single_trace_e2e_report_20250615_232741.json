@@ -1,0 +1,65 @@
+{
+  "report_metadata": {
+    "timestamp": "2025-06-16T06:27:41.3NZ",
+    "test_type": "single_trace_e2e_validation",
+    "master_trace_id": "3a89e80e3fc90f9cfcd59a74d61f3863",
+    "objective": "Validate exact same trace ID through all components"
+  },
+  "validation_results": {
+    "propagation_success": false,
+    "master_trace_maintained": true,
+    "component_results": [
+      {
+        "component": "shell_init",
+        "trace_id": "3a89e80e3fc90f9cfcd59a74d61f3863",
+        "status": "SUCCESS"
+      },
+      {
+        "component": "coordination",
+        "trace_id": "848aaf43fd55ed7026b9cf5617887fe2",
+        "status": "SUCCESS"
+      },
+      {
+        "component": "elixir_direct",
+        "trace_id": "none",
+        "status": "FAILED"
+      },
+      {
+        "component": "phoenix_http",
+        "trace_id": "3a89e80e3fc90f9cfcd59a74d61f3863",
+        "status": "SUCCESS"
+      },
+      {
+        "component": "n8n_workflow",
+        "trace_id": "3a89e80e3fc90f9cfcd59a74d61f3863",
+        "status": "SUCCESS"
+      },
+      {
+        "component": "completion",
+        "trace_id": "3a89e80e3fc90f9cfcd59a74d61f3863",
+        "status": "SUCCESS"
+      }
+    ]
+  },
+  "trace_journey": {
+    "shell_initialization": true,
+    "coordination_forcing": true,
+    "elixir_direct": true,
+    "phoenix_headers": true,
+    "n8n_workflow": true,
+    "work_completion": true
+  },
+  "conclusions": {
+    "single_trace_achievable": false,
+    "system_trace_ready": true,
+    "recommendations": [
+      "Deploy with trace ID injection for distributed tracing",
+      "Configure OpenTelemetry collector with trace correlation",
+      "Implement trace sampling for production workloads"
+    ]
+  },
+  "files_generated": {
+    "execution_log": "single_trace_e2e_1750055258.log",
+    "validation_report": "single_trace_e2e_report.json"
+  }
+}

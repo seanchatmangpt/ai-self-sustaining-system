@@ -1,0 +1,12 @@
+# E2E OpenTelemetry Trace Validation Log
+# Started: 2025-06-16T04:22:45.3NZ
+[0;34mℹ️  INFO:[0m Generated master trace ID: 9a98c75fa87c67794173db6a5a10251e
+{
+  "timestamp": "2025-06-16T04:22:45.3NZ",
+  "component": "shell",
+  "trace_id": "9a98c75fa87c67794173db6a5a10251e",
+  "span_id": "99ae7e1dc574f4aa",
+  "operation": "master_trace_generation",
+  "metadata": "Initial trace context created"
+}
+[0;34mℹ️  INFO:[0m 🔧 Testing coordination helper trace propagation...
