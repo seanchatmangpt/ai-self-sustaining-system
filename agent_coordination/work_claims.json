@@ -354,5 +354,41 @@
       "operation": "s2s.work.claim",
       "service": "s2s-coordination"
     }
+  },
+  {
+    "work_item_id": "work_1750047615081772000",
+    "agent_id": "agent_1750047615078458000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T04:20:15Z",
+    "estimated_duration": "30m",
+    "work_type": "observability_infrastructure",
+    "priority": "high",
+    "description": "Implement Promex + Grafana monitoring for coordination performance with OpenTelemetry integration",
+    "status": "active",
+    "team": "autonomous_team",
+    "telemetry": {
+      "trace_id": "981a5f7c7157bd75f96397887a666f3a",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    }
+  },
+  {
+    "work_item_id": "work_1750047677008413000",
+    "agent_id": "agent_1750047677005049000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T04:21:17Z",
+    "estimated_duration": "30m",
+    "work_type": "observability_infrastructure",
+    "priority": "critical",
+    "description": "Implement comprehensive Promex + Grafana monitoring for agent coordination performance",
+    "status": "active",
+    "team": "autonomous_team",
+    "telemetry": {
+      "trace_id": "23f8118a827f5a67f584b3e2d6a2167b",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    }
   }
 ]

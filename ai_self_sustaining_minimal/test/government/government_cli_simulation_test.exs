@@ -144,8 +144,11 @@ defmodule AiSelfSustainingMinimal.Government.GovernmentCliSimulationTest do
       assert {:compliance_failure, failures, audit_trail} = result
       
       IO.puts("   🚨 Compliance violations detected:")
-      Enum.each(failures, fn {framework, reason} ->
-        IO.puts("      ❌ #{String.upcase(framework)}: #{reason}")
+      Enum.each(failures, fn 
+        {framework, reason} ->
+          IO.puts("      ❌ #{String.upcase(framework)}: #{reason}")
+        %{framework: framework, reason: reason} ->
+          IO.puts("      ❌ #{String.upcase(framework)}: #{reason}")
       end)
       
       assert length(failures) >= 3  # Should catch multiple violations
