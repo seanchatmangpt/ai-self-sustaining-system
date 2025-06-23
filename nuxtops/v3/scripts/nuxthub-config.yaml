@@ -1,0 +1,464 @@
+# NuxtOps V3 NuxtHub Configuration
+# Complete configuration for NuxtHub deployment with observability
+
+# Project configuration
+project:
+  name: "nuxtops-v3"
+  description: "NuxtOps V3 - Enterprise Nuxt.js deployment platform"
+  version: "3.0.0"
+  repository: "https://github.com/your-org/nuxtops-v3"
+
+# Environment configurations
+environments:
+  preview:
+    # Basic settings
+    region: "us-east-1"
+    node_version: "18"
+    build_command: "npm run build"
+    
+    # NuxtHub features
+    features:
+      kv: true
+      database: true
+      blob: true
+      ai: false
+      analytics: true
+    
+    # Environment variables
+    env:
+      NODE_ENV: "development"
+      NUXT_PUBLIC_ENVIRONMENT: "preview"
+      NUXT_PUBLIC_API_BASE: "https://api-preview.nuxtops.com"
+      
+      # OpenTelemetry configuration
+      OTEL_SERVICE_NAME: "nuxtops-preview"
+      OTEL_SERVICE_VERSION: "3.0.0"
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=nuxtops-preview,service.version=3.0.0,deployment.environment=preview"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://otel-collector.nuxtops.com"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_METRICS_EXPORTER: "otlp"
+      OTEL_LOGS_EXPORTER: "otlp"
+      OTEL_TRACES_SAMPLER: "traceidratio"
+      OTEL_TRACES_SAMPLER_ARG: "0.5"
+      
+      # Database configuration
+      DATABASE_URL: "${NUXTHUB_DATABASE_URL}"
+      
+      # Cache configuration
+      REDIS_URL: "${NUXTHUB_KV_URL}"
+      
+      # Monitoring
+      MONITORING_ENABLED: "true"
+      LOG_LEVEL: "info"
+    
+    # Resource limits
+    resources:
+      memory: "512MB"
+      cpu: "1000m"
+      timeout: "30s"
+    
+    # Domain configuration
+    domains:
+      - "preview.nuxtops.com"
+    
+    # Security headers
+    security:
+      headers:
+        x-frame-options: "DENY"
+        x-content-type-options: "nosniff"
+        x-xss-protection: "1; mode=block"
+        strict-transport-security: "max-age=31536000; includeSubDomains"
+        content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'"
+    
+    # Caching configuration
+    cache:
+      static_assets:
+        max_age: "31536000"  # 1 year
+        immutable: true
+      api_responses:
+        max_age: "300"       # 5 minutes
+        stale_while_revalidate: "60"
+      pages:
+        max_age: "3600"      # 1 hour
+        stale_while_revalidate: "300"
+
+  production:
+    # Basic settings
+    region: "us-east-1"
+    node_version: "18"
+    build_command: "npm run build"
+    
+    # NuxtHub features
+    features:
+      kv: true
+      database: true
+      blob: true
+      ai: true
+      analytics: true
+    
+    # Environment variables
+    env:
+      NODE_ENV: "production"
+      NUXT_PUBLIC_ENVIRONMENT: "production"
+      NUXT_PUBLIC_API_BASE: "https://api.nuxtops.com"
+      
+      # OpenTelemetry configuration (production optimized)
+      OTEL_SERVICE_NAME: "nuxtops-production"
+      OTEL_SERVICE_VERSION: "3.0.0"
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=nuxtops-production,service.version=3.0.0,deployment.environment=production"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "https://otel-collector.nuxtops.com"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_METRICS_EXPORTER: "otlp"
+      OTEL_LOGS_EXPORTER: "otlp"
+      OTEL_TRACES_SAMPLER: "traceidratio"
+      OTEL_TRACES_SAMPLER_ARG: "0.1"  # 10% sampling for production
+      
+      # Database configuration
+      DATABASE_URL: "${NUXTHUB_DATABASE_URL}"
+      
+      # Cache configuration
+      REDIS_URL: "${NUXTHUB_KV_URL}"
+      
+      # Monitoring
+      MONITORING_ENABLED: "true"
+      LOG_LEVEL: "warn"
+      
+      # Performance optimization
+      NITRO_MINIFY: "true"
+      NITRO_PRESET: "cloudflare-pages"
+    
+    # Resource limits (production)
+    resources:
+      memory: "1GB"
+      cpu: "2000m"
+      timeout: "60s"
+    
+    # Domain configuration
+    domains:
+      - "nuxtops.com"
+      - "www.nuxtops.com"
+    
+    # Security headers (production)
+    security:
+      headers:
+        x-frame-options: "DENY"
+        x-content-type-options: "nosniff"
+        x-xss-protection: "1; mode=block"
+        strict-transport-security: "max-age=63072000; includeSubDomains; preload"
+        content-security-policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https://api.nuxtops.com https://otel-collector.nuxtops.com"
+        referrer-policy: "strict-origin-when-cross-origin"
+        permissions-policy: "camera=(), microphone=(), geolocation=()"
+    
+    # Caching configuration (production optimized)
+    cache:
+      static_assets:
+        max_age: "31536000"  # 1 year
+        immutable: true
+      api_responses:
+        max_age: "600"       # 10 minutes
+        stale_while_revalidate: "300"
+      pages:
+        max_age: "7200"      # 2 hours
+        stale_while_revalidate: "3600"
+
+# Build configuration
+build:
+  # Build optimization
+  optimization:
+    minify: true
+    tree_shaking: true
+    dead_code_elimination: true
+    css_minification: true
+    image_optimization: true
+  
+  # Bundle analysis
+  analyze: false
+  
+  # Source maps (disabled in production)
+  source_maps: false
+  
+  # Build caching
+  cache:
+    enabled: true
+    directory: ".nuxt/cache"
+  
+  # Build hooks
+  hooks:
+    pre_build:
+      - "npm run lint"
+      - "npm run type-check"
+    post_build:
+      - "npm run test:unit"
+
+# Database configuration
+database:
+  # Connection settings
+  connection:
+    pool_size: 10
+    connection_timeout: "30s"
+    idle_timeout: "600s"
+  
+  # Migrations
+  migrations:
+    auto_run: true
+    directory: "database/migrations"
+  
+  # Backup configuration
+  backup:
+    enabled: true
+    schedule: "0 2 * * *"  # Daily at 2 AM
+    retention: "30d"
+
+# KV Store configuration
+kv:
+  # Namespaces
+  namespaces:
+    cache: "cache"
+    sessions: "sessions"
+    analytics: "analytics"
+    feature_flags: "feature_flags"
+  
+  # TTL settings
+  default_ttl: "3600"  # 1 hour
+  
+  # Performance settings
+  batch_size: 100
+  connection_pool: 5
+
+# Blob storage configuration
+blob:
+  # Storage settings
+  max_file_size: "10MB"
+  allowed_types:
+    - "image/jpeg"
+    - "image/png"
+    - "image/webp"
+    - "image/gif"
+    - "application/pdf"
+    - "text/plain"
+  
+  # CDN configuration
+  cdn:
+    enabled: true
+    cache_control: "public, max-age=31536000"
+  
+  # Image optimization
+  image_optimization:
+    enabled: true
+    formats: ["webp", "avif"]
+    quality: 85
+
+# Analytics configuration
+analytics:
+  # Page views
+  page_views:
+    enabled: true
+    exclude_paths:
+      - "/health"
+      - "/api/health"
+      - "/_nuxt/"
+  
+  # Performance monitoring
+  performance:
+    enabled: true
+    core_web_vitals: true
+  
+  # Error tracking
+  error_tracking:
+    enabled: true
+    sample_rate: 1.0
+
+# Monitoring and observability
+monitoring:
+  # Health checks
+  health_checks:
+    enabled: true
+    endpoints:
+      - "/health"
+      - "/api/health"
+      - "/api/ready"
+    interval: "30s"
+    timeout: "5s"
+  
+  # Metrics collection
+  metrics:
+    enabled: true
+    collection_interval: "10s"
+    custom_metrics:
+      - "http_requests_total"
+      - "http_request_duration_seconds"
+      - "database_connections_active"
+      - "kv_operations_total"
+  
+  # Logging
+  logging:
+    structured: true
+    correlation_id: true
+    sensitive_fields:
+      - "password"
+      - "authorization"
+      - "cookie"
+  
+  # Alerting
+  alerting:
+    enabled: true
+    channels:
+      - type: "webhook"
+        url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+      - type: "email"
+        recipients: ["ops@nuxtops.com"]
+    
+    rules:
+      - name: "High Error Rate"
+        condition: "error_rate > 5%"
+        duration: "5m"
+        severity: "critical"
+      
+      - name: "High Response Time"
+        condition: "response_time_p95 > 2s"
+        duration: "10m"
+        severity: "warning"
+      
+      - name: "Database Connection Issues"
+        condition: "database_errors > 10"
+        duration: "1m"
+        severity: "critical"
+
+# Security configuration
+security:
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+    rules:
+      - path: "/api/*"
+        limit: "100/hour"
+        burst: 20
+      - path: "/auth/*"
+        limit: "10/minute"
+        burst: 5
+  
+  # CORS configuration
+  cors:
+    enabled: true
+    origins:
+      - "https://nuxtops.com"
+      - "https://www.nuxtops.com"
+      - "https://preview.nuxtops.com"
+    methods: ["GET", "POST", "PUT", "DELETE"]
+    headers: ["Content-Type", "Authorization", "X-Requested-With"]
+  
+  # Content Security Policy
+  csp:
+    enabled: true
+    report_only: false
+    report_uri: "/api/csp-report"
+
+# Performance configuration
+performance:
+  # Caching strategies
+  caching:
+    browser_cache:
+      enabled: true
+      max_age: "3600"
+    
+    edge_cache:
+      enabled: true
+      max_age: "86400"
+      stale_while_revalidate: "3600"
+  
+  # Compression
+  compression:
+    enabled: true
+    algorithms: ["br", "gzip"]
+    level: 6
+  
+  # Resource hints
+  resource_hints:
+    preload:
+      - "/fonts/main.woff2"
+    prefetch:
+      - "/api/user"
+    preconnect:
+      - "https://api.nuxtops.com"
+
+# Development configuration
+development:
+  # Hot reload
+  hot_reload: true
+  
+  # Dev server
+  dev_server:
+    port: 3000
+    host: "0.0.0.0"
+  
+  # Source maps
+  source_maps: true
+  
+  # Debug mode
+  debug: true
+
+# CI/CD integration
+ci_cd:
+  # Auto deployment
+  auto_deploy:
+    enabled: true
+    branches:
+      - "main"      # -> production
+      - "develop"   # -> preview
+  
+  # Pre-deployment checks
+  pre_deployment:
+    - "lint"
+    - "type_check"
+    - "unit_tests"
+    - "integration_tests"
+    - "security_scan"
+  
+  # Post-deployment validation
+  post_deployment:
+    - "health_check"
+    - "smoke_tests"
+    - "performance_tests"
+
+# Edge configuration
+edge:
+  # Regions for deployment
+  regions:
+    primary: "us-east-1"
+    secondary:
+      - "eu-west-1"
+      - "ap-southeast-1"
+  
+  # Edge functions
+  functions:
+    timeout: "30s"
+    memory: "512MB"
+    environment_variables:
+      EDGE_REGION: "${CF_RAY}"
+      EDGE_COLO: "${CF_COLO}"
+
+# Custom configuration
+custom:
+  # Feature flags
+  feature_flags:
+    new_dashboard: false
+    ai_integration: true
+    advanced_analytics: true
+  
+  # Maintenance mode
+  maintenance:
+    enabled: false
+    message: "NuxtOps is currently undergoing maintenance. Please try again later."
+    allowed_ips:
+      - "192.168.1.0/24"
+      - "10.0.0.0/8"
+  
+  # A/B testing
+  ab_testing:
+    enabled: true
+    experiments:
+      - name: "new_landing_page"
+        traffic_split: 0.5
+        variants: ["control", "variant_a"]

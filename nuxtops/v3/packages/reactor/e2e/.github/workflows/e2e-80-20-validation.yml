@@ -1,0 +1,482 @@
+name: E2E 80/20 Coverage Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'packages/reactor/**'
+      - 'e2e/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'packages/reactor/**'
+      - 'e2e/**'
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test Mode'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - 'critical-80'
+          - 'edge-20'
+          - 'full'
+          - 'performance'
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - 'staging'
+          - 'production'
+
+env:
+  NODE_VERSION: '18'
+  REGISTRY_URL: ghcr.io
+  IMAGE_NAME: nuxtops/reactor-e2e
+
+jobs:
+  setup:
+    name: Setup and Validation
+    runs-on: ubuntu-latest
+    outputs:
+      test-mode: ${{ steps.config.outputs.test-mode }}
+      should-run-critical: ${{ steps.config.outputs.should-run-critical }}
+      should-run-edge: ${{ steps.config.outputs.should-run-edge }}
+      should-run-performance: ${{ steps.config.outputs.should-run-performance }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure test execution
+        id: config
+        run: |
+          TEST_MODE="${{ github.event.inputs.test_mode || 'full' }}"
+          echo "test-mode=$TEST_MODE" >> $GITHUB_OUTPUT
+          
+          case $TEST_MODE in
+            "critical-80")
+              echo "should-run-critical=true" >> $GITHUB_OUTPUT
+              echo "should-run-edge=false" >> $GITHUB_OUTPUT
+              echo "should-run-performance=false" >> $GITHUB_OUTPUT
+              ;;
+            "edge-20")
+              echo "should-run-critical=false" >> $GITHUB_OUTPUT
+              echo "should-run-edge=true" >> $GITHUB_OUTPUT
+              echo "should-run-performance=false" >> $GITHUB_OUTPUT
+              ;;
+            "performance")
+              echo "should-run-critical=false" >> $GITHUB_OUTPUT
+              echo "should-run-edge=false" >> $GITHUB_OUTPUT
+              echo "should-run-performance=true" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "should-run-critical=true" >> $GITHUB_OUTPUT
+              echo "should-run-edge=true" >> $GITHUB_OUTPUT
+              echo "should-run-performance=true" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+  build-test-environment:
+    name: Build Test Environment
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and cache test images
+        run: |
+          cd packages/reactor/e2e
+          docker-compose build --parallel
+
+      - name: Start test infrastructure
+        run: |
+          cd packages/reactor/e2e
+          docker-compose up -d --wait
+          
+          # Wait for services to be ready
+          echo "Waiting for services to be ready..."
+          timeout 300 bash -c 'until curl -f http://localhost:3000/health; do sleep 5; done'
+          timeout 60 bash -c 'until curl -f http://localhost:9090/-/healthy; do sleep 5; done'
+          timeout 60 bash -c 'until curl -f http://localhost:16686/; do sleep 5; done'
+
+      - name: Verify test environment
+        run: |
+          cd packages/reactor/e2e
+          npm run env:status
+          
+          # Check all services are healthy
+          docker-compose ps
+          docker-compose logs --tail=50
+
+      - name: Cache test environment state
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/reactor/e2e/test-data
+            packages/reactor/e2e/reports
+          key: e2e-environment-${{ github.sha }}
+
+  critical-80-tests:
+    name: Critical 80% Tests
+    runs-on: ubuntu-latest
+    needs: [setup, build-test-environment]
+    if: needs.setup.outputs.should-run-critical == 'true'
+    strategy:
+      matrix:
+        browser: [chromium, firefox]
+        shard: [1, 2, 3]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: packages/reactor/e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd packages/reactor/e2e
+          npm ci
+
+      - name: Restore test environment
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/reactor/e2e/test-data
+            packages/reactor/e2e/reports
+          key: e2e-environment-${{ github.sha }}
+
+      - name: Start test infrastructure
+        run: |
+          cd packages/reactor/e2e
+          docker-compose up -d --wait
+
+      - name: Run Critical 80% Tests
+        run: |
+          cd packages/reactor/e2e
+          npx playwright test \
+            --project=critical-80-${{ matrix.browser }} \
+            --shard=${{ matrix.shard }}/3 \
+            --reporter=github
+        env:
+          CI: true
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/playwright
+
+      - name: Generate Critical Path Analysis
+        if: always()
+        run: |
+          cd packages/reactor/e2e
+          npm run coverage:8020
+
+      - name: Upload Critical 80% Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: critical-80-results-${{ matrix.browser }}-shard-${{ matrix.shard }}
+          path: |
+            packages/reactor/e2e/test-results/
+            packages/reactor/e2e/reports/
+
+      - name: Stop test infrastructure
+        if: always()
+        run: |
+          cd packages/reactor/e2e
+          docker-compose down
+
+  edge-20-tests:
+    name: Edge 20% Tests
+    runs-on: ubuntu-latest
+    needs: [setup, build-test-environment]
+    if: needs.setup.outputs.should-run-edge == 'true'
+    strategy:
+      matrix:
+        test-type: [stress, compatibility, mobile]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: packages/reactor/e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd packages/reactor/e2e
+          npm ci
+
+      - name: Start test infrastructure
+        run: |
+          cd packages/reactor/e2e
+          docker-compose up -d --wait
+
+      - name: Run Edge 20% Tests
+        run: |
+          cd packages/reactor/e2e
+          npx playwright test \
+            --project=edge-20-${{ matrix.test-type }} \
+            --reporter=github
+        env:
+          CI: true
+          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/playwright
+
+      - name: Upload Edge 20% Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: edge-20-results-${{ matrix.test-type }}
+          path: |
+            packages/reactor/e2e/test-results/
+            packages/reactor/e2e/reports/
+
+      - name: Stop test infrastructure
+        if: always()
+        run: |
+          cd packages/reactor/e2e
+          docker-compose down
+
+  performance-validation:
+    name: Performance Validation
+    runs-on: ubuntu-latest
+    needs: [setup, build-test-environment]
+    if: needs.setup.outputs.should-run-performance == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: packages/reactor/e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd packages/reactor/e2e
+          npm ci
+
+      - name: Start test infrastructure
+        run: |
+          cd packages/reactor/e2e
+          docker-compose up -d --wait
+
+      - name: Run Performance Profiling
+        run: |
+          cd packages/reactor/e2e
+          npm run performance:profile
+
+      - name: Validate Performance Thresholds
+        run: |
+          cd packages/reactor/e2e
+          npm run validation:thresholds
+
+      - name: Upload Performance Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-validation-results
+          path: |
+            packages/reactor/e2e/reports/performance-*.json
+            packages/reactor/e2e/reports/profiles/
+
+      - name: Stop test infrastructure
+        if: always()
+        run: |
+          cd packages/reactor/e2e
+          docker-compose down
+
+  coverage-analysis:
+    name: 80/20 Coverage Analysis
+    runs-on: ubuntu-latest
+    needs: [critical-80-tests, edge-20-tests]
+    if: always() && (needs.critical-80-tests.result != 'skipped' || needs.edge-20-tests.result != 'skipped')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: packages/reactor/e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd packages/reactor/e2e
+          npm ci
+
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          path: packages/reactor/e2e/downloaded-results/
+
+      - name: Merge test results
+        run: |
+          cd packages/reactor/e2e
+          mkdir -p reports/merged
+          
+          # Merge all test results
+          find downloaded-results/ -name "*.json" -exec cp {} reports/merged/ \;
+          
+          # Merge Playwright results
+          npx playwright merge-reports downloaded-results/*/test-results/ --reporter=json > reports/merged-results.json
+
+      - name: Run 80/20 Coverage Analysis
+        run: |
+          cd packages/reactor/e2e
+          npm run coverage:8020
+
+      - name: Validate 80/20 Coverage
+        run: |
+          cd packages/reactor/e2e
+          npm run validation:8020
+
+      - name: Generate Coverage Report
+        run: |
+          cd packages/reactor/e2e
+          node scripts/generate-coverage-summary.js
+
+      - name: Upload Coverage Analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: 80-20-coverage-analysis
+          path: |
+            packages/reactor/e2e/reports/80-20-*.json
+            packages/reactor/e2e/reports/coverage-summary.html
+
+      - name: Comment PR with Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = './packages/reactor/e2e/reports/80-20-coverage-report.json';
+            
+            if (fs.existsSync(path)) {
+              const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+              
+              const comment = `## 🎯 80/20 E2E Coverage Report
+              
+              **Overall Score**: ${report.overallScore}%
+              **Status**: ${report.passed ? '✅ PASSED' : '❌ FAILED'}
+              
+              ### Critical 80% Paths
+              - Success Rate: ${report.summary?.critical80?.successRate || 'N/A'}%
+              - Tests: ${report.summary?.critical80?.passedTests || 0}/${report.summary?.critical80?.totalTests || 0}
+              
+              ### Edge 20% Cases  
+              - Success Rate: ${report.summary?.edge20?.successRate || 'N/A'}%
+              - Tests: ${report.summary?.edge20?.passedTests || 0}/${report.summary?.edge20?.totalTests || 0}
+              
+              ${report.recommendations?.length > 0 ? 
+                `### 🎯 Top Recommendations:\n${report.recommendations.slice(0, 3).map(r => `- **${r.title}**: ${r.description}`).join('\n')}` : 
+                '### ✅ No recommendations - excellent coverage!'
+              }
+              
+              [View detailed report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+  deployment-readiness:
+    name: Deployment Readiness Assessment
+    runs-on: ubuntu-latest
+    needs: [coverage-analysis, performance-validation]
+    if: always() && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download coverage analysis
+        uses: actions/download-artifact@v4
+        with:
+          name: 80-20-coverage-analysis
+          path: coverage-analysis/
+
+      - name: Download performance results
+        if: needs.performance-validation.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: performance-validation-results
+          path: performance-results/
+
+      - name: Assess Deployment Readiness
+        run: |
+          echo "## Deployment Readiness Assessment" >> $GITHUB_STEP_SUMMARY
+          
+          # Check coverage results
+          if [ -f "coverage-analysis/80-20-coverage-report.json" ]; then
+            COVERAGE_SCORE=$(jq -r '.overallScore' coverage-analysis/80-20-coverage-report.json)
+            COVERAGE_PASSED=$(jq -r '.passed' coverage-analysis/80-20-coverage-report.json)
+            
+            echo "- **Coverage Score**: $COVERAGE_SCORE%" >> $GITHUB_STEP_SUMMARY
+            echo "- **Coverage Status**: $([ "$COVERAGE_PASSED" = "true" ] && echo "✅ PASSED" || echo "❌ FAILED")" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Check performance results
+          if [ -f "performance-results/performance-validation-report.json" ]; then
+            PERF_SCORE=$(jq -r '.overallStatus.score' performance-results/performance-validation-report.json)
+            PERF_PASSED=$(jq -r '.overallStatus.passed' performance-results/performance-validation-report.json)
+            
+            echo "- **Performance Score**: $PERF_SCORE%" >> $GITHUB_STEP_SUMMARY
+            echo "- **Performance Status**: $([ "$PERF_PASSED" = "true" ] && echo "✅ PASSED" || echo "❌ FAILED")" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Determine overall readiness
+          if [ "$COVERAGE_PASSED" = "true" ] && [ "$PERF_PASSED" = "true" ]; then
+            echo "- **🚀 Deployment Ready**: YES" >> $GITHUB_STEP_SUMMARY
+            echo "deployment-ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "- **🚨 Deployment Ready**: NO" >> $GITHUB_STEP_SUMMARY
+            echo "deployment-ready=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Deployment Tag
+        if: env.deployment-ready == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          TAG_NAME="e2e-validated-$(date +%Y%m%d-%H%M%S)"
+          git tag -a "$TAG_NAME" -m "E2E validated deployment candidate - Coverage: $COVERAGE_SCORE%, Performance: $PERF_SCORE%"
+          git push origin "$TAG_NAME"
+
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    needs: [critical-80-tests, edge-20-tests, performance-validation, coverage-analysis]
+    if: always()
+    steps:
+      - name: Cleanup test artifacts
+        run: |
+          echo "Cleaning up test artifacts and temporary resources..."
+          # Any cleanup tasks would go here

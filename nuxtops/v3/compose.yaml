@@ -1,0 +1,346 @@
+# NuxtOps V3 Development & Production Environment
+# Full-stack Nuxt 3 deployment with observability
+# Adapted from BeamOps patterns for Vue/Nuxt ecosystem
+
+version: "3.9"
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: nuxtops_v3_db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: ["CMD", "pg_isready", "--username=postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: nuxtops_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgrespassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./deployment/development/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5436}:5432"
+    secrets:
+      - postgrespassword
+    networks:
+      - nuxtops_network
+
+  # Redis for Caching & Sessions
+  redis:
+    image: redis:7.2-alpine
+    container_name: nuxtops_v3_redis
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6381}:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - nuxtops_network
+
+  # Nuxt 3 Application
+  app:
+    build:
+      context: ./applications/nuxt-app
+      dockerfile: ../../Dockerfile
+      target: ${BUILD_TARGET:-runner}
+      args:
+        NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-http://localhost:3000}
+        NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    container_name: nuxtops_v3_app
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      # Database
+      DATABASE_URL_FILE: /run/secrets/databaseurl
+      # Redis
+      REDIS_URL: "redis://redis:6379"
+      # Nuxt/Nitro Configuration
+      NITRO_PORT: "3000"
+      NITRO_HOST: "0.0.0.0"
+      NUXT_PUBLIC_SITE_URL: "${NUXT_PUBLIC_SITE_URL:-http://localhost:3000}"
+      # Session & Security
+      NUXT_SESSION_SECRET_FILE: /run/secrets/sessionsecret
+      # Telemetry & Monitoring
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4318"
+      OTEL_SERVICE_NAME: "nuxtops-app"
+      OTEL_TRACES_EXPORTER: "otlp"
+      # Development mode settings
+      NODE_ENV: "${NODE_ENV:-development}"
+    ports:
+      - "3000:3000"      # Nuxt application
+      - "24678:24678"    # Nuxt DevTools (dev only)
+    volumes:
+      # Development mode: mount source
+      - ./applications/nuxt-app:/app:delegated
+      - nuxt_node_modules:/app/node_modules
+      - nuxt_output:/app/.output
+      - nuxt_cache:/app/.nuxt
+    command: >
+      sh -c "
+        if [ \"$NODE_ENV\" = \"production\" ]; then
+          node .output/server/index.mjs
+        else
+          npm install && npm run dev
+        fi
+      "
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    secrets:
+      - databaseurl
+      - sessionsecret
+    networks:
+      - nuxtops_network
+
+  # Prometheus for Metrics Collection
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    container_name: nuxtops_v3_prometheus
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "9092:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    networks:
+      - nuxtops_network
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: nuxtops_v3_grafana
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3002:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafanapassword
+      GF_INSTALL_PLUGINS: "grafana-piechart-panel,grafana-clock-panel"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: "/var/lib/grafana/dashboards/nuxtops-overview.json"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    secrets:
+      - grafanapassword
+    depends_on:
+      - prometheus
+    networks:
+      - nuxtops_network
+
+  # Jaeger for Distributed Tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.51
+    container_name: nuxtops_v3_jaeger
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "16687:16686"  # Jaeger UI
+      - "14268:14268"  # Jaeger HTTP collector
+      - "4318:4318"    # OTLP HTTP
+      - "4317:4317"    # OTLP gRPC
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+      SPAN_STORAGE_TYPE: badger
+      BADGER_EPHEMERAL: "false"
+      BADGER_DIRECTORY_VALUE: /badger/data
+      BADGER_DIRECTORY_KEY: /badger/key
+    volumes:
+      - jaeger_data:/badger
+    networks:
+      - nuxtops_network
+
+  # Loki for Log Aggregation
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: nuxtops_v3_loki
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - nuxtops_network
+
+  # Promtail for Log Collection
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: nuxtops_v3_promtail
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - ./monitoring/promtail/promtail-config.yaml:/etc/promtail/config.yml:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - nuxtops_network
+
+  # Adminer for Database Management
+  adminer:
+    image: adminer:4.8.1
+    container_name: nuxtops_v3_adminer
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    depends_on:
+      - db
+    networks:
+      - nuxtops_network
+    profiles:
+      - dev-tools
+
+  # Node Exporter for System Metrics
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: nuxtops_v3_node_exporter
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - nuxtops_network
+    profiles:
+      - monitoring
+
+  # Redis Exporter for Redis Metrics
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.55.0
+    container_name: nuxtops_v3_redis_exporter
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "9121:9121"
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    depends_on:
+      - redis
+    networks:
+      - nuxtops_network
+    profiles:
+      - monitoring
+
+  # Postgres Exporter for Database Metrics
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: nuxtops_v3_postgres_exporter
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME_FILE: /run/secrets/postgres_exporter_dsn
+    depends_on:
+      - db
+    secrets:
+      - postgres_exporter_dsn
+    networks:
+      - nuxtops_network
+    profiles:
+      - monitoring
+
+# Named Volumes
+volumes:
+  db_data:
+    name: nuxtops_v3_db_data
+  redis_data:
+    name: nuxtops_v3_redis_data
+  prometheus_data:
+    name: nuxtops_v3_prometheus_data
+  grafana_data:
+    name: nuxtops_v3_grafana_data
+  jaeger_data:
+    name: nuxtops_v3_jaeger_data
+  loki_data:
+    name: nuxtops_v3_loki_data
+  nuxt_node_modules:
+    name: nuxtops_v3_node_modules
+  nuxt_output:
+    name: nuxtops_v3_output
+  nuxt_cache:
+    name: nuxtops_v3_cache
+
+# Secrets Management
+secrets:
+  postgrespassword:
+    file: ./deployment/secrets/.postgrespassword
+  sessionsecret:
+    file: ./deployment/secrets/.sessionsecret
+  databaseurl:
+    file: ./deployment/secrets/.databaseurl
+  grafanapassword:
+    file: ./deployment/secrets/.grafanapassword
+  postgres_exporter_dsn:
+    file: ./deployment/secrets/.postgres_exporter_dsn
+
+# Networks
+networks:
+  nuxtops_network:
+    name: nuxtops_v3_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

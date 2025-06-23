@@ -1,0 +1,192 @@
+version: '3.8'
+
+services:
+  # Main application for E2E testing
+  nuxt-app:
+    build:
+      context: ../playground
+      dockerfile: ../e2e/docker/Dockerfile.nuxt
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=test
+      - NITRO_PORT=3000
+      - DATABASE_URL=postgresql://reactor_user:reactor_pass@postgres:5432/reactor_e2e
+      - REDIS_URL=redis://redis:6379/0
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+    depends_on:
+      - postgres
+      - redis
+      - jaeger
+      - zipkin
+    volumes:
+      - ../:/app/reactor:ro
+      - ./test-data:/app/test-data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # PostgreSQL for persistent data testing
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=reactor_e2e
+      - POSTGRES_USER=reactor_user
+      - POSTGRES_PASSWORD=reactor_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reactor_user -d reactor_e2e"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and session testing
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Jaeger for OpenTelemetry tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.50
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # HTTP collector
+      - "14250:14250"  # gRPC collector
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:14269/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Zipkin for alternative tracing
+  zipkin:
+    image: openzipkin/zipkin:2.24
+    ports:
+      - "9411:9411"
+    environment:
+      - STORAGE_TYPE=mem
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9411/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=1h'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  # Grafana for visualization and analysis
+  grafana:
+    image: grafana/grafana:10.1.0
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=reactor_admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Node Exporter for system metrics
+  node-exporter:
+    image: prom/node-exporter:v1.6.1
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+  # E2E Test Runner
+  playwright:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.playwright
+    environment:
+      - CI=true
+      - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+      - BASE_URL=http://nuxt-app:3000
+      - DATABASE_URL=postgresql://reactor_user:reactor_pass@postgres:5432/reactor_e2e
+      - REDIS_URL=redis://redis:6379/0
+      - JAEGER_ENDPOINT=http://jaeger:16686
+      - PROMETHEUS_ENDPOINT=http://prometheus:9090
+    volumes:
+      - ./:/workspace
+      - ./test-results:/workspace/test-results
+      - ./coverage:/workspace/coverage
+      - ./reports:/workspace/reports
+      - playwright_cache:/ms-playwright
+    depends_on:
+      nuxt-app:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      jaeger:
+        condition: service_healthy
+      prometheus:
+        condition: service_healthy
+    working_dir: /workspace
+    command: ["npm", "run", "test:e2e:full"]
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  playwright_cache:
+
+networks:
+  default:
+    name: reactor_e2e_network

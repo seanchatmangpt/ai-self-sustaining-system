@@ -1,0 +1,105 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+  external_labels:
+    environment: 'e2e-testing'
+    system: 'nuxtops-reactor'
+
+rule_files:
+  - "rules/*.yml"
+
+scrape_configs:
+  # Nuxt application metrics
+  - job_name: 'nuxt-app'
+    static_configs:
+      - targets: ['nuxt-app:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 4s
+
+  # Node exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 5s
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 10s
+
+  # Custom reactor metrics
+  - job_name: 'reactor-metrics'
+    static_configs:
+      - targets: ['nuxt-app:3000']
+    metrics_path: '/api/reactor/metrics'
+    scrape_interval: 2s
+    scrape_timeout: 2s
+
+  # PostgreSQL metrics (if exposed)
+  - job_name: 'postgres-metrics'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Redis metrics (if exposed)
+  - job_name: 'redis-metrics'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+# Alert manager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Recording rules for 80/20 analysis
+recording_rules:
+  - name: reactor_performance_80_20
+    interval: 5s
+    rules:
+      # 80% critical path latency
+      - record: reactor:critical_path_latency_p80
+        expr: histogram_quantile(0.80, reactor_step_duration_seconds_bucket{category="critical"})
+      
+      # 95% edge case latency
+      - record: reactor:edge_case_latency_p95
+        expr: histogram_quantile(0.95, reactor_step_duration_seconds_bucket{category="edge"})
+      
+      # Success rate for critical paths
+      - record: reactor:critical_success_rate
+        expr: |
+          (
+            sum(rate(reactor_executions_total{state="completed",category="critical"}[1m])) /
+            sum(rate(reactor_executions_total{category="critical"}[1m]))
+          ) * 100
+      
+      # Memory utilization trend
+      - record: reactor:memory_utilization_trend
+        expr: |
+          avg_over_time(
+            (process_resident_memory_bytes{job="nuxt-app"} / 1024 / 1024)[5m:30s]
+          )
+      
+      # Throughput by category
+      - record: reactor:throughput_by_category
+        expr: |
+          sum(rate(reactor_executions_total[1m])) by (category)
+      
+      # Error rate threshold
+      - record: reactor:error_rate_threshold
+        expr: |
+          (
+            sum(rate(reactor_executions_total{state="failed"}[1m])) /
+            sum(rate(reactor_executions_total[1m]))
+          ) * 100
+
+# Storage configuration for test data retention
+storage:
+  tsdb:
+    retention.time: 1h
+    retention.size: 1GB

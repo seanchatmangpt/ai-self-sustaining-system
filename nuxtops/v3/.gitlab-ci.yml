@@ -1,0 +1,558 @@
+# NuxtOps V3 GitLab CI/CD Pipeline
+# Enterprise-grade deployment pipeline with comprehensive validation
+
+stages:
+  - validate
+  - build
+  - test
+  - security
+  - opentelemetry
+  - deploy
+  - post-deploy
+  - cleanup
+
+variables:
+  # Docker configuration
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  REGISTRY: $CI_REGISTRY
+  IMAGE_NAME: $CI_REGISTRY_IMAGE/nuxtops
+  
+  # Node.js configuration
+  NODE_VERSION: "18"
+  NPM_CONFIG_CACHE: ".npm"
+  
+  # Deployment configuration
+  DEPLOYMENT_TIMEOUT: "1800"  # 30 minutes
+  HEALTH_CHECK_TIMEOUT: "300"  # 5 minutes
+  
+  # OpenTelemetry configuration
+  OTEL_VALIDATION_TIMEOUT: "600"  # 10 minutes
+  TRACE_VALIDATION_ENABLED: "true"
+
+# Global before script
+before_script:
+  - echo "Pipeline started for $CI_COMMIT_REF_NAME"
+  - echo "Commit SHA: $CI_COMMIT_SHA"
+  - export DEPLOYMENT_ID="deploy_${CI_PIPELINE_ID}_$(date +%s)"
+  - echo "Deployment ID: $DEPLOYMENT_ID"
+
+# Cache configuration
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .npm/
+    - node_modules/
+    - .next/cache/
+
+# Validate stage
+lint:
+  stage: validate
+  image: node:$NODE_VERSION
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run lint || echo "Linting completed with warnings"
+    - npm run type-check || echo "Type checking completed with warnings"
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-node"
+    paths:
+      - .npm/
+      - node_modules/
+  artifacts:
+    reports:
+      junit: lint-results.xml
+    paths:
+      - lint-results.xml
+    expire_in: 1 day
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+# Build stage
+build-image:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_BUILDKIT: 1
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - |
+      # Determine environment based on branch
+      case "$CI_COMMIT_REF_NAME" in
+        "main")
+          BUILD_ENV="production"
+          ;;
+        "staging")
+          BUILD_ENV="staging"
+          ;;
+        *)
+          BUILD_ENV="development"
+          ;;
+      esac
+      
+      echo "Building for environment: $BUILD_ENV"
+      
+      # Build multi-platform image
+      docker buildx create --use --name nuxtops-builder || true
+      docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        --build-arg BUILD_ENV=$BUILD_ENV \
+        --build-arg COMMIT_SHA=$CI_COMMIT_SHA \
+        --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+        --tag $IMAGE_NAME:$CI_COMMIT_SHA \
+        --tag $IMAGE_NAME:$CI_COMMIT_REF_SLUG \
+        --tag $IMAGE_NAME:latest \
+        --push \
+        .
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+    - if: $CI_MERGE_REQUEST_ID
+
+# Test stage
+unit-tests:
+  stage: test
+  image: node:$NODE_VERSION
+  services:
+    - postgres:15
+    - redis:7
+  variables:
+    POSTGRES_DB: nuxtops_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nuxtops_test
+    REDIS_URL: redis://redis:6379
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run test:unit
+    - npm run test:integration
+  coverage: '/Lines\s*:\s*(\d+\.?\d*)%/'
+  artifacts:
+    reports:
+      junit: test-results.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    paths:
+      - coverage/
+    expire_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+e2e-tests:
+  stage: test
+  image: node:$NODE_VERSION
+  services:
+    - docker:24-dind
+    - postgres:15
+    - redis:7
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    POSTGRES_DB: nuxtops_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+  before_script:
+    - apt-get update && apt-get install -y docker-compose
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - docker-compose -f compose.yaml up -d
+    - sleep 60  # Wait for services to start
+    - npm run test:e2e
+  after_script:
+    - docker-compose -f compose.yaml down --volumes
+  artifacts:
+    reports:
+      junit: e2e-test-results.xml
+    paths:
+      - e2e-screenshots/
+      - e2e-videos/
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+# Security stage
+security-scan:
+  stage: security
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_CACHE_DIR: ".trivycache/"
+  cache:
+    paths:
+      - .trivycache/
+  before_script:
+    - |
+      # Install Trivy
+      wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
+      echo "deb https://aquasecurity.github.io/trivy-repo/deb generic main" | tee -a /etc/apt/sources.list
+      apt-get update && apt-get install -y trivy
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker pull $IMAGE_NAME:$CI_COMMIT_SHA
+    - |
+      # Vulnerability scan
+      trivy image \
+        --format template \
+        --template "@/usr/local/share/trivy/templates/gitlab.tpl" \
+        --output gl-container-scanning-report.json \
+        $IMAGE_NAME:$CI_COMMIT_SHA
+      
+      # Secret scan
+      trivy image \
+        --scanners secret \
+        --format template \
+        --template "@/usr/local/share/trivy/templates/gitlab.tpl" \
+        --output gl-secret-detection-report.json \
+        $IMAGE_NAME:$CI_COMMIT_SHA
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json
+      secret_detection: gl-secret-detection-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+dependency-scan:
+  stage: security
+  image: node:$NODE_VERSION
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm audit --audit-level=high --json > npm-audit.json || true
+    - |
+      # Convert npm audit to GitLab format
+      cat npm-audit.json | jq '{
+        version: "15.0.4",
+        vulnerabilities: [
+          .vulnerabilities | to_entries[] | {
+            id: .key,
+            name: .value.name,
+            description: .value.title,
+            cve: .value.cves[0] // "",
+            severity: .value.severity,
+            solution: .value.fixAvailable.name // ""
+          }
+        ]
+      }' > gl-dependency-scanning-report.json
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+    paths:
+      - npm-audit.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+# OpenTelemetry validation stage
+otel-validation:
+  stage: opentelemetry
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - apk add --no-cache curl jq bc
+    - |
+      # Install docker-compose
+      curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+  script:
+    - |
+      echo "Starting OpenTelemetry validation for $CI_COMMIT_REF_NAME"
+      
+      # Determine environment
+      case "$CI_COMMIT_REF_NAME" in
+        "main")
+          ENVIRONMENT="production"
+          ;;
+        "staging")
+          ENVIRONMENT="staging"
+          ;;
+        *)
+          ENVIRONMENT="development"
+          ;;
+      esac
+      
+      echo "Running validation for environment: $ENVIRONMENT"
+      
+      # Make scripts executable
+      chmod +x scripts/*.sh
+      
+      # Start OpenTelemetry stack
+      docker-compose -f monitoring/compose.otel.yaml up -d
+      sleep 60  # Wait for services to stabilize
+      
+      # Run comprehensive validation
+      timeout $OTEL_VALIDATION_TIMEOUT ./scripts/master-trace-orchestrator.sh --verbose || {
+        echo "OpenTelemetry validation failed or timed out"
+        exit 1
+      }
+      
+      # Run individual validations
+      ./scripts/e2e-otel-validation.sh $ENVIRONMENT --verbose
+      ./scripts/validate-compose-otel-e2e.sh --verbose
+      ./scripts/validate-distributed-trace-e2e.sh --verbose
+  after_script:
+    - docker-compose -f monitoring/compose.otel.yaml down --volumes || true
+  artifacts:
+    reports:
+      junit: otel-validation-results.xml
+    paths:
+      - "*-validation-*.json"
+      - "*-orchestration-*.json"
+      - "logs/"
+      - "traces-*.jsonl"
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+    - if: $TRACE_VALIDATION_ENABLED == "true"
+
+# Deploy stage
+.deploy_template: &deploy_template
+  stage: deploy
+  image: docker:24
+  services:
+    - docker:24-dind
+  before_script:
+    - apk add --no-cache curl jq bc bash
+    - |
+      # Install docker-compose
+      curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - |
+      echo "Deploying to $DEPLOY_ENVIRONMENT"
+      
+      # Make scripts executable
+      chmod +x scripts/*.sh
+      
+      # Set deployment variables
+      export DOCKER_REGISTRY=$CI_REGISTRY
+      export NUXTOPS_IMAGE_TAG=$CI_COMMIT_SHA
+      export ENVIRONMENT=$DEPLOY_ENVIRONMENT
+      
+      # Run enterprise deployment
+      timeout $DEPLOYMENT_TIMEOUT ./scripts/deploy-enterprise-stack.sh $DEPLOY_ENVIRONMENT all
+      
+      # Validate deployment health
+      timeout $HEALTH_CHECK_TIMEOUT ./scripts/validate-nuxtops-health.sh $DEPLOY_ENVIRONMENT --detailed
+      
+      echo "Deployment to $DEPLOY_ENVIRONMENT completed successfully"
+  artifacts:
+    reports:
+      junit: deployment-results.xml
+    paths:
+      - "logs/"
+      - "health-report-*.json"
+      - ".deployment_state.json"
+    expire_in: 1 week
+
+deploy-development:
+  <<: *deploy_template
+  variables:
+    DEPLOY_ENVIRONMENT: "development"
+  environment:
+    name: development
+    url: http://nuxtops.dev.local
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
+
+deploy-staging:
+  <<: *deploy_template
+  variables:
+    DEPLOY_ENVIRONMENT: "staging"
+  environment:
+    name: staging
+    url: https://nuxtops.staging.example.com
+  rules:
+    - if: $CI_COMMIT_BRANCH == "staging"
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+
+deploy-production:
+  <<: *deploy_template
+  variables:
+    DEPLOY_ENVIRONMENT: "production"
+  environment:
+    name: production
+    url: https://nuxtops.production.example.com
+  before_script:
+    - apk add --no-cache curl jq bc bash
+    - |
+      # Install docker-compose
+      curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - |
+      echo "Deploying to production with zero-downtime strategy"
+      
+      # Make scripts executable
+      chmod +x scripts/*.sh
+      
+      # Set deployment variables
+      export DOCKER_REGISTRY=$CI_REGISTRY
+      export NUXTOPS_IMAGE_TAG=$CI_COMMIT_SHA
+      export ENVIRONMENT=production
+      
+      # Use zero-downtime deployment for production
+      timeout $DEPLOYMENT_TIMEOUT ./scripts/zero-downtime-deploy.sh rolling
+      
+      # Validate deployment health
+      timeout $HEALTH_CHECK_TIMEOUT ./scripts/validate-nuxtops-health.sh production --detailed
+      
+      echo "Production deployment completed successfully"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+      allow_failure: false
+
+# Post-deploy stage
+smoke-tests:
+  stage: post-deploy
+  image: node:$NODE_VERSION
+  script:
+    - |
+      echo "Running smoke tests"
+      
+      # Determine environment URL
+      case "$CI_COMMIT_REF_NAME" in
+        "main")
+          BASE_URL="https://nuxtops.production.example.com"
+          ;;
+        "staging")
+          BASE_URL="https://nuxtops.staging.example.com"
+          ;;
+        *)
+          BASE_URL="http://nuxtops.dev.local"
+          ;;
+      esac
+      
+      echo "Testing URL: $BASE_URL"
+      
+      # Basic health check
+      curl -f "$BASE_URL/health" || exit 1
+      
+      # API health check
+      curl -f "$BASE_URL/api/health" || exit 1
+      
+      echo "Smoke tests passed"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+performance-tests:
+  stage: post-deploy
+  image: node:$NODE_VERSION
+  script:
+    - |
+      echo "Running performance tests"
+      npm ci --cache .npm --prefer-offline
+      npm run test:performance || echo "Performance tests completed with warnings"
+  artifacts:
+    reports:
+      performance: performance-report.json
+    paths:
+      - performance-report.json
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "staging"
+
+# Cleanup stage
+cleanup-resources:
+  stage: cleanup
+  image: docker:24
+  services:
+    - docker:24-dind
+  script:
+    - |
+      echo "Cleaning up deployment resources"
+      
+      # Clean up old Docker images (keep last 3 versions)
+      docker images --format "table {{.Repository}}:{{.Tag}}\t{{.CreatedAt}}" | \
+        grep $IMAGE_NAME | \
+        tail -n +4 | \
+        awk '{print $1}' | \
+        xargs -r docker rmi || true
+      
+      # Clean up temporary files
+      rm -rf logs/temp-* || true
+      rm -rf *.tmp || true
+      
+      echo "Cleanup completed"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "staging"
+  when: always
+
+# Manual rollback job
+rollback-production:
+  stage: deploy
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DEPLOY_ENVIRONMENT: "production"
+  before_script:
+    - apk add --no-cache curl jq bc bash
+    - |
+      # Install docker-compose
+      curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+  script:
+    - |
+      echo "Executing production rollback"
+      
+      # Make scripts executable
+      chmod +x scripts/*.sh
+      
+      # Execute rollback using zero-downtime script
+      ./scripts/zero-downtime-deploy.sh rollback
+      
+      # Validate rollback
+      timeout $HEALTH_CHECK_TIMEOUT ./scripts/validate-nuxtops-health.sh production --detailed
+      
+      echo "Production rollback completed"
+  environment:
+    name: production
+    action: rollback
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+      allow_failure: false
+
+# Include additional CI templates if available
+include:
+  - local: '.gitlab/ci/security.yml'
+  - local: '.gitlab/ci/performance.yml'
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml

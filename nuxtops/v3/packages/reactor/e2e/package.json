@@ -1,0 +1,73 @@
+{
+  "name": "@nuxtops/reactor-e2e",
+  "version": "1.0.0",
+  "description": "End-to-End testing infrastructure for Nuxt Reactor with 80/20 coverage analysis",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:full": "npm run test:e2e && npm run coverage:analyze && npm run performance:analyze",
+    "test:e2e:docker": "docker-compose up --build --abort-on-container-exit playwright",
+    "test:e2e:local": "npm run env:start && npm run test:e2e && npm run env:stop",
+    "coverage:analyze": "node scripts/coverage-analyzer.js",
+    "coverage:8020": "node scripts/80-20-analyzer.js",
+    "performance:analyze": "node scripts/performance-analyzer.js",
+    "performance:profile": "node scripts/performance-profiler.js",
+    "validation:8020": "node scripts/validate-80-20-coverage.js",
+    "validation:thresholds": "node scripts/validate-performance-thresholds.js",
+    "env:start": "docker-compose up -d --wait",
+    "env:stop": "docker-compose down",
+    "env:clean": "docker-compose down -v --remove-orphans",
+    "env:logs": "docker-compose logs -f",
+    "env:status": "docker-compose ps",
+    "monitoring:start": "docker-compose up -d prometheus grafana",
+    "monitoring:dashboard": "open http://localhost:3001/d/reactor-80-20-coverage",
+    "telemetry:traces": "open http://localhost:16686",
+    "db:migrate": "docker-compose exec postgres psql -U reactor_user -d reactor_e2e -f /docker-entrypoint-initdb.d/01-init-db.sql",
+    "db:reset": "docker-compose down postgres && docker-compose up -d postgres --wait",
+    "cleanup:reports": "rm -rf test-results/ coverage/ reports/",
+    "ci:test": "npm run env:start && npm run test:e2e:full && npm run env:stop",
+    "dev:setup": "npm install && npm run env:start",
+    "dev:teardown": "npm run env:clean"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.39.0",
+    "playwright": "^1.39.0",
+    "postgres": "^3.4.3",
+    "redis": "^4.6.10",
+    "axios": "^1.6.0",
+    "ws": "^8.14.2",
+    "uuid": "^9.0.1",
+    "nanoid": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/uuid": "^9.0.7",
+    "@types/ws": "^8.5.8",
+    "typescript": "^5.2.2",
+    "tsx": "^3.14.0",
+    "dotenv": "^16.3.1",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "table": "^6.8.1",
+    "csv-writer": "^1.6.0",
+    "json2csv": "^6.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "e2e",
+    "testing",
+    "playwright",
+    "nuxt",
+    "reactor",
+    "coverage",
+    "80-20",
+    "performance",
+    "telemetry"
+  ]
+}

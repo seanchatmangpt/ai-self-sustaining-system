@@ -1,0 +1,48 @@
+FROM node:18-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    postgresql-client \
+    redis
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY ../package*.json ../
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
+COPY . .
+COPY ../reactor ./reactor
+
+# Create health check endpoint
+RUN echo '#!/bin/sh\ncurl -f http://localhost:3000/health || exit 1' > /health-check.sh && \
+    chmod +x /health-check.sh
+
+# Build the application
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Add user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nuxt -u 1001
+
+# Create directories with proper permissions
+RUN mkdir -p /app/.nuxt /app/.output /app/test-data && \
+    chown -R nuxt:nodejs /app
+
+USER nuxt
+
+# Health check
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+    CMD /health-check.sh
+
+# Start command
+CMD ["npm", "start"]

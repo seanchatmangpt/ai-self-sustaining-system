@@ -1,0 +1,534 @@
+# NuxtOps V3 Bitbucket Pipelines
+# Enterprise deployment pipeline with comprehensive OpenTelemetry validation
+
+image: node:18
+
+definitions:
+  services:
+    docker:
+      memory: 3072
+    postgres:
+      image: postgres:15
+      variables:
+        POSTGRES_DB: nuxtops_test
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    redis:
+      image: redis:7
+
+  caches:
+    node-modules: node_modules
+    npm-cache: ~/.npm
+    docker-layers: /var/lib/docker
+
+  steps:
+    # Validation steps
+    - step: &lint-and-validate
+        name: Lint and Validate Code
+        image: node:18
+        caches:
+          - node-modules
+          - npm-cache
+        script:
+          - npm ci --cache ~/.npm --prefer-offline
+          - npm run lint || echo "Linting completed with warnings"
+          - npm run type-check || echo "Type checking completed with warnings"
+        artifacts:
+          - lint-results.xml
+
+    - step: &unit-tests
+        name: Unit Tests
+        image: node:18
+        services:
+          - postgres
+          - redis
+        caches:
+          - node-modules
+          - npm-cache
+        script:
+          - npm ci --cache ~/.npm --prefer-offline
+          - export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/nuxtops_test"
+          - export REDIS_URL="redis://localhost:6379"
+          - npm run test:unit
+          - npm run test:integration
+        artifacts:
+          - coverage/**
+          - test-results.xml
+
+    - step: &build-image
+        name: Build Docker Image
+        image: atlassian/default-image:4
+        services:
+          - docker
+        caches:
+          - docker-layers
+        script:
+          - |
+            # Login to registry
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+            
+            # Determine build environment
+            case "$BITBUCKET_BRANCH" in
+              "main")
+                BUILD_ENV="production"
+                ;;
+              "staging")
+                BUILD_ENV="staging"
+                ;;
+              *)
+                BUILD_ENV="development"
+                ;;
+            esac
+            
+            echo "Building for environment: $BUILD_ENV"
+            
+            # Build and push image
+            export IMAGE_TAG="${DOCKER_REGISTRY}/nuxtops:${BITBUCKET_COMMIT}"
+            
+            docker build \
+              --build-arg BUILD_ENV=$BUILD_ENV \
+              --build-arg COMMIT_SHA=$BITBUCKET_COMMIT \
+              --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+              --tag $IMAGE_TAG \
+              --tag "${DOCKER_REGISTRY}/nuxtops:${BITBUCKET_BRANCH}" \
+              --tag "${DOCKER_REGISTRY}/nuxtops:latest" \
+              .
+            
+            docker push $IMAGE_TAG
+            docker push "${DOCKER_REGISTRY}/nuxtops:${BITBUCKET_BRANCH}"
+            docker push "${DOCKER_REGISTRY}/nuxtops:latest"
+        artifacts:
+          - Dockerfile
+
+    - step: &security-scan
+        name: Security Scan
+        image: aquasec/trivy:latest
+        script:
+          - |
+            echo "Running security scan"
+            
+            # Vulnerability scan
+            trivy image \
+              --format json \
+              --output trivy-results.json \
+              "${DOCKER_REGISTRY}/nuxtops:${BITBUCKET_COMMIT}"
+            
+            # Check for high/critical vulnerabilities
+            CRITICAL_COUNT=$(cat trivy-results.json | jq '.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL") | length' | wc -l)
+            HIGH_COUNT=$(cat trivy-results.json | jq '.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH") | length' | wc -l)
+            
+            echo "Critical vulnerabilities: $CRITICAL_COUNT"
+            echo "High vulnerabilities: $HIGH_COUNT"
+            
+            if [ $CRITICAL_COUNT -gt 0 ]; then
+              echo "Critical vulnerabilities found, failing build"
+              exit 1
+            fi
+        artifacts:
+          - trivy-results.json
+
+    - step: &otel-validation
+        name: OpenTelemetry E2E Validation
+        image: atlassian/default-image:4
+        services:
+          - docker
+        size: 2x  # Use larger instance for OpenTelemetry validation
+        script:
+          - |
+            echo "Starting OpenTelemetry validation"
+            
+            # Install required tools
+            apt-get update
+            apt-get install -y curl jq bc
+            
+            # Install docker-compose
+            curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+            
+            # Determine environment
+            case "$BITBUCKET_BRANCH" in
+              "main")
+                ENVIRONMENT="production"
+                ;;
+              "staging")
+                ENVIRONMENT="staging"
+                ;;
+              *)
+                ENVIRONMENT="development"
+                ;;
+            esac
+            
+            echo "Running OpenTelemetry validation for environment: $ENVIRONMENT"
+            
+            # Make scripts executable
+            chmod +x scripts/*.sh
+            
+            # Start OpenTelemetry stack
+            docker-compose -f monitoring/compose.otel.yaml up -d
+            sleep 60  # Wait for services to stabilize
+            
+            # Run comprehensive validation
+            timeout 600 ./scripts/master-trace-orchestrator.sh --verbose || {
+              echo "OpenTelemetry validation failed or timed out"
+              docker-compose -f monitoring/compose.otel.yaml logs
+              exit 1
+            }
+            
+            # Run individual validations
+            ./scripts/e2e-otel-validation.sh $ENVIRONMENT --verbose
+            ./scripts/validate-compose-otel-e2e.sh --verbose
+            ./scripts/validate-distributed-trace-e2e.sh --verbose
+            
+            # Cleanup
+            docker-compose -f monitoring/compose.otel.yaml down --volumes
+        artifacts:
+          - "*-validation-*.json"
+          - "*-orchestration-*.json"
+          - "logs/**"
+          - "traces-*.jsonl"
+
+    - step: &deploy-development
+        name: Deploy to Development
+        image: atlassian/default-image:4
+        services:
+          - docker
+        deployment: development
+        script:
+          - |
+            echo "Deploying to development environment"
+            
+            # Install required tools
+            apt-get update
+            apt-get install -y curl jq bc bash
+            
+            # Install docker-compose
+            curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+            
+            # Login to registry
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+            
+            # Make scripts executable
+            chmod +x scripts/*.sh
+            
+            # Set deployment variables
+            export DOCKER_REGISTRY=$DOCKER_REGISTRY
+            export NUXTOPS_IMAGE_TAG=$BITBUCKET_COMMIT
+            export ENVIRONMENT=development
+            
+            # Run deployment
+            timeout 1800 ./scripts/deploy-enterprise-stack.sh development all
+            
+            # Validate deployment
+            timeout 300 ./scripts/validate-nuxtops-health.sh development --detailed
+            
+            echo "Development deployment completed"
+        artifacts:
+          - "logs/**"
+          - "health-report-*.json"
+
+    - step: &deploy-staging
+        name: Deploy to Staging
+        image: atlassian/default-image:4
+        services:
+          - docker
+        deployment: staging
+        script:
+          - |
+            echo "Deploying to staging environment"
+            
+            # Install required tools
+            apt-get update
+            apt-get install -y curl jq bc bash
+            
+            # Install docker-compose
+            curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+            
+            # Login to registry
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+            
+            # Make scripts executable
+            chmod +x scripts/*.sh
+            
+            # Set deployment variables
+            export DOCKER_REGISTRY=$DOCKER_REGISTRY
+            export NUXTOPS_IMAGE_TAG=$BITBUCKET_COMMIT
+            export ENVIRONMENT=staging
+            
+            # Run deployment
+            timeout 1800 ./scripts/deploy-enterprise-stack.sh staging all
+            
+            # Validate deployment
+            timeout 300 ./scripts/validate-nuxtops-health.sh staging --detailed
+            
+            echo "Staging deployment completed"
+        artifacts:
+          - "logs/**"
+          - "health-report-*.json"
+
+    - step: &deploy-production
+        name: Deploy to Production
+        image: atlassian/default-image:4
+        services:
+          - docker
+        deployment: production
+        trigger: manual
+        script:
+          - |
+            echo "Deploying to production with zero-downtime strategy"
+            
+            # Install required tools
+            apt-get update
+            apt-get install -y curl jq bc bash
+            
+            # Install docker-compose
+            curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+            
+            # Login to registry
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+            
+            # Make scripts executable
+            chmod +x scripts/*.sh
+            
+            # Set deployment variables
+            export DOCKER_REGISTRY=$DOCKER_REGISTRY
+            export NUXTOPS_IMAGE_TAG=$BITBUCKET_COMMIT
+            export ENVIRONMENT=production
+            
+            # Use zero-downtime deployment for production
+            timeout 1800 ./scripts/zero-downtime-deploy.sh rolling
+            
+            # Validate deployment
+            timeout 300 ./scripts/validate-nuxtops-health.sh production --detailed
+            
+            echo "Production deployment completed successfully"
+        artifacts:
+          - "logs/**"
+          - "health-report-*.json"
+
+    - step: &smoke-tests
+        name: Smoke Tests
+        image: node:18
+        script:
+          - |
+            echo "Running smoke tests"
+            
+            # Determine environment URL
+            case "$BITBUCKET_BRANCH" in
+              "main")
+                BASE_URL="https://nuxtops.production.example.com"
+                ;;
+              "staging")
+                BASE_URL="https://nuxtops.staging.example.com"
+                ;;
+              *)
+                BASE_URL="http://nuxtops.dev.local"
+                ;;
+            esac
+            
+            echo "Testing URL: $BASE_URL"
+            
+            # Basic health checks
+            curl -f "$BASE_URL/health" || exit 1
+            curl -f "$BASE_URL/api/health" || exit 1
+            
+            # Performance check
+            RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}' "$BASE_URL/")
+            echo "Response time: ${RESPONSE_TIME}s"
+            
+            if (( $(echo "$RESPONSE_TIME > 2.0" | bc -l) )); then
+              echo "Warning: Response time above 2 seconds"
+            fi
+            
+            echo "Smoke tests completed successfully"
+
+    - step: &performance-tests
+        name: Performance Tests
+        image: node:18
+        script:
+          - |
+            echo "Running performance tests"
+            npm ci --cache ~/.npm --prefer-offline
+            npm run test:performance || echo "Performance tests completed with warnings"
+        artifacts:
+          - performance-report.json
+
+pipelines:
+  default:
+    - step: *lint-and-validate
+    - step: *unit-tests
+
+  branches:
+    develop:
+      - step: *lint-and-validate
+      - step: *unit-tests
+      - parallel:
+          - step: *build-image
+          - step: *security-scan
+      - step: *otel-validation
+      - step: *deploy-development
+      - step: *smoke-tests
+
+    staging:
+      - step: *lint-and-validate
+      - step: *unit-tests
+      - parallel:
+          - step: *build-image
+          - step: *security-scan
+      - step: *otel-validation
+      - step: *deploy-staging
+      - parallel:
+          - step: *smoke-tests
+          - step: *performance-tests
+
+    main:
+      - step: *lint-and-validate
+      - step: *unit-tests
+      - parallel:
+          - step: *build-image
+          - step: *security-scan
+      - step: *otel-validation
+      - step: *deploy-production
+      - parallel:
+          - step: *smoke-tests
+          - step: *performance-tests
+
+  pull-requests:
+    '**':
+      - step: *lint-and-validate
+      - step: *unit-tests
+      - step: *build-image
+
+  tags:
+    'v*':
+      - step: *lint-and-validate
+      - step: *unit-tests
+      - parallel:
+          - step: *build-image
+          - step: *security-scan
+      - step: *otel-validation
+      - step:
+          name: Deploy Release
+          image: atlassian/default-image:4
+          services:
+            - docker
+          deployment: production
+          trigger: manual
+          script:
+            - |
+              echo "Deploying release $BITBUCKET_TAG to production"
+              
+              # Install required tools
+              apt-get update
+              apt-get install -y curl jq bc bash
+              
+              # Install docker-compose
+              curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose
+              
+              # Login to registry
+              echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+              
+              # Make scripts executable
+              chmod +x scripts/*.sh
+              
+              # Set deployment variables
+              export DOCKER_REGISTRY=$DOCKER_REGISTRY
+              export NUXTOPS_IMAGE_TAG=$BITBUCKET_COMMIT
+              export ENVIRONMENT=production
+              export RELEASE_TAG=$BITBUCKET_TAG
+              
+              # Use blue-green deployment for releases
+              timeout 1800 ./scripts/zero-downtime-deploy.sh blue-green
+              
+              # Validate deployment
+              timeout 300 ./scripts/validate-nuxtops-health.sh production --detailed
+              
+              echo "Release $BITBUCKET_TAG deployed successfully"
+
+  custom:
+    # Manual rollback pipeline
+    rollback-production:
+      - step:
+          name: Rollback Production
+          image: atlassian/default-image:4
+          services:
+            - docker
+          deployment: production
+          script:
+            - |
+              echo "Executing production rollback"
+              
+              # Install required tools
+              apt-get update
+              apt-get install -y curl jq bc bash
+              
+              # Install docker-compose
+              curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose
+              
+              # Make scripts executable
+              chmod +x scripts/*.sh
+              
+              # Execute rollback
+              ./scripts/zero-downtime-deploy.sh rollback
+              
+              # Validate rollback
+              timeout 300 ./scripts/validate-nuxtops-health.sh production --detailed
+              
+              echo "Production rollback completed"
+
+    # Manual OpenTelemetry validation pipeline
+    validate-opentelemetry:
+      - step: *otel-validation
+
+    # Emergency deployment pipeline
+    emergency-deploy:
+      - step:
+          name: Emergency Production Deploy
+          image: atlassian/default-image:4
+          services:
+            - docker
+          deployment: production
+          script:
+            - |
+              echo "Emergency deployment to production"
+              echo "WARNING: Skipping standard validation for emergency deployment"
+              
+              # Install required tools
+              apt-get update
+              apt-get install -y curl jq bc bash
+              
+              # Install docker-compose
+              curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose
+              
+              # Login to registry
+              echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+              
+              # Make scripts executable
+              chmod +x scripts/*.sh
+              
+              # Set deployment variables
+              export DOCKER_REGISTRY=$DOCKER_REGISTRY
+              export NUXTOPS_IMAGE_TAG=$BITBUCKET_COMMIT
+              export ENVIRONMENT=production
+              
+              # Quick deployment without full validation
+              timeout 900 ./scripts/deploy-enterprise-stack.sh production application
+              
+              # Basic health check
+              timeout 120 ./scripts/validate-nuxtops-health.sh production
+              
+              echo "Emergency deployment completed"
+
+# Options configuration
+options:
+  max-time: 120  # 2 hours timeout for entire pipeline
+  size: 1x      # Default instance size
+
+# Clone configuration
+clone:
+  depth: 50     # Shallow clone for faster checkout

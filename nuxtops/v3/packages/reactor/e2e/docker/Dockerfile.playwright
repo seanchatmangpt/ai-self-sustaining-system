@@ -1,0 +1,32 @@
+FROM mcr.microsoft.com/playwright:v1.39.0-focal
+
+# Install additional tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    jq \
+    postgresql-client \
+    redis-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /workspace
+
+# Install Node.js dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Install Playwright browsers (already installed in base image)
+RUN npx playwright install --with-deps
+
+# Copy test files
+COPY . .
+
+# Create directories for outputs
+RUN mkdir -p test-results coverage reports
+
+# Set environment variables
+ENV CI=true
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+# Default command
+CMD ["npm", "run", "test:e2e"]

@@ -1,0 +1,87 @@
+{
+  "name": "@nuxtops/reactor",
+  "version": "1.0.0",
+  "description": "Workflow orchestration system for Nuxt 3 with reactor pattern",
+  "main": "./dist/module.cjs",
+  "module": "./dist/module.mjs",
+  "types": "./dist/types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    },
+    "./types": "./types/index.ts",
+    "./core": "./core/reactor-engine.ts",
+    "./middleware": "./middleware/index.ts",
+    "./composables": "./composables/index.ts",
+    "./examples": "./examples/index.ts",
+    "./spr": "./spr/index.ts",
+    "./monitoring": "./monitoring/index.ts"
+  },
+  "files": [
+    "dist",
+    "types",
+    "core",
+    "middleware",
+    "composables",
+    "integrations",
+    "examples",
+    "spr",
+    "monitoring"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "build": "nuxt-module-build build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "test": "vitest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.8.0",
+    "nanoid": "^5.0.4",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-node": "^0.45.0",
+    "@opentelemetry/resources": "^1.18.0",
+    "@opentelemetry/semantic-conventions": "^1.18.0",
+    "@opentelemetry/exporter-jaeger": "^1.18.0",
+    "@opentelemetry/exporter-zipkin": "^1.18.0",
+    "pino": "^8.16.0",
+    "lz4": "^0.6.5",
+    "zstandard": "^0.1.1",
+    "performance-now": "^2.1.0",
+    "systeminformation": "^5.21.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^1.4.1",
+    "@nuxt/module-builder": "^0.5.0",
+    "@nuxt/schema": "^3.8.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^9.29.0",
+    "happy-dom": "^18.0.1",
+    "nuxt": "^3.8.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "nitropack": "^2.8.0",
+    "nuxt": "^3.8.0"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt3",
+    "reactor",
+    "workflow",
+    "orchestration",
+    "saga",
+    "compensation",
+    "nitro",
+    "tasks"
+  ],
+  "author": "NuxtOps Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nuxtops/reactor"
+  }
+}
