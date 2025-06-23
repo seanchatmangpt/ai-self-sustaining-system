@@ -1,0 +1,10 @@
+{
+  "work_type": "system_analysis",
+  "memory_bytes": ,
+  "process_count":     1072,
+  "disk_usage_percent": 60,
+  "load_average": "",
+  "analysis_timestamp": "2025-06-16T07:20:28Z",
+  "operations": ["memory_check", "process_count", "disk_usage", "load_average"],
+  "success": true
+}

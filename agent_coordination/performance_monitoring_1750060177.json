@@ -1,0 +1,63 @@
+{
+  "performance_monitoring_session": {
+    "monitor_trace_id": "a71aedd382f9d203c805ef99b5e1070e",
+    "timestamp": "2025-06-16T07:49:37.3NZ",
+    "monitoring_agent": "realtime_performance_monitor_1750060177868729000",
+    "version": "1.0.0"
+  },
+  "dashboard_configuration": {
+    "grafana_url": "http://localhost:3001",
+    "prometheus_url": "http://localhost:9091",
+    "update_interval_seconds": 5,
+    "dashboard_file": "/Users/sac/dev/ai-self-sustaining-system/agent_coordination/realtime_performance_dashboard.json"
+  },
+  "current_performance_snapshot": {
+  "timestamp": "2025-06-16T07:49:37.3NZ",
+  "calculation_time_ms": 58,
+  "agent_metrics": {
+    "active_agents": 0,
+    "total_capacity": 0,
+    "utilized_capacity": 0,
+    "agent_utilization_percent": 0
+  },
+  "work_metrics": {
+    "active_work": 222,
+    "high_priority_work": 74,
+    "pending_work": 4,
+    "work_completion_rate_percent": 0
+  },
+  "throughput_metrics": {
+    "completed_work": 0,
+    "velocity_points": 0,
+    "coordination_efficiency": 0
+  },
+  "system_metrics": {
+    "system_load": "6.31",
+    "memory_usage_percent": "0.0",
+    "disk_usage_percent": "3"
+  }
+},
+  "monitoring_capabilities": [
+    "Real-time agent performance tracking",
+    "Work queue depth monitoring",
+    "Coordination efficiency calculation",
+    "System health indicators",
+    "Velocity trend analysis",
+    "Interactive terminal dashboard",
+    "Grafana dashboard integration",
+    "OpenTelemetry correlation"
+  ],
+  "implementation_status": {
+    "realtime_dashboard": true,
+    "grafana_integration": true,
+    "prometheus_metrics": true,
+    "telemetry_correlation": true,
+    "performance_indicators": true
+  },
+  "performance_characteristics": {
+    "dashboard_refresh_rate": "5s",
+    "metric_calculation_time_ms": "< 100",
+    "telemetry_generation": "real-time",
+    "correlation_tracking": "enabled"
+  }
+}

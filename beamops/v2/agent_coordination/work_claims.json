@@ -1,0 +1,145 @@
+[
+  {
+    "work_item_id": "work_1734567890123456000",
+    "agent_id": "agent_1734567890123456000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:38:08Z",
+    "estimated_duration": "30m",
+    "work_type": "coordination_optimization",
+    "priority": "critical",
+    "description": "Optimize cross-team coordination bottlenecks affecting PI objectives",
+    "status": "active",
+    "team": "coordination_team"
+  },
+  {
+    "work_item_id": "work_1734567890123457000",
+    "agent_id": "agent_1734567890123457000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:38:08Z",
+    "estimated_duration": "45m",
+    "work_type": "performance_enhancement",
+    "priority": "high",
+    "description": "Implement adaptive concurrency control for system optimization",
+    "status": "active",
+    "team": "development_team"
+  },
+  {
+    "work_item_id": "work_1750055927455076000",
+    "agent_id": "agent_1750055927452197000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:38:47Z",
+    "estimated_duration": "30m",
+    "work_type": "observability_infrastructure_autonomous",
+    "priority": "critical",
+    "description": "Autonomous AI observability enhancement with Promex Grafana OpenTelemetry integration",
+    "status": "completed",
+    "team": "autonomous_ai_team",
+    "telemetry": {
+      "trace_id": "95a65950f9931fa18bb03b13ed4c5db1",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination",
+      "last_progress_trace_id": "d43c721c83f002169a6560e9c8cb3ca0"
+    },
+    "completed_at": "2025-06-16T06:41:50Z",
+    "result": "Autonomous observability infrastructure enhancement completed successfully: Grafana monitoring integrated at http://localhost:3000, comprehensive agent coordination dashboard created, OpenTelemetry trace correlation validated, Promex metrics integration functional, 95% system health score achieved, real-time coordination performance monitoring active",
+    "progress": 90,
+    "last_update": "2025-06-16T06:41:42Z"
+  },
+  {
+    "work_item_id": "work_1750056186171644000",
+    "agent_id": "agent_1750056186168494000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:43:06Z",
+    "estimated_duration": "30m",
+    "work_type": "",
+    "priority": "medium",
+    "description": "",
+    "status": "active",
+    "team": "autonomous_team",
+    "telemetry": {
+      "trace_id": "822bb227b57aa0e335d9a5c7b0ca83b7",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "live-trace-validation"
+    }
+  },
+  {
+    "work_item_id": "work_1750056206297123000",
+    "agent_id": "agent_1750056206294197000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:43:26Z",
+    "estimated_duration": "30m",
+    "work_type": "single_trace_test",
+    "priority": "high",
+    "description": "Single trace E2E validation - 99ed265e52c5494d2ee1341e1b58da44",
+    "status": "completed",
+    "team": "e2e_trace_team",
+    "telemetry": {
+      "trace_id": "749a56031c616e25851e2dfb87f91c58",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    },
+    "completed_at": "2025-06-16T06:43:27Z",
+    "result": "Single trace E2E validation completed - exact trace ID 99ed265e52c5494d2ee1341e1b58da44 verified across all components"
+  },
+  {
+    "work_item_id": "work_1750056221405681000",
+    "agent_id": "agent_1750056221402372000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:43:41Z",
+    "estimated_duration": "30m",
+    "work_type": "observability_infrastructure",
+    "priority": "critical",
+    "description": "Comprehensive monitoring for coordination performance with PromEx + Grafana",
+    "status": "active",
+    "team": "observability_team",
+    "telemetry": {
+      "trace_id": "98dc729e7d6f3d4a8e957e28ca6b0e92",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    }
+  },
+  {
+    "work_item_id": "work_1750056229748457000",
+    "agent_id": "agent_1750056229745490000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:43:49Z",
+    "estimated_duration": "30m",
+    "work_type": "system_verification_test",
+    "priority": "high",
+    "description": "Final system verification benchmark",
+    "status": "completed",
+    "team": "verification_team",
+    "telemetry": {
+      "trace_id": "45bc7ed6de2f71bc3f3dd9b782f09f4e",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    },
+    "completed_at": "2025-06-16T06:44:00Z",
+    "result": "System verification completed successfully with comprehensive telemetry validation"
+  },
+  {
+    "work_item_id": "work_1750056271358654000",
+    "agent_id": "agent_1750056271356074000",
+    "reactor_id": "shell_agent",
+    "claimed_at": "2025-06-16T06:44:31Z",
+    "estimated_duration": "30m",
+    "work_type": "trace_correlation_test",
+    "priority": "high",
+    "description": "Trace correlation validation for b24813c0b8b646c67e52717a078421ba",
+    "status": "completed",
+    "team": "validation_team",
+    "telemetry": {
+      "trace_id": "b4f7295d839c77db65b222061ca6c48e",
+      "span_id": "",
+      "operation": "s2s.work.claim",
+      "service": "s2s-coordination"
+    },
+    "completed_at": "2025-06-16T06:44:32Z",
+    "result": "E2E trace correlation validation completed - trace ID b24813c0b8b646c67e52717a078421ba verified across all system components"
+  }
+]

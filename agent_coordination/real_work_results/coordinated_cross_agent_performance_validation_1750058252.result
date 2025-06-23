@@ -1,0 +1,11 @@
+{
+  "work_type": "performance_test",
+  "coordinated": true,
+  "iterations": 1000,
+  "successes": 1000,
+  "total_time_ns": 2266139000,
+  "operations_per_second": 441.27,
+  "success_rate": 100.0000,
+  "operations": ["hash_generation", "validation", "performance_measurement"],
+  "success": true
+}

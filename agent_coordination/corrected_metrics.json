@@ -1,0 +1,46 @@
+{
+  "performance_metrics": {
+    "actual_operations_per_hour": 49,
+    "baseline_operations_per_hour": 148,
+    "actual_improvement_percent": -66.8,
+    "measurement_timeframe": "2025-06-16T06:00-07:00",
+    "evidence_source": "coordination_log.json",
+    "verification_trace_id": "f283121b834aa94f89a18b0a410455b6"
+  },
+  "health_metrics": {
+    "actual_health_score_percent": 39.7,
+    "active_work_items": 47,
+    "completed_work_items": 31,
+    "calculation_method": "completed/(completed+active)*100",
+    "evidence_source": "work_claims.json",
+    "verification_trace_id": "f283121b834aa94f89a18b0a410455b6"
+  },
+  "agent_metrics": {
+    "actual_active_agents": 79,
+    "evidence_source": "agent_status.json",
+    "verification_trace_id": "f283121b834aa94f89a18b0a410455b6"
+  },
+  "infrastructure_metrics": {
+    "grafana_status": "ACCESSIBLE",
+    "docker_services_running": 4,
+    "infrastructure_health": "PARTIAL",
+    "grafana_endpoint": "http://localhost:3000",
+    "verification_trace_id": "f283121b834aa94f89a18b0a410455b6"
+  },
+  "conflict_metrics": {
+    "duplicate_work_ids": 0,
+    "duplicate_agent_assignments": 0,
+    "total_conflicts": 0,
+    "conflict_status": "VERIFIED",
+    "verification_trace_id": "f283121b834aa94f89a18b0a410455b6"
+  },
+  "principle_8020_metrics": {
+    "meta_8020_work_items": 13,
+    "total_work_items": 73,
+    "principle_ratio_percent": 17.8,
+    "meta_velocity_points": 138,
+    "total_velocity_points": 669,
+    "principle_status": "VALIDATED",
+    "verification_trace_id": "f283121b834aa94f89a18b0a410455b6"
+  }
+}

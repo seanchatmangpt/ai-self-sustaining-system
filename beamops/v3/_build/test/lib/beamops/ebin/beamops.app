@@ -1,0 +1,12 @@
+{application,beamops,
+             [{modules,['Elixir.Beamops','Elixir.Beamops.Application',
+                        'Elixir.Beamops.PromEx.AgentCoordinationPlugin',
+                        'Elixir.Beamops.Promex']},
+              {optional_applications,[]},
+              {applications,[kernel,stdlib,elixir,logger,phoenix,
+                             phoenix_live_dashboard,prom_ex,telemetry_metrics,
+                             telemetry_poller,jason,plug_cowboy,floki]},
+              {description,"beamops"},
+              {registered,[]},
+              {vsn,"3.0.0"},
+              {mod,{'Elixir.Beamops.Application',[]}}]}.

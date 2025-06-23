@@ -1,0 +1,18 @@
+# 80/20 Smart Work Routing Enhancement
+smart_claim_work() {
+    local work_type="$1"
+    local description="$2"
+    local priority="$3"
+    
+    # Get specialist agent for work type
+    local specialist_team="${WORK_TYPE_SPECIALISTS[$work_type]:-autonomous_team}"
+    local agent_id=$(jq -r ".[] | select(.team == \"$specialist_team\" and .status == \"active\") | .agent_id" "$COORDINATION_DIR/agent_status.json" | head -1)
+    
+    if [ -z "$agent_id" ]; then
+        # Fallback to any available agent
+        agent_id=$(jq -r ".[] | select(.status == \"active\") | .agent_id" "$COORDINATION_DIR/agent_status.json" | head -1)
+    fi
+    
+    echo "🎯 Smart routing: $work_type → $agent_id (specialist team: $specialist_team)"
+    # Continue with normal work claiming using the specialist agent
+}

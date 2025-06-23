@@ -1,30 +1,30 @@
 defmodule SelfSustaining.APSTest do
   @moduledoc """
   Test suite for the Agile Protocol Specification (APS) functionality.
-  
+
   This test module validates the APS YAML parsing, validation, and integration
   capabilities within the self-sustaining AI system. Tests cover:
-  
+
   - APS YAML schema validation
   - Process definition parsing
   - Role and activity validation
   - Scenario and data structure verification
   - Integration with agent coordination systems
-  
+
   ## Test Data
-  
+
   Uses predefined APS YAML structures that conform to the agent coordination
   protocol specifications. Test scenarios include both valid and invalid
   configurations to ensure robust error handling.
-  
+
   ## Test Categories
-  
+
   - **Schema Validation**: YAML structure and required field validation
   - **Process Parsing**: Agent role and activity definition processing
   - **Scenario Testing**: BDD-style scenario validation
   - **Integration Testing**: Coordination with agent systems
   """
-  
+
   use ExUnit.Case, async: true
 
   alias SelfSustaining.APS
@@ -90,7 +90,7 @@ defmodule SelfSustaining.APSTest do
   describe "parse_yaml/1" do
     test "parses valid APS YAML successfully" do
       assert {:ok, %APS{} = aps} = APS.parse_yaml(@valid_aps_yaml)
-      
+
       assert aps.name == "Test_Process"
       assert aps.description == "A test process for validation"
       assert length(aps.roles) == 2
@@ -102,7 +102,7 @@ defmodule SelfSustaining.APSTest do
 
     test "parses APS with claim correctly" do
       assert {:ok, %APS{} = aps} = APS.parse_yaml(@valid_aps_with_claim)
-      
+
       assert aps.name == "Test_Process_With_Claim"
       assert aps.claim["agent_id"] == "1234_Developer_Agent"
       assert aps.status == "in_progress"
@@ -110,7 +110,7 @@ defmodule SelfSustaining.APSTest do
 
     test "returns error for invalid YAML" do
       invalid_yaml = "invalid: yaml: content: ["
-      
+
       assert {:error, reason} = APS.parse_yaml(invalid_yaml)
       assert String.contains?(reason, "Failed to parse YAML")
     end
@@ -119,7 +119,7 @@ defmodule SelfSustaining.APSTest do
   describe "validate/1" do
     test "validates complete APS structure" do
       {:ok, aps} = APS.parse_yaml(@valid_aps_yaml)
-      
+
       assert {:ok, ^aps} = APS.validate(aps)
     end
 
@@ -131,7 +131,7 @@ defmodule SelfSustaining.APSTest do
         activities: [],
         scenarios: []
       }
-      
+
       assert {:error, errors} = APS.validate(incomplete_aps)
       assert "Process name is required" in errors
       assert "At least one role is required" in errors
@@ -146,7 +146,7 @@ defmodule SelfSustaining.APSTest do
         activities: [%{"name" => "Test", "assignee" => "PM_Agent"}],
         scenarios: [%{"steps" => [%{"type" => "Given", "description" => "Test"}]}]
       }
-      
+
       assert {:error, errors} = APS.validate(aps_with_invalid_role)
       assert "Role name is required" in errors
     end
@@ -155,13 +155,13 @@ defmodule SelfSustaining.APSTest do
   describe "current_agent/1" do
     test "extracts current agent from claim" do
       {:ok, aps} = APS.parse_yaml(@valid_aps_with_claim)
-      
+
       assert APS.current_agent(aps) == "Developer_Agent"
     end
 
     test "returns nil when no claim exists" do
       {:ok, aps} = APS.parse_yaml(@valid_aps_yaml)
-      
+
       assert APS.current_agent(aps) == nil
     end
   end
@@ -186,7 +186,7 @@ defmodule SelfSustaining.APSTest do
         status: "completed",
         claim: %{"agent_id" => "1234_Developer_Agent"}
       }
-      
+
       assert APS.ready_for_handoff?(completed_aps) == true
     end
 
@@ -195,7 +195,7 @@ defmodule SelfSustaining.APSTest do
         status: "in_progress",
         claim: %{"agent_id" => "1234_Developer_Agent"}
       }
-      
+
       assert APS.ready_for_handoff?(in_progress_aps) == false
     end
 
@@ -204,7 +204,7 @@ defmodule SelfSustaining.APSTest do
         status: "completed",
         claim: nil
       }
-      
+
       assert APS.ready_for_handoff?(completed_aps) == false
     end
   end

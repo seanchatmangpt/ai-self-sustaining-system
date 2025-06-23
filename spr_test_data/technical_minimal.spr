@@ -1,0 +1,124 @@
+Resolving Hex dependencies...
+Resolution completed in 0.56s
+New:
+  finch 0.19.0
+  glob_ex 0.1.11
+  hpax 1.0.3
+  igniter 0.6.7
+  jason 1.4.4
+  libgraph 0.16.0
+  mime 2.0.7
+  mint 1.7.1
+  nimble_options 1.1.1
+  nimble_pool 1.1.0
+  owl 0.12.2
+  reactor 0.8.5
+  req 0.5.10
+  rewrite 1.1.2
+  sourceror 1.10.0
+  spark 2.2.65
+  spitfire 0.2.1
+  splode 0.2.9
+  telemetry 1.3.0
+  text_diff 0.1.0
+* Getting reactor (Hex package)
+* Getting jason (Hex package)
+* Getting igniter (Hex package)
+* Getting libgraph (Hex package)
+* Getting spark (Hex package)
+* Getting splode (Hex package)
+* Getting telemetry (Hex package)
+* Getting glob_ex (Hex package)
+* Getting owl (Hex package)
+* Getting req (Hex package)
+* Getting rewrite (Hex package)
+* Getting sourceror (Hex package)
+* Getting spitfire (Hex package)
+* Getting text_diff (Hex package)
+* Getting finch (Hex package)
+* Getting mime (Hex package)
+* Getting mint (Hex package)
+* Getting nimble_options (Hex package)
+* Getting nimble_pool (Hex package)
+* Getting hpax (Hex package)
+You have added/upgraded packages you could sponsor, run `mix hex.sponsor` to learn more
+==> sourceror
+Compiling 12 files (.ex)
+Generated sourceror app
+==> text_diff
+Compiling 1 file (.ex)
+Generated text_diff app
+==> spitfire
+Compiling 2 files (.erl)
+Compiling 4 files (.ex)
+Generated spitfire app
+==> mime
+Compiling 1 file (.ex)
+Generated mime app
+==> nimble_options
+Compiling 3 files (.ex)
+Generated nimble_options app
+==> libgraph
+Compiling 15 files (.ex)
+Generated libgraph app
+==> mix_install
+===> Analyzing applications...
+===> Compiling telemetry
+==> jason
+Compiling 10 files (.ex)
+Generated jason app
+==> hpax
+Compiling 4 files (.ex)
+Generated hpax app
+==> mint
+Compiling 1 file (.erl)
+Compiling 20 files (.ex)
+Generated mint app
+==> splode
+Compiling 5 files (.ex)
+Generated splode app
+==> glob_ex
+Compiling 4 files (.ex)
+Generated glob_ex app
+==> nimble_pool
+Compiling 2 files (.ex)
+Generated nimble_pool app
+==> finch
+Compiling 14 files (.ex)
+Generated finch app
+==> req
+Compiling 18 files (.ex)
+Generated req app
+==> rewrite
+Compiling 13 files (.ex)
+Generated rewrite app
+==> owl
+Compiling 19 files (.ex)
+Generated owl app
+==> igniter
+Compiling 59 files (.ex)
+Generated igniter app
+==> spark
+Compiling 38 files (.ex)
+Generated spark app
+==> reactor
+Compiling 77 files (.ex)
+
+23:43:28.096 [warning] Mix.Tasks.Reactor.Install (/Users/sac/Library/Caches/mix/installs/elixir-1.18.3-erts-15.2.7/f05be8b8462a5d96af5d60ff52a6015a/deps/reactor/lib/mix/tasks/reactor.install.ex):
+
+    Module defines `igniter/2`, but `igniter/2` is deprecated.
+    Please refactor to `igniter/1`. Use `igniter.args` to access `argv`, `positional` and `options`.
+
+Generated reactor app
+# SPR Compression Result
+# Original: 134 words
+# Compressed: 15 words  
+# Ratio: 0.112 (target: 0.1)
+# Format: minimal
+# Generated: 2025-06-16T06:43:30.607600Z
+# Trace ID: spr-compression-agent_1750056210605485875
+
+The Reactor framework provides a
+Error handling is built into
+Telemetry integration provides comprehensive observability
+

@@ -1,0 +1,551 @@
+# COMPREHENSIVE DEVOPS INFRASTRUCTURE DEPLOYMENT
+# Fixes: monitoring stack, health checks, service orchestration, production readiness
+# Addresses autonomous system observability requirements with Grafana at localhost:3000
+
+version: '3.8'
+
+volumes:
+  n8n_storage:
+  postgres_storage:
+  ollama_storage:
+  qdrant_storage:
+  prometheus_storage:
+  grafana_storage:
+  jaeger_storage:
+  loki_storage:
+  caddy_data:
+  caddy_config:
+
+networks:
+  ai_system:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+services:
+  # =============================================================================
+  # CORE INFRASTRUCTURE SERVICES
+  # =============================================================================
+  
+  postgres:
+    image: postgres:16-alpine
+    hostname: postgres
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-ai_self_sustaining}
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+      - ./scripts/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ai_self_sustaining}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  redis:
+    image: redis:7-alpine
+    hostname: redis
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - ./redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # =============================================================================
+  # MONITORING AND OBSERVABILITY STACK
+  # =============================================================================
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    hostname: prometheus
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=7d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    volumes:
+      - ./beamops/v3/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./beamops/v3/monitoring/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_storage:/prometheus
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    hostname: grafana
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Autonomous system expects Grafana at localhost:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_DISABLE_GRAVATAR=true
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_SERVER_DOMAIN=localhost
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel
+    volumes:
+      - grafana_storage:/var/lib/grafana
+      - ./beamops/v3/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./beamops/v3/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000/api/health || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.51
+    hostname: jaeger
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # HTTP collector
+      - "14250:14250"  # gRPC collector
+      - "6831:6831/udp"  # UDP agent endpoint
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=memory
+      - MEMORY_MAX_TRACES=10000
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:16686/ || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  loki:
+    image: grafana/loki:2.9.0
+    hostname: loki
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_storage:/loki
+      - ./monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3100/ready || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    hostname: promtail
+    networks: ['ai_system']
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./monitoring/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      loki:
+        condition: service_healthy
+
+  # =============================================================================
+  # AI SYSTEM CORE SERVICES
+  # =============================================================================
+
+  n8n:
+    image: n8nio/n8n:latest
+    hostname: n8n
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-ai_self_sustaining}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER:-postgres}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_PERSONALIZATION_ENABLED=false
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-n8n_encryption_key}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET:-n8n_jwt_secret}
+      - WEBHOOK_URL=http://localhost:5678
+      - GENERIC_TIMEZONE=UTC
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./n8n/demo-data:/demo-data:ro
+      - ./shared:/data/shared
+      - ./n8n_workflows:/data/workflows
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:5678/healthz || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  qdrant:
+    image: qdrant/qdrant:v1.7.0
+    hostname: qdrant
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:6333/health || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  ollama:
+    image: ollama/ollama:latest
+    hostname: ollama
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_storage:/root/.ollama
+    environment:
+      - OLLAMA_ORIGINS=*
+      - OLLAMA_HOST=0.0.0.0:11434
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:11434/api/version || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+
+  # =============================================================================
+  # PHOENIX APPLICATION SERVICES
+  # =============================================================================
+
+  phoenix-app:
+    build:
+      context: ./phoenix_app
+      dockerfile: ../containers/Dockerfile.phoenix
+      args:
+        MIX_ENV: prod
+    hostname: phoenix-app
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - MIX_ENV=prod
+      - PORT=4000
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-ai_self_sustaining}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:-very_long_secret_key_base_for_phoenix_sessions}
+      - REDIS_URL=redis://redis:6379
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_SERVICE_NAME=phoenix-app
+      - N8N_WEBHOOK_URL=http://n8n:5678
+    volumes:
+      - ./shared:/app/shared
+      - ./agent_coordination:/app/agent_coordination
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:4000/health || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      n8n:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  beamops-v3:
+    build:
+      context: ./beamops/v3
+      dockerfile: ../../containers/Dockerfile.beamops
+      args:
+        MIX_ENV: prod
+    hostname: beamops-v3
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "4001:4000"
+      - "9568:9568"  # Prometheus metrics endpoint
+    environment:
+      - MIX_ENV=prod
+      - PORT=4000
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-ai_self_sustaining}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:-very_long_secret_key_base_for_beamops_sessions}
+      - PROMETHEUS_PORT=9568
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:14268/api/traces
+      - OTEL_SERVICE_NAME=beamops-v3
+    volumes:
+      - ./agent_coordination:/app/agent_coordination
+      - ./beamops/v3/monitoring:/app/monitoring:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:4000/health || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      prometheus:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  # =============================================================================
+  # REVERSE PROXY AND LOAD BALANCER
+  # =============================================================================
+
+  caddy:
+    image: caddy:2.7-alpine
+    hostname: caddy
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2019:2019"  # Caddy admin API
+    volumes:
+      - ./containers/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:2019/config/ || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      phoenix-app:
+        condition: service_healthy
+      grafana:
+        condition: service_healthy
+      n8n:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  # =============================================================================
+  # EXPORTERS FOR ENHANCED MONITORING
+  # =============================================================================
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    hostname: postgres-exporter
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "9187:9187"
+    environment:
+      - DATA_SOURCE_NAME=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-ai_self_sustaining}?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.55.0
+    hostname: redis-exporter
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  node-exporter:
+    image: prom/node-exporter:v1.6.1
+    hostname: node-exporter
+    networks: ['ai_system']
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  # =============================================================================
+  # AUTONOMOUS SYSTEM COORDINATION
+  # =============================================================================
+
+  agent-coordinator:
+    build:
+      context: .
+      dockerfile: containers/Dockerfile.coordinator
+    hostname: agent-coordinator
+    networks: ['ai_system']
+    restart: unless-stopped
+    environment:
+      - COORDINATION_DIR=/app/agent_coordination
+      - TELEMETRY_ENDPOINT=http://jaeger:14268/api/traces
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - PROMETHEUS_ENDPOINT=http://prometheus:9090
+    volumes:
+      - ./agent_coordination:/app/agent_coordination
+      - ./scripts:/app/scripts:ro
+    healthcheck:
+      test: ['CMD-SHELL', './agent_coordination/coordination_helper.sh status || exit 1']
+      interval: 60s
+      timeout: 30s
+      retries: 3
+    depends_on:
+      prometheus:
+        condition: service_healthy
+      jaeger:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+# =============================================================================
+# PROFILES FOR DIFFERENT DEPLOYMENT SCENARIOS
+# =============================================================================
+
+# Usage Examples:
+# docker-compose -f docker-compose.devops.yml --profile development up
+# docker-compose -f docker-compose.devops.yml --profile production up
+# docker-compose -f docker-compose.devops.yml --profile monitoring-only up
+
+x-development-overrides: &development-overrides
+  profiles: ["development"]
+  environment:
+    - MIX_ENV=dev
+    - LOG_LEVEL=debug
+
+x-production-overrides: &production-overrides
+  profiles: ["production"]
+  environment:
+    - MIX_ENV=prod
+    - LOG_LEVEL=info
+  deploy:
+    replicas: 2
+    update_config:
+      parallelism: 1
+      delay: 10s
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3

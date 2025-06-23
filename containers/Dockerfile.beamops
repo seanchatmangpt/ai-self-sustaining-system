@@ -1,0 +1,84 @@
+# BEAMOPS V3 MONITORING APPLICATION DOCKERFILE
+# Optimized for Engineering Elixir Applications monitoring patterns
+
+FROM hexpm/elixir:1.15.7-erlang-26.1.2-alpine-3.18.4 AS build
+
+# Install build dependencies
+RUN apk add --no-cache \
+    build-base \
+    git \
+    nodejs \
+    npm \
+    curl
+
+# Prepare build dir
+WORKDIR /app
+
+# Install hex + rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Set build ENV
+ARG MIX_ENV=prod
+ENV MIX_ENV=${MIX_ENV}
+
+# Install mix dependencies
+COPY mix.exs mix.lock ./
+RUN mix deps.get --only $MIX_ENV
+RUN mkdir config
+
+# Copy compile-time config files before we compile dependencies
+COPY config/config.exs config/${MIX_ENV}.exs config/
+RUN mix deps.compile
+
+# Compile assets if they exist
+COPY assets* assets/
+RUN if [ -f ./assets/package.json ]; then \
+      npm --prefix ./assets ci --progress=false --no-audit --loglevel=error && \
+      npm run --prefix ./assets deploy; \
+    fi
+
+COPY priv priv
+RUN if [ -f ./assets/package.json ]; then mix phx.digest; fi
+
+# Compile the release
+COPY lib lib
+RUN mix compile
+
+# Changes to config/runtime.exs don't require recompiling the code
+COPY config/runtime.exs config/
+
+COPY rel rel
+RUN mix release beamops_v3
+
+# Start a new build stage so that the final image will only contain
+# the compiled release and other runtime necessities
+FROM alpine:3.18.4 AS app
+
+RUN apk add --no-cache \
+    libstdc++ \
+    openssl \
+    ncurses-libs \
+    curl \
+    jq
+
+WORKDIR /app
+RUN chown nobody /app
+
+# Set runner ENV
+ENV MIX_ENV=prod
+
+# Only copy the final release from the build stage
+COPY --from=build --chown=nobody:root /app/_build/${MIX_ENV}/rel/beamops_v3 ./
+
+USER nobody
+
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
+  CMD curl -f http://localhost:${PORT:-4000}/health || exit 1
+
+# Expose ports
+EXPOSE 4000
+EXPOSE 9568
+
+CMD ["/app/bin/server"]

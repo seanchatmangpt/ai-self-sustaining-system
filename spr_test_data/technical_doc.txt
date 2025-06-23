@@ -1,0 +1,5 @@
+The Reactor framework provides a comprehensive solution for building complex data processing pipelines in Elixir. It uses a step-based architecture that enables modular, testable, and maintainable workflows. Each step in a Reactor can perform data transformation, validation, or integration tasks. The framework supports both synchronous and asynchronous execution patterns, allowing for optimal performance in various scenarios.
+
+Error handling is built into the core of Reactor through compensation mechanisms. When a step fails, the framework can automatically execute compensation logic to roll back changes or perform cleanup operations. This ensures data consistency and system reliability even in the face of failures.
+
+Telemetry integration provides comprehensive observability throughout the pipeline execution. Each step is instrumented with timing metrics, success/failure tracking, and custom metadata collection. This enables detailed performance analysis and debugging capabilities for complex workflow scenarios.

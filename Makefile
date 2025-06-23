@@ -1,31 +1,156 @@
+# =============================================================================
 # AI Self-Sustaining System Makefile
-# Enhanced with Reactor Runner Integration and Enterprise Toolchain
+# =============================================================================
 #
-# Usage:
-#   make help                    # Show this help message
-#   make setup                   # Complete project setup
-#   make dev                     # Start development environment
-#   make test                    # Run all tests
-#   make quality                 # Run all quality checks
-#   make reactor                 # Enhanced reactor operations
-#   make deploy                  # Deploy to production
+# DESCRIPTION:
+#   Comprehensive build automation and orchestration for the AI Self-Sustaining
+#   System. This Makefile provides a unified interface to all system components
+#   including Phoenix applications, agent coordination, Claude AI integration,
+#   XAVOS system management, OpenTelemetry tracing, and worktree operations.
+#
+# SYSTEM ARCHITECTURE:
+#   • Phoenix Application (Elixir/LiveView) - Core web framework
+#   • Agent Coordination System - 40+ shell commands for Scrum at Scale
+#   • Claude AI Integration - Structured JSON analysis and intelligence
+#   • XAVOS System - Complete Ash Framework ecosystem (port 4002)
+#   • OpenTelemetry - Distributed tracing and performance monitoring
+#   • Worktree Management - Git worktree operations for parallel development
+#   • SPR Processing - Sparse Priming Representation data pipeline
+#
+# DEPENDENCIES:
+#   Required:
+#     - Elixir 1.14+ with OTP 25+
+#     - PostgreSQL 14+
+#     - Docker & Docker Compose
+#     - Node.js 18+ with npm
+#   Optional:
+#     - Claude CLI for AI features
+#     - jq for JSON processing
+#     - curl for health checks
+#
+# QUICK START:
+#   1. make setup                    # Complete system setup
+#   2. make system-overview          # View system status
+#   3. make dev                      # Start development environment
+#   4. make system-health-full       # Comprehensive health check
+#
+# COMPREHENSIVE USAGE:
+#   Core Development:
+#     make setup                     # Complete project setup
+#     make dev                       # Start development environment
+#     make test                      # Run all tests
+#     make quality                   # Run all quality checks
+#     make ci                        # Full CI pipeline
+#
+#   System Management:
+#     make system-overview           # Show complete system overview
+#     make system-health-full        # Comprehensive health check
+#     make system-full-test          # Run all system tests
+#     make script-status             # Run system status check script
+#
+#   Agent Coordination (Scrum at Scale):
+#     make coord-help                # Show coordination commands
+#     make coord-dashboard           # View coordination dashboard
+#     make coord-pi-planning         # Run PI Planning session
+#     make coord-scrum-of-scrums     # Cross-team coordination
+#
+#   Claude AI Intelligence:
+#     make claude-help               # Show Claude AI commands
+#     make claude-analyze-priorities # AI priority analysis
+#     make claude-health-analysis    # AI health analysis
+#     make claude-optimize-assignments # AI assignment optimization
+#
+#   XAVOS System (Ash Framework):
+#     make xavos-help                # Show XAVOS commands
+#     make xavos-status              # Check XAVOS system status
+#     make xavos-deploy-complete     # Deploy complete XAVOS system
+#
+#   OpenTelemetry & Observability:
+#     make otel-help                 # Show OpenTelemetry commands
+#     make otel-trace-validation     # Validate trace implementation
+#     make otel-test-integration     # Test OpenTelemetry integration
+#
+#   Worktree Management:
+#     make worktree-help             # Show worktree commands
+#     make worktree-status           # Show all worktree status
+#     make worktree-create-s2s       # Create new S2S worktree
+#
+# TROUBLESHOOTING:
+#   Common Issues:
+#     - Port conflicts: Check if ports 4000, 4002, 5432, 5678 are available
+#     - Database issues: Run `make db-reset` to reset database
+#     - Permission errors: Ensure scripts have execute permissions
+#     - Docker issues: Run `make docker-clean` then `make docker-start`
+#
+#   Debug Commands:
+#     make health                    # Check basic system health
+#     make script-status             # Run comprehensive status check
+#     make docker-ps                 # Show Docker container status
+#     make version                   # Show version information
+#
+# PERFORMANCE NOTES:
+#   - Parallel execution: Many targets can run concurrently
+#   - Resource usage: Full system requires ~2GB RAM
+#   - Startup time: Initial setup takes 5-10 minutes
+#   - Test suite: Complete tests take 10-15 minutes
+#
+# SECURITY CONSIDERATIONS:
+#   - Never commit secrets to repository
+#   - Use .env file for sensitive configuration
+#   - Run `make security` to check for vulnerabilities
+#   - XAVOS system uses secure authentication patterns
+#
+# AUTHORS:
+#   AI Self-Sustaining System Team
+#   Enhanced for enterprise Scrum at Scale coordination
+#
+# VERSION: 2.0.0 (Enhanced Shell Script Integration)
+# =============================================================================
 
 .PHONY: help setup dev test quality clean docker docs ci reactor validate
 .DEFAULT_GOAL := help
 
 # ============================================================================
-# Configuration
+# Configuration Variables
 # ============================================================================
+#
+# Core application configuration variables used throughout the Makefile.
+# These variables define paths, commands, and formatting options.
+#
+# IMPORTANT: Do not modify these unless you understand the implications.
+# Many shell scripts and automation depend on these exact values.
 
+# Application Metadata
+# --------------------
+# APP_NAME: Core application identifier used in deployment and monitoring
 APP_NAME := self_sustaining
+
+# APP_VERSION: Dynamically extracted from Phoenix mix.exs file
+# This ensures version consistency across the entire system
 APP_VERSION := $(shell grep 'version:' phoenix_app/mix.exs | cut -d'"' -f2)
+
+# Directory Structure
+# -------------------
+# PROJECT_ROOT: Absolute path to the project root directory
+# Used as base for all relative path calculations
 PROJECT_ROOT := $(shell pwd)
+
+# PHOENIX_DIR: Phoenix application directory
+# Contains the main Elixir/Phoenix codebase
 PHOENIX_DIR := $(PROJECT_ROOT)/phoenix_app
+
+# Command Definitions
+# -------------------
+# Tool commands used throughout the Makefile
+# These allow for easy customization and testing with different tool versions
 DOCKER_COMPOSE := docker-compose
 MIX := mix
 ELIXIR := elixir
 
-# Colors for output
+# Terminal Color Codes
+# --------------------
+# ANSI color codes for enhanced terminal output and user experience
+# Used throughout the Makefile to provide clear, colored feedback
 RED := \033[31m
 GREEN := \033[32m
 YELLOW := \033[33m
@@ -35,23 +160,59 @@ CYAN := \033[36m
 WHITE := \033[37m
 RESET := \033[0m
 
-# ============================================================================
-# Help System
-# ============================================================================
+# Environment Detection
+# ---------------------
+# Detect the current operating system for platform-specific operations
+UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
 
-help: ## Show this help message
+# Default Environment Variables
+# ------------------------------
+# Set default values for environment variables if not already defined
+export MIX_ENV ?= dev
+export DEPLOYMENT_ENV ?= development
+export COORDINATION_DIR ?= $(PROJECT_ROOT)/agent_coordination
+
+# ============================================================================
+# Interactive Help System
+# ============================================================================
+#
+# Comprehensive help system that provides detailed information about all
+# available make targets. The help system uses inline documentation comments
+# (##) to automatically generate usage information.
+#
+# FEATURES:
+#   • Automatic target discovery and documentation
+#   • Categorized command display
+#   • Color-coded output for better readability
+#   • Quick start guide and workflow recommendations
+#   • System status information
+#
+# USAGE:
+#   make help           # Show complete help (default target)
+#   make <target>       # Run specific target
+#
+# NOTE: All targets with ## comments are automatically included in help output
+
+help: ## Show comprehensive help and system overview
 	@echo ""
-	@echo "$(CYAN)🚀 AI Self-Sustaining System - Enhanced Makefile$(RESET)"
-	@echo "$(CYAN)================================================$(RESET)"
+	@echo "$(CYAN)🚀 AI Self-Sustaining System - Enhanced Makefile v2.0$(RESET)"
+	@echo "$(CYAN)========================================================$(RESET)"
 	@echo ""
-	@echo "$(GREEN)📋 Main Commands:$(RESET)"
+	@echo "$(GREEN)📋 All Available Commands:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(BLUE)%-20s$(RESET) %s\n", $$1, $$2}'
 	@echo ""
 	@echo "$(GREEN)🔧 Development Workflow:$(RESET)"
-	@echo "  1. $(YELLOW)make setup$(RESET)     - Initial project setup"
-	@echo "  2. $(YELLOW)make dev$(RESET)       - Start development environment"
-	@echo "  3. $(YELLOW)make test$(RESET)      - Run tests during development"
-	@echo "  4. $(YELLOW)make quality$(RESET)   - Check code quality before commit"
+	@echo "  1. $(YELLOW)make setup$(RESET)               - Initial project setup"
+	@echo "  2. $(YELLOW)make dev$(RESET)                 - Start development environment"
+	@echo "  3. $(YELLOW)make test$(RESET)                - Run tests during development"
+	@echo "  4. $(YELLOW)make quality$(RESET)             - Check code quality before commit"
+	@echo ""
+	@echo "$(GREEN)🌟 Comprehensive Commands:$(RESET)"
+	@echo "  • $(YELLOW)make system-overview$(RESET)      - Show complete system overview"
+	@echo "  • $(YELLOW)make system-health-full$(RESET)   - Full system health check"
+	@echo "  • $(YELLOW)make system-full-test$(RESET)     - Run all system tests"
+	@echo "  • $(YELLOW)make dev-full$(RESET)             - Start full dev environment"
 	@echo ""
 	@echo "$(GREEN)🚀 Enhanced Reactor Runner:$(RESET)"
 	@echo "  • $(YELLOW)make reactor-help$(RESET)     - Show reactor commands"
@@ -59,9 +220,34 @@ help: ## Show this help message
 	@echo "  • $(YELLOW)make reactor-monitor$(RESET)  - Monitor reactor execution with telemetry"
 	@echo ""
 	@echo "$(GREEN)🤝 Agent Coordination:$(RESET)"
-	@echo "  • $(YELLOW)make test-coordination$(RESET)    - Test agent coordination system"
-	@echo "  • $(YELLOW)make test-scrum-commands$(RESET)  - Test Scrum at Scale commands"
-	@echo "  • $(YELLOW)make coordination-help$(RESET)    - Show coordination commands"
+	@echo "  • $(YELLOW)make coord-help$(RESET)           - Show coordination commands"
+	@echo "  • $(YELLOW)make coord-dashboard$(RESET)      - View coordination dashboard"
+	@echo "  • $(YELLOW)make coord-test$(RESET)           - Test coordination helper"
+	@echo ""
+	@echo "$(GREEN)🧠 Claude AI Intelligence:$(RESET)"
+	@echo "  • $(YELLOW)make claude-help$(RESET)          - Show Claude AI commands"
+	@echo "  • $(YELLOW)make claude-analyze-priorities$(RESET) - AI priority analysis"
+	@echo "  • $(YELLOW)make claude-health-analysis$(RESET) - AI health analysis"
+	@echo ""
+	@echo "$(GREEN)🚀 XAVOS System:$(RESET)"
+	@echo "  • $(YELLOW)make xavos-help$(RESET)           - Show XAVOS commands"
+	@echo "  • $(YELLOW)make xavos-status$(RESET)         - Check XAVOS system status"
+	@echo "  • $(YELLOW)make xavos-deploy-complete$(RESET) - Deploy complete XAVOS"
+	@echo ""
+	@echo "$(GREEN)📡 OpenTelemetry:$(RESET)"
+	@echo "  • $(YELLOW)make otel-help$(RESET)            - Show OpenTelemetry commands"
+	@echo "  • $(YELLOW)make otel-trace-validation$(RESET) - Validate traces"
+	@echo "  • $(YELLOW)make otel-test-integration$(RESET) - Test OTel integration"
+	@echo ""
+	@echo "$(GREEN)🌳 Worktree Management:$(RESET)"
+	@echo "  • $(YELLOW)make worktree-help$(RESET)        - Show worktree commands"
+	@echo "  • $(YELLOW)make worktree-status$(RESET)      - Show worktree status"
+	@echo "  • $(YELLOW)make worktree-create-s2s$(RESET)  - Create S2S worktree"
+	@echo ""
+	@echo "$(GREEN)🔧 System Scripts:$(RESET)"
+	@echo "  • $(YELLOW)make script-status$(RESET)        - Run system status check"
+	@echo "  • $(YELLOW)make script-integration-test$(RESET) - Run integration tests"
+	@echo "  • $(YELLOW)make script-configure-claude$(RESET) - Configure Claude MCP"
 	@echo ""
 	@echo "$(GREEN)📊 Performance Benchmarks:$(RESET)"
 	@echo "  • $(YELLOW)make benchmark-help$(RESET)       - Show benchmark commands"
@@ -75,22 +261,59 @@ help: ## Show this help message
 	@echo ""
 
 # ============================================================================
-# Project Setup
+# Project Setup and Initialization
 # ============================================================================
+#
+# Comprehensive setup system that initializes the entire AI Self-Sustaining
+# System from a fresh checkout. This section handles dependency verification,
+# environment setup, database initialization, and service configuration.
+#
+# SETUP PROCESS:
+#   1. Dependency verification (check-dependencies)
+#   2. Elixir environment setup (setup-elixir)
+#   3. Database initialization (setup-database)
+#   4. Frontend asset compilation (setup-assets)
+#   5. Docker service configuration (setup-docker-env)
+#
+# PREREQUISITES:
+#   • Elixir 1.14+ with OTP 25+
+#   • PostgreSQL 14+ (or Docker for containerized DB)
+#   • Node.js 18+ with npm
+#   • Docker and Docker Compose
+#   • Git (for repository operations)
+#
+# TIME ESTIMATE: 5-10 minutes for complete setup
+# DISK SPACE: ~2GB for all dependencies and assets
+#
+# TROUBLESHOOTING:
+#   • If setup fails, check individual targets: make check-dependencies
+#   • For permission issues: ensure user can write to project directory
+#   • For network issues: check internet connectivity and proxy settings
 
-setup: ## Complete project setup (dependencies, database, assets)
+setup: ## Complete project setup (dependencies, database, assets, Docker services)
 	@echo "$(CYAN)🔧 Setting up AI Self-Sustaining System...$(RESET)"
+	@echo "$(BLUE)📋 Running comprehensive project initialization$(RESET)"
+	@echo "$(YELLOW)⏱️  Estimated time: 5-10 minutes$(RESET)"
+	@echo ""
 	@$(MAKE) check-dependencies
 	@$(MAKE) setup-elixir
 	@$(MAKE) setup-database
 	@$(MAKE) setup-assets
 	@$(MAKE) setup-docker-env
+	@echo ""
 	@echo "$(GREEN)✅ Setup completed successfully!$(RESET)"
 	@echo ""
-	@echo "$(YELLOW)Next steps:$(RESET)"
+	@echo "$(YELLOW)🚀 Next steps:$(RESET)"
 	@echo "  1. Run $(BLUE)make dev$(RESET) to start development environment"
-	@echo "  2. Visit $(BLUE)http://localhost:4000$(RESET) to see the application"
-	@echo "  3. Run $(BLUE)make reactor-help$(RESET) to explore enhanced reactor features"
+	@echo "  2. Visit $(BLUE)http://localhost:4000$(RESET) to see the Phoenix application"
+	@echo "  3. Visit $(BLUE)http://localhost:4002$(RESET) to see the XAVOS system"
+	@echo "  4. Run $(BLUE)make system-overview$(RESET) to see system status"
+	@echo "  5. Run $(BLUE)make coord-dashboard$(RESET) to explore agent coordination"
+	@echo ""
+	@echo "$(CYAN)💡 Pro tips:$(RESET)"
+	@echo "  • Use $(BLUE)make system-health-full$(RESET) for comprehensive health check"
+	@echo "  • Use $(BLUE)make help$(RESET) to see all available commands"
+	@echo "  • Check $(BLUE)make script-status$(RESET) if you encounter issues"
 
 check-dependencies: ## Check if required tools are installed
 	@echo "$(BLUE)📋 Checking dependencies...$(RESET)"
@@ -726,6 +949,343 @@ security: ## Run security checks
 	@cd $(PHOENIX_DIR) && $(MIX) deps.audit
 	@cd $(PHOENIX_DIR) && $(MIX) sobelow
 	@echo "$(GREEN)✅ Security checks completed$(RESET)"
+
+# ============================================================================
+# Shell Script Integration
+# ============================================================================
+
+script-status: ## Run system status check script
+	@echo "$(BLUE)📋 Running system status check...$(RESET)"
+	@./scripts/check_status.sh
+
+script-monitor: ## Run system monitoring script
+	@echo "$(BLUE)📊 Starting system monitoring...$(RESET)"
+	@./scripts/monitor.sh
+
+script-configure-claude: ## Configure Claude Desktop MCP
+	@echo "$(BLUE)🤖 Configuring Claude Desktop...$(RESET)"
+	@./scripts/configure_claude.sh
+
+script-integration-test: ## Run comprehensive integration tests
+	@echo "$(BLUE)🧪 Running integration tests...$(RESET)"
+	@./test_integration.sh
+
+# ============================================================================
+# Agent Coordination Commands
+# ============================================================================
+
+coord-help: ## Show agent coordination help
+	@echo "$(CYAN)🤝 Agent Coordination Commands$(RESET)"
+	@echo "$(CYAN)==============================$(RESET)"
+	@echo ""
+	@cd agent_coordination && ./coordination_helper.sh help
+
+coord-dashboard: ## Show coordination dashboard
+	@echo "$(BLUE)📊 Agent Coordination Dashboard$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh dashboard
+
+coord-test: ## Test coordination helper functionality
+	@echo "$(BLUE)🧪 Testing coordination helper...$(RESET)"
+	@cd agent_coordination && ./test_coordination_helper.sh
+
+coord-pi-planning: ## Run PI Planning session
+	@echo "$(BLUE)🎯 Starting PI Planning...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh pi-planning
+
+coord-scrum-of-scrums: ## Run Scrum of Scrums coordination
+	@echo "$(BLUE)🤝 Scrum of Scrums Coordination...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh scrum-of-scrums
+
+coord-art-sync: ## Run ART synchronization
+	@echo "$(BLUE)🔄 ART Sync Meeting...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh art-sync
+
+coord-system-demo: ## Run system demo
+	@echo "$(BLUE)🎬 System Demo...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh system-demo
+
+coord-inspect-adapt: ## Run Inspect & Adapt workshop
+	@echo "$(BLUE)🔍 Inspect & Adapt Workshop...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh inspect-adapt
+
+coord-portfolio-kanban: ## Portfolio Kanban management
+	@echo "$(BLUE)📊 Portfolio Kanban...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh portfolio-kanban
+
+coord-value-stream: ## Value stream mapping
+	@echo "$(BLUE)🗺️ Value Stream Mapping...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh value-stream
+
+# ============================================================================
+# Claude AI Intelligence
+# ============================================================================
+
+claude-help: ## Show Claude intelligence commands
+	@echo "$(CYAN)🧠 Claude AI Intelligence Commands$(RESET)"
+	@echo "$(CYAN)==================================$(RESET)"
+	@echo ""
+	@cd agent_coordination && ./coordination_helper.sh claude-dashboard
+
+claude-analyze-priorities: ## Analyze work priorities with Claude
+	@echo "$(BLUE)🎯 Claude Priority Analysis...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh claude-analyze-priorities
+
+claude-optimize-assignments: ## Optimize agent assignments with Claude
+	@echo "$(BLUE)🎯 Claude Assignment Optimization...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh claude-optimize-assignments
+
+claude-health-analysis: ## Perform Claude health analysis
+	@echo "$(BLUE)🏥 Claude Health Analysis...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh claude-health-analysis
+
+claude-team-analysis: ## Analyze team formation with Claude
+	@echo "$(BLUE)👥 Claude Team Analysis...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh claude-team-analysis
+
+claude-stream: ## Real-time Claude coordination stream
+	@echo "$(BLUE)🔄 Claude Real-time Stream...$(RESET)"
+	@cd agent_coordination && ./coordination_helper.sh claude-stream system 30
+
+# ============================================================================
+# XAVOS System Management
+# ============================================================================
+
+xavos-help: ## Show XAVOS system commands
+	@echo "$(CYAN)🚀 XAVOS System Management$(RESET)"
+	@echo "$(CYAN)=========================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)🏗️ XAVOS Deployment Commands:$(RESET)"
+	@echo "  $(BLUE)make xavos-deploy-complete$(RESET)    - Full XAVOS deployment"
+	@echo "  $(BLUE)make xavos-deploy-realistic$(RESET)   - Realistic XAVOS deployment"
+	@echo "  $(BLUE)make xavos-exact-commands$(RESET)     - Run exact XAVOS commands"
+	@echo "  $(BLUE)make xavos-test-commands$(RESET)      - Test XAVOS commands"
+	@echo ""
+	@echo "$(GREEN)📊 XAVOS Status:$(RESET)"
+	@echo "  • Location: $(MAGENTA)worktrees/xavos-system/xavos/$(RESET)"
+	@echo "  • Port: $(MAGENTA)4002$(RESET)"
+	@echo "  • Access: $(BLUE)http://localhost:4002$(RESET)"
+
+xavos-deploy-complete: ## Deploy complete XAVOS system
+	@echo "$(BLUE)🚀 Deploying complete XAVOS system...$(RESET)"
+	@cd agent_coordination && ./deploy_xavos_complete.sh
+
+xavos-deploy-realistic: ## Deploy XAVOS with realistic settings
+	@echo "$(BLUE)🚀 Deploying XAVOS (realistic)...$(RESET)"
+	@cd agent_coordination && ./deploy_xavos_realistic.sh
+
+xavos-exact-commands: ## Run exact XAVOS command sequences
+	@echo "$(BLUE)⚡ Running exact XAVOS commands...$(RESET)"
+	@cd agent_coordination && ./xavos_exact_commands.sh
+
+xavos-test-commands: ## Test XAVOS command functionality
+	@echo "$(BLUE)🧪 Testing XAVOS commands...$(RESET)"
+	@cd agent_coordination && ./test_xavos_commands.sh
+
+xavos-status: ## Check XAVOS system status
+	@echo "$(BLUE)📊 XAVOS System Status$(RESET)"
+	@echo "$(CYAN)=====================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)System Information:$(RESET)"
+	@echo "  Location: worktrees/xavos-system/xavos/"
+	@echo "  Port: 4002"
+	@echo "  Access URL: http://localhost:4002"
+	@echo ""
+	@echo "$(GREEN)Quick Health Check:$(RESET)"
+	@curl -s http://localhost:4002 >/dev/null 2>&1 && echo "  ✅ XAVOS: Running" || echo "  ❌ XAVOS: Not responding"
+
+# ============================================================================
+# Worktree Management
+# ============================================================================
+
+worktree-help: ## Show worktree management commands
+	@echo "$(CYAN)🌳 Worktree Management Commands$(RESET)"
+	@echo "$(CYAN)===============================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📋 Available Commands:$(RESET)"
+	@echo "  $(BLUE)make worktree-status$(RESET)           - Show all worktree status"
+	@echo "  $(BLUE)make worktree-create-s2s$(RESET)       - Create S2S worktree"
+	@echo "  $(BLUE)make worktree-create-ash$(RESET)       - Create Ash Phoenix worktree"
+	@echo "  $(BLUE)make worktree-manage$(RESET)           - Manage existing worktrees"
+	@echo "  $(BLUE)make worktree-test-gaps$(RESET)        - Test worktree functionality"
+	@echo "  $(BLUE)make worktree-env-manager$(RESET)      - Manage worktree environments"
+
+worktree-status: ## Show status of all worktrees
+	@echo "$(BLUE)🌳 Worktree Status$(RESET)"
+	@echo "$(CYAN)==================$(RESET)"
+	@git worktree list
+	@echo ""
+	@echo "$(GREEN)Worktree Health Check:$(RESET)"
+	@cd worktrees/xavos-system && echo "  ✅ XAVOS worktree: $(shell cd worktrees/xavos-system && git branch --show-current)"
+	@cd worktrees/phoenix-ai-nexus && echo "  ✅ Phoenix AI Nexus worktree: $(shell cd worktrees/phoenix-ai-nexus && git branch --show-current)"
+
+worktree-create-s2s: ## Create new S2S worktree
+	@echo "$(BLUE)🌱 Creating S2S worktree...$(RESET)"
+	@cd agent_coordination && ./create_s2s_worktree.sh
+
+worktree-create-ash: ## Create new Ash Phoenix worktree
+	@echo "$(BLUE)🌱 Creating Ash Phoenix worktree...$(RESET)"
+	@cd agent_coordination && ./create_ash_phoenix_worktree.sh
+
+worktree-manage: ## Manage existing worktrees
+	@echo "$(BLUE)🔧 Managing worktrees...$(RESET)"
+	@cd agent_coordination && ./manage_worktrees.sh
+
+worktree-test-gaps: ## Test worktree functionality gaps
+	@echo "$(BLUE)🧪 Testing worktree gaps...$(RESET)"
+	@cd agent_coordination && ./test_worktree_gaps.sh
+
+worktree-env-manager: ## Run worktree environment manager
+	@echo "$(BLUE)🌍 Managing worktree environments...$(RESET)"
+	@cd agent_coordination && ./worktree_environment_manager.sh
+
+# ============================================================================
+# OpenTelemetry and Telemetry
+# ============================================================================
+
+otel-help: ## Show OpenTelemetry commands
+	@echo "$(CYAN)📡 OpenTelemetry Commands$(RESET)"
+	@echo "$(CYAN)========================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📋 Available Commands:$(RESET)"
+	@echo "  $(BLUE)make otel-test-integration$(RESET)     - Test OpenTelemetry integration"
+	@echo "  $(BLUE)make otel-trace-validation$(RESET)     - Validate trace implementation"
+	@echo "  $(BLUE)make otel-trace-performance$(RESET)    - Performance trace validation"
+	@echo "  $(BLUE)make otel-detect-antipatterns$(RESET)  - Detect trace antipatterns"
+	@echo "  $(BLUE)make otel-fix-traces$(RESET)           - Fix telemetry traces"
+	@echo "  $(BLUE)make otel-add-support$(RESET)          - Add trace support"
+
+otel-test-integration: ## Test OpenTelemetry integration
+	@echo "$(BLUE)📡 Testing OpenTelemetry integration...$(RESET)"
+	@cd agent_coordination && ./test_otel_integration.sh
+
+otel-trace-validation: ## Run trace validation suite
+	@echo "$(BLUE)🔍 Running trace validation...$(RESET)"
+	@cd phoenix_app/scripts && ./trace_validation_suite.sh
+
+otel-trace-implementation: ## Validate trace implementation
+	@echo "$(BLUE)🔍 Validating trace implementation...$(RESET)"
+	@cd phoenix_app/scripts && ./validate_trace_implementation.sh
+
+otel-trace-performance: ## Validate trace performance
+	@echo "$(BLUE)⚡ Validating trace performance...$(RESET)"
+	@cd phoenix_app/scripts && ./validate_trace_performance.sh
+
+otel-detect-antipatterns: ## Detect trace antipatterns
+	@echo "$(BLUE)🔍 Detecting trace antipatterns...$(RESET)"
+	@cd phoenix_app/scripts && ./detect_trace_antipatterns.sh
+
+otel-fix-traces: ## Fix telemetry traces
+	@echo "$(BLUE)🔧 Fixing telemetry traces...$(RESET)"
+	@cd phoenix_app/scripts && ./fix_telemetry_traces.sh
+
+otel-add-support: ## Add trace support
+	@echo "$(BLUE)➕ Adding trace support...$(RESET)"
+	@cd phoenix_app/scripts && ./add_trace_support.sh
+
+# ============================================================================
+# System Integration and SPR
+# ============================================================================
+
+spr-help: ## Show SPR (Sparse Priming Representation) commands
+	@echo "$(CYAN)🧬 SPR Commands$(RESET)"
+	@echo "$(CYAN)==============$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📋 Available Commands:$(RESET)"
+	@echo "  $(BLUE)make spr-compress$(RESET)              - Compress data using SPR"
+	@echo "  $(BLUE)make spr-decompress$(RESET)            - Decompress SPR data"
+	@echo "  $(BLUE)make spr-pipeline$(RESET)              - Run SPR pipeline"
+	@echo "  $(BLUE)make spr-test$(RESET)                  - Test SPR CLI functionality"
+
+spr-compress: ## Compress data using SPR
+	@echo "$(BLUE)🗜️ Running SPR compression...$(RESET)"
+	@./spr_compress.sh
+
+spr-decompress: ## Decompress SPR data
+	@echo "$(BLUE)📂 Running SPR decompression...$(RESET)"
+	@./spr_decompress.sh
+
+spr-pipeline: ## Run SPR pipeline
+	@echo "$(BLUE)🔄 Running SPR pipeline...$(RESET)"
+	@./spr_pipeline.sh
+
+spr-test: ## Test SPR CLI functionality
+	@echo "$(BLUE)🧪 Testing SPR CLI...$(RESET)"
+	@./test_spr_cli.sh
+
+# ============================================================================
+# Comprehensive System Commands
+# ============================================================================
+
+system-overview: ## Show comprehensive system overview
+	@echo "$(CYAN)🌟 AI Self-Sustaining System Overview$(RESET)"
+	@echo "$(CYAN)=====================================$(RESET)"
+	@echo ""
+	@echo "$(GREEN)📊 System Components:$(RESET)"
+	@echo "  • Phoenix Application: $(shell cd $(PHOENIX_DIR) && mix --version | head -1)"
+	@echo "  • Agent Coordination: 40+ shell commands"
+	@echo "  • XAVOS System: Complete Ash Framework ecosystem"
+	@echo "  • Claude AI Integration: Structured JSON analysis"
+	@echo "  • OpenTelemetry: Distributed tracing"
+	@echo "  • Worktrees: $(shell git worktree list | wc -l) active worktrees"
+	@echo ""
+	@echo "$(GREEN)🚀 Quick Start Commands:$(RESET)"
+	@echo "  1. $(YELLOW)make setup$(RESET)                  - Initial setup"
+	@echo "  2. $(YELLOW)make script-status$(RESET)          - Check system status"
+	@echo "  3. $(YELLOW)make coord-dashboard$(RESET)        - View coordination dashboard"
+	@echo "  4. $(YELLOW)make claude-analyze-priorities$(RESET) - AI analysis"
+	@echo "  5. $(YELLOW)make otel-trace-validation$(RESET)  - Validate telemetry"
+
+system-full-test: ## Run comprehensive system tests
+	@echo "$(CYAN)🎯 Running Full System Test Suite$(RESET)"
+	@echo "$(CYAN)=================================$(RESET)"
+	@echo ""
+	@$(MAKE) test
+	@$(MAKE) coord-test
+	@$(MAKE) script-integration-test
+	@$(MAKE) otel-test-integration
+	@echo ""
+	@echo "$(GREEN)✅ Comprehensive system testing completed!$(RESET)"
+
+system-health-full: ## Comprehensive system health check
+	@echo "$(CYAN)🏥 Comprehensive System Health Check$(RESET)"
+	@echo "$(CYAN)===================================$(RESET)"
+	@echo ""
+	@$(MAKE) health
+	@echo ""
+	@$(MAKE) script-status
+	@echo ""
+	@$(MAKE) coord-dashboard
+	@echo ""
+	@$(MAKE) xavos-status
+	@echo ""
+	@$(MAKE) worktree-status
+	@echo ""
+	@echo "$(GREEN)🎉 Full system health check completed!$(RESET)"
+
+# ============================================================================
+# Enhanced Development Workflow
+# ============================================================================
+
+dev-full: ## Start full development environment with all systems
+	@echo "$(CYAN)🚀 Starting Full Development Environment$(RESET)"
+	@echo "$(CYAN)=======================================$(RESET)"
+	@echo ""
+	@echo "$(BLUE)1. Setting up Docker services...$(RESET)"
+	@$(MAKE) docker-start
+	@echo ""
+	@echo "$(BLUE)2. Checking system status...$(RESET)"
+	@$(MAKE) script-status
+	@echo ""
+	@echo "$(BLUE)3. Starting Phoenix server...$(RESET)"
+	@cd $(PHOENIX_DIR) && $(MIX) phx.server
+
+dev-minimal: ## Start minimal development environment
+	@echo "$(CYAN)🚀 Starting Minimal Development Environment$(RESET)"
+	@echo "$(CYAN)=========================================$(RESET)"
+	@echo ""
+	@$(MAKE) docker-start
+	@sleep 3
+	@cd $(PHOENIX_DIR) && $(MIX) phx.server
 
 # ============================================================================
 # Special Targets

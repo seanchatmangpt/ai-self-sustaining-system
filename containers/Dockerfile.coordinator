@@ -1,0 +1,43 @@
+# AUTONOMOUS AGENT COORDINATOR DOCKERFILE
+# Manages S@S coordination with telemetry and Claude AI integration
+
+FROM alpine:3.18.4
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    bash \
+    curl \
+    jq \
+    openssl \
+    ca-certificates \
+    tzdata
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -g 1001 coordinator && \
+    adduser -D -s /bin/bash -u 1001 -G coordinator coordinator
+
+# Copy coordination scripts and make executable
+COPY agent_coordination/ ./agent_coordination/
+COPY scripts/ ./scripts/
+RUN chmod +x ./agent_coordination/coordination_helper.sh
+RUN chmod +x ./scripts/*.sh
+
+# Set ownership
+RUN chown -R coordinator:coordinator /app
+
+# Switch to non-root user
+USER coordinator
+
+# Health check
+HEALTHCHECK --interval=60s --timeout=30s --retries=3 --start-period=10s \
+  CMD ./agent_coordination/coordination_helper.sh status || exit 1
+
+# Environment variables
+ENV COORDINATION_DIR=/app/agent_coordination
+ENV PATH="/app/agent_coordination:${PATH}"
+
+# Keep container running and execute coordination helper
+CMD ["./agent_coordination/coordination_helper.sh", "daemon"]

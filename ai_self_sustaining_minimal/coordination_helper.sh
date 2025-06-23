@@ -16,7 +16,6 @@ usage() {
     echo "  heartbeat                       Send heartbeat for current agent"
     echo "  submit <work_type> <desc> [priority]  Submit work item"
     echo "  claim <work_id>                 Claim a work item"
-    echo "  start <work_id>                 Start a claimed work item"
     echo "  complete <work_id> [result]     Complete a work item"
     echo "  list-agents                     List active agents"
     echo "  list-work [status]              List work items"
@@ -77,22 +76,6 @@ claim_work() {
     curl -s -X PUT "$API_BASE/coordination/work/$work_id/claim" \
         -H "Content-Type: application/json" \
         -d "{\"agent_id\": \"$AGENT_ID\"}" \
-        | jq '.'
-}
-
-start_work() {
-    local work_id="$1"
-    
-    if [[ -z "$work_id" ]]; then
-        echo "Error: work_id is required"
-        return 1
-    fi
-    
-    echo "🚀 Starting work: $work_id"
-    
-    curl -s -X PUT "$API_BASE/coordination/work/$work_id/start" \
-        -H "Content-Type: application/json" \
-        -d "{}" \
         | jq '.'
 }
 
@@ -165,9 +148,6 @@ case "$1" in
         ;;
     "claim")
         claim_work "$2"
-        ;;
-    "start")
-        start_work "$2"
         ;;
     "complete")
         complete_work "$2" "$3"

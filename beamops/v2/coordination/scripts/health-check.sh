@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# BeamOps V2 Coordination Health Check
+# Verifies coordination daemon is running and healthy
+
+set -euo pipefail
+
+# 80/20 TRACE PROPAGATION FIX - Output inherited trace ID
+if [[ -n "${MASTER_TRACE:-}" ]]; then
+    echo "TRACE_PROPAGATED: $MASTER_TRACE"
+    echo "TRACE_CONTEXT: INHERITED_FROM_ORCHESTRATOR"
+fi
+
+
+readonly COORDINATION_DIR="${COORDINATION_DIR:-/coordination}"
+readonly PID_FILE="${COORDINATION_DIR}/coordination-daemon.pid"
+readonly TELEMETRY_FILE="${TELEMETRY_FILE:-${COORDINATION_DIR}/telemetry_spans.jsonl}"
+
+# Check if daemon PID file exists and process is running
+check_daemon_process() {
+    if [[ ! -f "${PID_FILE}" ]]; then
+        echo "ERROR: Coordination daemon PID file not found"
+        return 1
+    fi
+    
+    local pid=$(cat "${PID_FILE}")
+    if ! kill -0 "${pid}" 2>/dev/null; then
+        echo "ERROR: Coordination daemon process (PID: ${pid}) not running"
+        return 1
+    fi
+    
+    echo "OK: Coordination daemon running (PID: ${pid})"
+    return 0
+}
+
+# Check if telemetry is being generated
+check_telemetry_generation() {
+    if [[ ! -f "${TELEMETRY_FILE}" ]]; then
+        echo "ERROR: Telemetry file not found"
+        return 1
+    fi
+    
+    # Check if telemetry has been updated in the last 2 minutes
+    local last_modified=$(stat -c %Y "${TELEMETRY_FILE}" 2>/dev/null || echo "0")
+    local current_time=$(date +%s)
+    local time_diff=$((current_time - last_modified))
+    
+    if [[ ${time_diff} -gt 120 ]]; then
+        echo "ERROR: Telemetry file not updated in ${time_diff} seconds"
+        return 1
+    fi
+    
+    echo "OK: Telemetry being generated (last update: ${time_diff}s ago)"
+    return 0
+}
+
+# Check coordination files integrity
+check_coordination_files() {
+    local files=(
+        "${COORDINATION_DIR}/work_claims.json"
+        "${COORDINATION_DIR}/agent_status.json"
+        "${COORDINATION_DIR}/coordination_log.json"
+    )
+    
+    for file in "${files[@]}"; do
+        if [[ ! -f "${file}" ]]; then
+            echo "ERROR: Coordination file missing: ${file}"
+            return 1
+        fi
+        
+        # Validate JSON structure
+        if ! jq empty "${file}" 2>/dev/null; then
+            echo "ERROR: Invalid JSON in file: ${file}"
+            return 1
+        fi
+    done
+    
+    echo "OK: All coordination files present and valid"
+    return 0
+}
+
+# Main health check
+main() {
+    echo "BeamOps V2 Coordination Health Check"
+    echo "===================================="
+    
+    local exit_code=0
+    
+    # Run all checks
+    check_daemon_process || exit_code=1
+    check_telemetry_generation || exit_code=1
+    check_coordination_files || exit_code=1
+    
+    if [[ ${exit_code} -eq 0 ]]; then
+        echo "===================================="
+        echo "OVERALL STATUS: HEALTHY"
+    else
+        echo "===================================="
+        echo "OVERALL STATUS: UNHEALTHY"
+    fi
+    
+    return ${exit_code}
+}
+
+# Execute if run directly
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

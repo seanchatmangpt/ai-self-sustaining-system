@@ -1,0 +1,1 @@
+/Users/sac/dev/ai-self-sustaining-system/BEAMOPS-V3.md

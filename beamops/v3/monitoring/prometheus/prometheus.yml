@@ -1,0 +1,68 @@
+# BEAMOPS v3 Prometheus Configuration
+# Following Engineering Elixir Applications monitoring patterns
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    environment: 'development'
+    project: 'beamops-v3'
+
+# Rule files for alerting
+rule_files:
+  - "rules/*.yml"
+
+# Scrape configuration
+scrape_configs:
+  # BEAMOPS v3 Application Metrics
+  - job_name: 'beamops-v3'
+    static_configs:
+      - targets: ['app:9568']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    honor_labels: true
+    params:
+      format: ['prometheus']
+
+  # Phoenix LiveDashboard Metrics
+  - job_name: 'beamops-v3-dashboard'
+    static_configs:
+      - targets: ['app:4000']
+    metrics_path: '/dashboard/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 5s
+
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+
+  # PostgreSQL Metrics (if postgres_exporter is added)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres_exporter:9187']
+    scrape_interval: 30s
+    # This would require adding postgres_exporter to compose.yaml
+
+  # Redis Metrics (if redis_exporter is added)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis_exporter:9121']
+    scrape_interval: 30s
+    # This would require adding redis_exporter to compose.yaml
+
+  # Node Exporter for System Metrics (if added)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node_exporter:9100']
+    scrape_interval: 30s
+    # This would require adding node_exporter to compose.yaml
+
+# Alertmanager configuration (for production)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093

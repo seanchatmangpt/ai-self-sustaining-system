@@ -1,0 +1,37 @@
+<header class="px-4 sm:px-6 lg:px-8">
+  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
+    <div class="flex items-center gap-4">
+      <a href="/">
+        <h1 class="text-lg font-semibold">Self Sustaining AI System</h1>
+      </a>
+    </div>
+    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
+      <a href="/health" class="hover:text-zinc-700">
+        Health
+      </a>
+      <a href="/coordination/status" class="hover:text-zinc-700">
+        Coordination
+      </a>
+      <a href="/telemetry/summary" class="hover:text-zinc-700">
+        Telemetry
+      </a>
+      <a href="/metrics" class="hover:text-zinc-700">
+        Metrics
+      </a>
+    </div>
+  </div>
+</header>
+<main class="px-4 py-20 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-2xl">
+    <%= if assigns[:flash] do %>
+      <div class="p-4">
+        <%= for {type, msg} <- @flash do %>
+          <div class={"alert alert-#{type} rounded-lg p-4 mb-4"}>
+            <%= msg %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <%= @inner_content %>
+  </div>
+</main>

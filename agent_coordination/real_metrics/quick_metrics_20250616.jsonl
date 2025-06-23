@@ -1,0 +1,11 @@
+{
+        "timestamp": "2025-06-16T07:12:13Z",
+        "epoch": 1750057932,
+        "reality_score": 100,
+        "health_working": true,
+        "elixir_processes":        3,
+        "synthetic_flags": [
+  ""
+],
+        "alert_triggered": false
+    }

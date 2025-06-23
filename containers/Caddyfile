@@ -1,0 +1,161 @@
+# CADDY REVERSE PROXY CONFIGURATION
+# Production-ready load balancing for AI Self-Sustaining System
+
+{
+    # Global options
+    admin :2019
+    auto_https off
+    
+    # Logging
+    log {
+        output stdout
+        format json
+        level INFO
+    }
+}
+
+# Main application routing
+{$DOMAIN:localhost} {
+    # Enable gzip compression
+    encode gzip
+
+    # Security headers
+    header {
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # XSS protection
+        X-XSS-Protection "1; mode=block"
+        # Content type sniffing
+        X-Content-Type-Options "nosniff"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Remove server info
+        -Server
+    }
+
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+    }
+
+    # Grafana monitoring (autonomous system expects localhost:3000)
+    handle /grafana/* {
+        reverse_proxy grafana:3000 {
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # N8N automation workflows
+    handle /n8n/* {
+        reverse_proxy n8n:5678 {
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Prometheus metrics
+    handle /prometheus/* {
+        reverse_proxy prometheus:9090 {
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Jaeger tracing UI
+    handle /jaeger/* {
+        reverse_proxy jaeger:16686 {
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # BeamOps V3 monitoring application
+    handle /beamops/* {
+        reverse_proxy beamops-v3:4000 {
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            
+            # Health check
+            health_uri /health
+            health_interval 30s
+            health_timeout 10s
+        }
+    }
+
+    # Main Phoenix application with load balancing
+    handle /* {
+        reverse_proxy phoenix-app:4000 {
+            # Load balancing (can add more backends)
+            lb_policy round_robin
+            lb_try_duration 5s
+            lb_try_interval 250ms
+            
+            # Headers
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            
+            # Health check
+            health_uri /health
+            health_interval 30s
+            health_timeout 10s
+            
+            # Fail-over options
+            fail_duration 30s
+            max_fails 3
+            unhealthy_latency 3s
+        }
+    }
+}
+
+# Direct access to Grafana (autonomous system expects localhost:3000)
+:3000 {
+    reverse_proxy grafana:3000 {
+        header_up Host {upstream_hostport}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Direct access to N8N
+:5678 {
+    reverse_proxy n8n:5678 {
+        header_up Host {upstream_hostport}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Direct access to Prometheus
+:9090 {
+    reverse_proxy prometheus:9090 {
+        header_up Host {upstream_hostport}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Direct access to Jaeger
+:16686 {
+    reverse_proxy jaeger:16686 {
+        header_up Host {upstream_hostport}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}

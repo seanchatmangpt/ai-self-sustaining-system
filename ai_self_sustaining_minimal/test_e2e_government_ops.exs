@@ -9,23 +9,13 @@ Mix.install([
   {:jason, "~> 1.4"}
 ])
 
-# Start required applications
-{:ok, _} = Application.ensure_all_started(:inets)
-{:ok, _} = Application.ensure_all_started(:ssl)
+# Configure OpenTelemetry with console/file output for validation
+import OpenTelemetry.Tracer
 
-# Configure OpenTelemetry
-Application.put_env(:opentelemetry, :tracer, :otel_tracer_default)
-
-# Configure OTLP exporter
-Application.put_env(:opentelemetry_exporter, :otlp_endpoint, "http://localhost:4317")
-Application.put_env(:opentelemetry_exporter, :otlp_traces_endpoint, "http://localhost:4317")
-
-# Start OpenTelemetry applications
+# Start OpenTelemetry API
 {:ok, _} = Application.ensure_all_started(:opentelemetry_api)
-{:ok, _} = Application.ensure_all_started(:opentelemetry)
-{:ok, _} = Application.ensure_all_started(:opentelemetry_exporter)
 
-# Set up tracer
+# Configure a simple tracer that logs to console for validation
 :opentelemetry.set_default_tracer({:otel_tracer_default, []})
 
 # Load our instrumented CLI

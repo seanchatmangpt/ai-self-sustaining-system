@@ -1,0 +1,122 @@
+# BEAMOPS v3 Prometheus Alert Rules
+# Following Engineering Elixir Applications monitoring patterns
+
+groups:
+  - name: beamops_v3_critical
+    interval: 30s
+    rules:
+      # Application Health
+      - alert: BeamopsApplicationDown
+        expr: up{job="beamops-v3"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: beamops-v3
+        annotations:
+          summary: "BEAMOPS v3 application is down"
+          description: "BEAMOPS v3 application has been down for more than 1 minute"
+
+      # Agent Coordination Health
+      - alert: NoActiveAgents
+        expr: agents_active_count < 1
+        for: 2m
+        labels:
+          severity: critical
+          service: agent-coordination
+        annotations:
+          summary: "No active agents in coordination system"
+          description: "Agent coordination system reports {{ $value }} active agents"
+
+      # Coordination Efficiency
+      - alert: LowCoordinationEfficiency
+        expr: coordination_efficiency_ratio < 0.7
+        for: 5m
+        labels:
+          severity: warning
+          service: agent-coordination
+        annotations:
+          summary: "Low agent coordination efficiency"
+          description: "Coordination efficiency is {{ $value | humanizePercentage }}"
+
+      # System Health Score
+      - alert: SystemHealthDegraded
+        expr: system_health_score < 80
+        for: 3m
+        labels:
+          severity: warning
+          service: beamops-v3
+        annotations:
+          summary: "System health score degraded"
+          description: "System health score is {{ $value }}/100"
+
+  - name: beamops_v3_infrastructure
+    interval: 60s
+    rules:
+      # Database Health
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "PostgreSQL database has been unreachable for more than 1 minute"
+
+      # Redis Health
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "Redis cache is down"
+          description: "Redis cache has been unreachable for more than 1 minute"
+
+      # Prometheus Health
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          service: monitoring
+        annotations:
+          summary: "Prometheus is down"
+          description: "Prometheus has been down for more than 2 minutes"
+
+  - name: beamops_v3_performance
+    interval: 60s
+    rules:
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (beam_memory_total / 1024 / 1024) > 1024  # > 1GB
+        for: 5m
+        labels:
+          severity: warning
+          service: beamops-v3
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value | humanize }}MB"
+
+      # High Process Count
+      - alert: HighProcessCount
+        expr: beam_process_count > 100000
+        for: 5m
+        labels:
+          severity: warning
+          service: beamops-v3
+        annotations:
+          summary: "High BEAM process count"
+          description: "Process count is {{ $value }}"
+
+      # Work Completion Rate Low
+      - alert: LowWorkCompletionRate
+        expr: rate(work_completion_rate[10m]) < 1
+        for: 10m
+        labels:
+          severity: warning
+          service: agent-coordination
+        annotations:
+          summary: "Low work completion rate"
+          description: "Work completion rate is {{ $value }} items/minute"

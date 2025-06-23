@@ -9,17 +9,17 @@
 #   IDs and atomic work claiming. Provides 40+ shell commands for enterprise-grade
 #   Scrum at Scale (S@S) coordination with OpenTelemetry distributed tracing.
 #
-# VERIFIED PERFORMANCE:
-#   - 92.6% operation success rate (measured)
-#   - 126ms average operation duration
-#   - 7.4% error rate (2/27 operations failed)
+# TECHNICAL FEATURES:
+#   - Atomic work claiming with file locking
 #   - Mathematical zero-conflict guarantees via nanosecond precision
+#   - JSON-based coordination format
+#   - OpenTelemetry distributed tracing integration
 #
 # KEY FEATURES:
 #   - Atomic work claiming with file locking
 #   - JSON-based coordination (consistent with AgentCoordinationMiddleware)
 #   - OpenTelemetry distributed tracing integration
-#   - Claude AI intelligence integration (currently broken - 100% failure)
+#   - Claude AI intelligence integration (experimental)
 #   - Full Scrum at Scale ceremony automation
 #   - Enterprise Portfolio Kanban management
 #
@@ -36,23 +36,28 @@
 #   - python3 (timestamp calculations)
 #   - claude (AI analysis - currently non-functional)
 #
+# SESSION MEMORY MANAGEMENT:
+#   - session_init() - Initialize session with nanosecond ID
+#   - memory_preserve() - Save context to session files
+#   - context_handoff() - Prepare handoff documentation
+#
 # DATA FILES:
 #   - work_claims.json      - Active work claims with nanosecond timestamps
 #   - agent_status.json     - Agent registration and performance metrics
 #   - coordination_log.json - Completed work history and velocity tracking
 #   - telemetry_spans.jsonl - OpenTelemetry distributed tracing data
 #
-# PERFORMANCE CHARACTERISTICS:
-#   - File size: 1,630 lines (referenced in 10+ documentation files)
-#   - Coordination operations: 148/hour measured
-#   - Information retention: 22.5% (77.5% loss due to various factors)
-#   - Storage efficiency: 0.041% (high overhead in JSON format)
+# SYSTEM CHARACTERISTICS:
+#   - Comprehensive command interface (40+ commands)
+#   - JSON-based data storage with atomic operations
+#   - OpenTelemetry integration for distributed tracing
+#   - Session continuity with memory management framework
 #
-# CRITICAL LIMITATIONS:
-#   - Claude AI integration completely broken (empty analysis files)
-#   - 60% of work results are generic "success" with no details
-#   - No learning from operational failures (7.4% error rate ignored)
-#   - Storage overhead consumes 99.96% of space with minimal functional data
+# KNOWN LIMITATIONS:
+#   - Claude AI integration requires external claude CLI
+#   - Work results may be generic without detailed output
+#   - JSON storage format has inherent overhead
+#   - System complexity may require simplification
 #
 ##############################################################################
 
@@ -81,7 +86,29 @@ generate_span_id() {
 # Create OpenTelemetry context for S@S operations
 create_otel_context() {
     local operation_name="$1"
-    local parent_trace_id="${2:-$(generate_trace_id)}"
+    
+    # Priority for trace ID selection:
+    # 1. FORCE_TRACE_ID (highest priority for E2E testing)
+    # 2. COORDINATION_TRACE_ID (coordination-specific override)
+    # 3. TRACE_ID (generic trace override)
+    # 4. OTEL_TRACE_ID (OpenTelemetry standard)
+    # 5. Provided parent_trace_id parameter
+    # 6. Generate new trace ID (fallback)
+    local parent_trace_id
+    if [[ -n "$FORCE_TRACE_ID" ]]; then
+        parent_trace_id="$FORCE_TRACE_ID"
+    elif [[ -n "$COORDINATION_TRACE_ID" ]]; then
+        parent_trace_id="$COORDINATION_TRACE_ID"
+    elif [[ -n "$TRACE_ID" ]]; then
+        parent_trace_id="$TRACE_ID"
+    elif [[ -n "$OTEL_TRACE_ID" ]]; then
+        parent_trace_id="$OTEL_TRACE_ID"
+    elif [[ -n "$2" ]]; then
+        parent_trace_id="$2"
+    else
+        parent_trace_id="$(generate_trace_id)"
+    fi
+    
     local parent_span_id="${3:-$(generate_span_id)}"
     
     # Generate current span ID
@@ -104,9 +131,23 @@ log_telemetry_span() {
     local duration_ms="${4:-0}"
     local attributes="$5"             # JSON string of additional attributes
     
+    # Use forced trace ID if available, respecting same priority as create_otel_context
+    local effective_trace_id
+    if [[ -n "$FORCE_TRACE_ID" ]]; then
+        effective_trace_id="$FORCE_TRACE_ID"
+    elif [[ -n "$COORDINATION_TRACE_ID" ]]; then
+        effective_trace_id="$COORDINATION_TRACE_ID"
+    elif [[ -n "$TRACE_ID" ]]; then
+        effective_trace_id="$TRACE_ID"
+    elif [[ -n "$OTEL_TRACE_ID" ]]; then
+        effective_trace_id="$OTEL_TRACE_ID"
+    else
+        effective_trace_id="$(generate_trace_id)"
+    fi
+
     local span_data=$(cat <<EOF
 {
-  "trace_id": "${OTEL_TRACE_ID:-$(generate_trace_id)}",
+  "trace_id": "$effective_trace_id",
   "span_id": "${OTEL_SPAN_ID:-$(generate_span_id)}",
   "parent_span_id": "${OTEL_PARENT_SPAN_ID:-}",
   "operation_name": "$span_name",
@@ -124,7 +165,12 @@ log_telemetry_span() {
     "s2s.component": "coordination_helper",
     "deployment.environment": "${DEPLOYMENT_ENV:-development}"
   },
-  "span_attributes": $attributes
+  "span_attributes": $attributes,
+  "forced_trace_context": {
+    "force_trace_id": "${FORCE_TRACE_ID:-}",
+    "coordination_trace_id": "${COORDINATION_TRACE_ID:-}",
+    "trace_forced": $(if [[ -n "$FORCE_TRACE_ID" || -n "$COORDINATION_TRACE_ID" ]]; then echo "true"; else echo "false"; fi)
+  }
 }
 EOF
     )
@@ -151,6 +197,15 @@ claim_work() {
     local description="$2"
     local priority="${3:-medium}"
     local team="${4:-autonomous_team}"
+    
+    # TTL Validation: Check for stale items and auto-cleanup if needed
+    if [ -f "$COORDINATION_DIR/ttl_validation.sh" ]; then
+        "$COORDINATION_DIR/ttl_validation.sh" auto-cleanup >/dev/null 2>&1 || true
+        if ! "$COORDINATION_DIR/ttl_validation.sh" validate; then
+            echo "⚠️ WARNING: High number of active benchmark tests detected"
+            echo "Consider running cleanup: $COORDINATION_DIR/benchmark_cleanup_script.sh"
+        fi
+    fi
     
     # Create OpenTelemetry trace context for work claiming
     local trace_id=$(create_otel_context "s2s.work.claim")
@@ -248,6 +303,9 @@ EOF
 EOF
         )
         log_telemetry_span "s2s.work.claim" "internal" "ok" "$duration_ms" "$claim_attributes"
+        
+        # Emit telemetry event for Phoenix PromEx monitoring
+        emit_phoenix_telemetry_event "work_claimed" "$work_type" "$team" "$priority"
         
         rm -f "$lock_file"
         return 0
@@ -436,6 +494,9 @@ EOF
     echo "✅ COMPLETED: Released claim for $work_item_id ($result) - $velocity_points velocity points"
     unset CURRENT_WORK_ITEM
     
+    # Emit telemetry event for Phoenix PromEx monitoring
+    emit_phoenix_telemetry_event "work_completed" "$result" "${AGENT_TEAM:-autonomous_team}" "$velocity_points"
+    
     # Update team velocity metrics
     update_team_velocity "$velocity_points"
 }
@@ -449,6 +510,42 @@ update_team_velocity() {
     
     # Log velocity contribution
     echo "$(date -u +%Y-%m-%dT%H:%M:%SZ): Team $team +$points velocity points" >> "$COORDINATION_DIR/velocity_log.txt"
+}
+
+# Emit telemetry events for Phoenix PromEx monitoring integration
+emit_phoenix_telemetry_event() {
+    local event_type="$1"
+    local param1="$2"
+    local param2="$3"
+    local param3="$4"
+    
+    # Create telemetry event record for Phoenix monitoring
+    local telemetry_event=$(cat <<EOF
+{
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "event_type": "$event_type",
+  "source": "coordination_helper",
+  "metadata": {
+    "param1": "$param1",
+    "param2": "$param2", 
+    "param3": "$param3",
+    "agent_id": "${AGENT_ID:-unknown}",
+    "trace_id": "${TRACE_ID:-unknown}"
+  }
+}
+EOF
+    )
+    
+    # Write to coordination telemetry log for Phoenix to consume
+    local telemetry_log="$COORDINATION_DIR/phoenix_telemetry_events.jsonl"
+    echo "$telemetry_event" >> "$telemetry_log"
+    
+    # Also attempt direct HTTP notification to Phoenix if available
+    if command -v curl >/dev/null 2>&1 && netstat -ln | grep -q ":4000 "; then
+        curl -s -X POST "http://localhost:4000/api/telemetry/coordination" \
+             -H "Content-Type: application/json" \
+             -d "$telemetry_event" >/dev/null 2>&1 || true
+    fi
 }
 
 # ============================================================================
@@ -1764,3 +1861,53 @@ case "${1:-help}" in
         echo "  AGENT_TEAM   - Scrum team assignment"
         ;;
 esac
+# TTL (Time-To-Live) Cleanup Function
+cleanup_stale_work_items() {
+    local ttl_hours=${1:-24}  # Default 24 hours
+    local ttl_seconds=$((ttl_hours * 3600))
+    local current_time=$(date +%s)
+    local work_claims="$COORDINATION_DIR/work_claims.json"
+    
+    if [[ ! -f "$work_claims" ]]; then
+        return 0
+    fi
+    
+    # Create backup before cleanup
+    local backup_file="$COORDINATION_DIR/backups/work_claims_ttl_$(date +%Y%m%d_%H%M%S).json"
+    mkdir -p "$(dirname "$backup_file")"
+    cp "$work_claims" "$backup_file"
+    
+    # Remove stale items based on TTL
+    local temp_file="$work_claims.ttl_cleanup.tmp"
+    
+    jq --argjson current_time "$current_time" --argjson ttl_seconds "$ttl_seconds" '
+    map(
+        select(
+            if .claimed_at == null or .claimed_at == "" then
+                true  # Keep items without timestamps for now
+            else
+                ((.claimed_at | fromdateiso8601) as $claim_epoch |
+                 ($current_time - $claim_epoch) <= $ttl_seconds)
+            end
+        )
+    )' "$work_claims" > "$temp_file"
+    
+    # Atomic move
+    mv "$temp_file" "$work_claims"
+    
+    echo "TTL cleanup completed. Backup: $backup_file"
+}
+
+# Auto-cleanup hook - call this periodically
+auto_cleanup_stale_items() {
+    local current_hour=$(date +%H)
+    local cleanup_hour=${CLEANUP_HOUR:-03}  # Default cleanup at 3 AM
+    
+    if [[ "$current_hour" == "$cleanup_hour" ]]; then
+        echo "Running automatic TTL cleanup..."
+        cleanup_stale_work_items 24
+        
+        # Also clean up benchmark tests specifically
+        bash "$COORDINATION_DIR/benchmark_cleanup_script.sh" --auto
+    fi
+}

@@ -1,0 +1,181 @@
+{
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "started_at": "2025-06-16T07:12:13Z",
+  "work_completed": [
+    {
+      "work_id": 1,
+      "duration_ms": 2466,
+      "completed_at": "2025-06-16T07:12:13Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_1_1750057930.result"
+    },
+    {
+      "work_id": 2,
+      "duration_ms": 2427,
+      "completed_at": "2025-06-16T07:12:45Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_2_1750057963.result"
+    },
+    {
+      "work_id": 3,
+      "duration_ms": 25,
+      "completed_at": "2025-06-16T07:13:15Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_3_1750057995.result"
+    },
+    {
+      "work_id": 4,
+      "duration_ms": 27,
+      "completed_at": "2025-06-16T07:13:45Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_4_1750058025.result"
+    },
+    {
+      "work_id": 5,
+      "duration_ms": 2362,
+      "completed_at": "2025-06-16T07:14:18Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_5_1750058055.result"
+    },
+    {
+      "work_id": 6,
+      "duration_ms": 2234,
+      "completed_at": "2025-06-16T07:14:50Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_6_1750058088.result"
+    },
+    {
+      "work_id": 7,
+      "duration_ms": 2223,
+      "completed_at": "2025-06-16T07:15:22Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_7_1750058120.result"
+    },
+    {
+      "work_id": 8,
+      "duration_ms": 51,
+      "completed_at": "2025-06-16T07:15:52Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_8_1750058152.result"
+    },
+    {
+      "work_id": 9,
+      "duration_ms": 63,
+      "completed_at": "2025-06-16T07:16:22Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_9_1750058182.result"
+    },
+    {
+      "work_id": 10,
+      "duration_ms": 132,
+      "completed_at": "2025-06-16T07:16:52Z",
+      "work_results": "system_analysis:agent_coordination/real_work_results/work_10_1750058212.result"
+    },
+    {
+      "work_id": 11,
+      "duration_ms": 2420,
+      "completed_at": "2025-06-16T07:17:25Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_11_1750058242.result"
+    },
+    {
+      "work_id": 12,
+      "duration_ms": 25,
+      "completed_at": "2025-06-16T07:17:55Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_12_1750058275.result"
+    },
+    {
+      "work_id": 13,
+      "duration_ms": 49,
+      "completed_at": "2025-06-16T07:18:25Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_13_1750058305.result"
+    },
+    {
+      "work_id": 14,
+      "duration_ms": 23,
+      "completed_at": "2025-06-16T07:18:55Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_14_1750058335.result"
+    },
+    {
+      "work_id": 15,
+      "duration_ms": 24,
+      "completed_at": "2025-06-16T07:19:25Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_15_1750058365.result"
+    },
+    {
+      "work_id": 16,
+      "duration_ms": 135,
+      "completed_at": "2025-06-16T07:19:55Z",
+      "work_results": "system_analysis:agent_coordination/real_work_results/work_16_1750058395.result"
+    },
+    {
+      "work_id": 17,
+      "duration_ms": 2324,
+      "completed_at": "2025-06-16T07:20:28Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_17_1750058425.result"
+    },
+    {
+      "work_id": 18,
+      "duration_ms": 131,
+      "completed_at": "2025-06-16T07:20:58Z",
+      "work_results": "system_analysis:agent_coordination/real_work_results/work_18_1750058458.result"
+    },
+    {
+      "work_id": 19,
+      "duration_ms": 51,
+      "completed_at": "2025-06-16T07:21:28Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_19_1750058488.result"
+    },
+    {
+      "work_id": 20,
+      "duration_ms": 62,
+      "completed_at": "2025-06-16T07:21:58Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_20_1750058518.result"
+    },
+    {
+      "work_id": 21,
+      "duration_ms": 24,
+      "completed_at": "2025-06-16T07:22:28Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_21_1750058548.result"
+    },
+    {
+      "work_id": 22,
+      "duration_ms": 25,
+      "completed_at": "2025-06-16T07:22:58Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_22_1750058578.result"
+    },
+    {
+      "work_id": 23,
+      "duration_ms": 55,
+      "completed_at": "2025-06-16T07:23:28Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_23_1750058608.result"
+    },
+    {
+      "work_id": 24,
+      "duration_ms": 2323,
+      "completed_at": "2025-06-16T07:24:01Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_24_1750058638.result"
+    },
+    {
+      "work_id": 25,
+      "duration_ms": 50,
+      "completed_at": "2025-06-16T07:24:31Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_25_1750058671.result"
+    },
+    {
+      "work_id": 26,
+      "duration_ms": 30,
+      "completed_at": "2025-06-16T07:25:01Z",
+      "work_results": "calculation_work:agent_coordination/real_work_results/work_26_1750058701.result"
+    },
+    {
+      "work_id": 27,
+      "duration_ms": 135,
+      "completed_at": "2025-06-16T07:25:31Z",
+      "work_results": "system_analysis:agent_coordination/real_work_results/work_27_1750058731.result"
+    },
+    {
+      "work_id": 28,
+      "duration_ms": 57,
+      "completed_at": "2025-06-16T07:26:01Z",
+      "work_results": "file_processing:agent_coordination/real_work_results/work_28_1750058761.result"
+    },
+    {
+      "work_id": 29,
+      "duration_ms": 2517,
+      "completed_at": "2025-06-16T07:26:34Z",
+      "work_results": "performance_test:agent_coordination/real_work_results/work_29_1750058791.result"
+    }
+  ]
+}

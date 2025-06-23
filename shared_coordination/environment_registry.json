@@ -2,8 +2,8 @@
   "port_allocations": {
     "main": 4000,
     "base_port": 4000,
-    "next_available": 4003,
-    "xavos-system": 4002
+    "next_available": 4005,
+    "xavos-system": 4004
   },
   "database_allocations": {
     "main": "self_sustaining_dev",
@@ -14,10 +14,10 @@
   "worktree_environments": {
     "xavos-system": {
       "worktree_path": "../worktrees/xavos-system",
-      "port": 4002,
+      "port": 4004,
       "database_dev": "self_sustaining_xavos_system_dev",
       "database_test": "self_sustaining_xavos_system_test",
-      "created_at": "2025-06-15T20:02:47.0590Z",
+      "created_at": "2025-06-16T06:54:46.9275Z",
       "status": "active"
     }
   }

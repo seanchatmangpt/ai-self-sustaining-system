@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-06-16T07:05:00Z",
+  "continuous_reality_monitoring": {
+    "verification_schedule": {
+      "frequency": "every_hour",
+      "method": "30_second_real_observation",
+      "no_extrapolation": true
+    },
+    "reality_checks": {
+      "process_count": "pgrep -f coordination | wc -l",
+      "actual_completions": "compare work_claims.json over time",
+      "memory_usage": "ps aux | grep coordination | awk sum",
+      "response_time": "time coordination_helper.sh status"
+    },
+    "honesty_thresholds": {
+      "claim_vs_reality_variance": "25%",
+      "process_vs_json_ratio": "minimum 10%",
+      "performance_measurement_period": "minimum 30 seconds"
+    },
+    "alert_triggers": {
+      "false_claim_detection": "variance > 400%",
+      "zero_process_alert": "running_processes = 0",
+      "stagnant_work_alert": "no_completions_in_measurement_period"
+    }
+  }
+}

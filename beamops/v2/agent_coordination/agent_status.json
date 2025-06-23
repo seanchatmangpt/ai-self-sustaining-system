@@ -1,0 +1,114 @@
+[
+  {
+    "agent_id": "agent_1734567890123456000",
+    "team": "coordination_team",
+    "specialization": "scrum_master",
+    "capacity": 80,
+    "status": "active"
+  },
+  {
+    "agent_id": "agent_1734567890123457000",
+    "team": "development_team",
+    "specialization": "backend_developer",
+    "capacity": 100,
+    "status": "active"
+  },
+  {
+    "agent_id": "agent_1750055927452197000",
+    "team": "autonomous_ai_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-16T06:38:47Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750056036312631000",
+    "team": "observability_team",
+    "status": "active",
+    "capacity": 10,
+    "current_workload": 0,
+    "specialization": "OpenTelemetry,Prometheus,Grafana,AI_Intelligence",
+    "last_heartbeat": "2025-06-16T06:40:52Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750056186168494000",
+    "team": "autonomous_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-16T06:43:06Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750056206294197000",
+    "team": "e2e_trace_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-16T06:43:26Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750056221402372000",
+    "team": "observability_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-16T06:43:41Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750056229745490000",
+    "team": "verification_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-16T06:43:49Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  },
+  {
+    "agent_id": "agent_1750056271356074000",
+    "team": "validation_team",
+    "status": "active",
+    "capacity": 100,
+    "current_workload": 0,
+    "specialization": "general_development",
+    "last_heartbeat": "2025-06-16T06:44:31Z",
+    "performance_metrics": {
+      "tasks_completed": 0,
+      "average_completion_time": "0m",
+      "success_rate": 100.0
+    }
+  }
+]

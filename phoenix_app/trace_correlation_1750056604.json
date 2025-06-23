@@ -1,0 +1,11 @@
+{
+  "step": 3,
+  "name": "elixir_trace_context",
+  "status": "FAILED",
+  "master_trace_id": "f82e0e7df672a7b0eef005b2d52b792c",
+  "found_trace_id": "none",
+  "trace_correlation": false,
+  "component": "elixir",
+  "details": "Elixir execution failed or timeout",
+  "timestamp": "2025-06-16T06:50:05.3NZ"
+}

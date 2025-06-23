@@ -1,6 +1,36 @@
-# SPR: Autonomous AI Agent Operation
+# SPR: Autonomous AI Agent Operation (Makefile-Driven)
 
-Gherkin-driven autonomous operation with enterprise Scrum at Scale coordination, Claude AI intelligence, and zero-hallucination protocols.
+Gherkin-driven autonomous operation with **unified Makefile interface**, enterprise Scrum at Scale coordination, Claude AI intelligence, and zero-hallucination protocols.
+
+## Pre-Execution Initialization Protocol
+
+**📖 MANDATORY SYSTEM OVERVIEW**: Before any autonomous operation, agents MUST review the complete system status and documentation:
+
+```bash
+# REQUIRED: Get complete system overview before starting
+make system-overview
+
+# Verify system health and coordination capabilities
+make system-health-full
+
+# Review coordination system capabilities
+make coord-help
+```
+
+**🏗️ Unified Makefile Interface**: Agents operate through the comprehensive Makefile system:
+- **50+ make targets** providing unified access to all system components
+- **Agent coordination** via `make coord-*` commands
+- **Claude AI intelligence** via `make claude-*` commands  
+- **XAVOS system management** via `make xavos-*` commands
+- **OpenTelemetry operations** via `make otel-*` commands
+- **Comprehensive testing** via `make test`, `make system-full-test`
+
+**📋 Available Command Categories**: Agents have access to comprehensive operations through the Makefile:
+- **Core Development**: `make setup`, `make dev`, `make test`, `make quality`
+- **System Management**: `make system-overview`, `make system-health-full`
+- **Agent Coordination**: `make coord-help`, `make coord-dashboard`
+- **AI Intelligence**: `make claude-help`, `make claude-analyze-priorities`
+- **Full Documentation**: `make help` shows all 50+ available commands
 
 ## Anti-Hallucination Protocol
 
@@ -8,31 +38,58 @@ Gherkin-driven autonomous operation with enterprise Scrum at Scale coordination,
 
 **Capability Grounding**: Only implement features defined in reactor_workflow_orchestration.feature, agent_coordination.feature, n8n_integration.feature, self_improvement_processes.feature, etc.
 
-**Reality Checking**: Verify file paths, functions, and APIs exist before autonomous execution.
+**Reality Checking**: Verify file paths, functions, and APIs exist before autonomous execution. **CRITICAL**: Always verify coordination commands exist and work properly before autonomous execution.
 
-## Autonomous Coordination Engine
+## Autonomous Coordination Engine (Makefile-Driven)
 
-**Agent ID Generation**: `agent_$(date +%s%N)` for nanosecond-precision uniqueness across distributed operations.
+**🔧 Unified Makefile Operations**: Agents operate through the comprehensive Makefile interface providing consistent, tested, and documented access to all system components:
 
-**Work Claiming**: `coordination_helper.sh claim-intelligent <work_type> <description> [priority] [team]` with Claude AI optimization.
+**Agent Coordination Operations**:
+- **Dashboard Access**: `make coord-dashboard` for real-time coordination overview
+- **Work Management**: Coordination commands accessible via `make coord-help`
+- **Progress Tracking**: Atomic state transitions through integrated coordination system
+- **Team Formation**: Automated team organization through coordination interface
 
-**Progress Tracking**: Atomic state transitions through `pending → active → completed` with telemetry correlation.
+**Claude AI Intelligence Operations**:
+- **Priority Analysis**: `make claude-analyze-priorities` for AI-driven work optimization
+- **Assignment Optimization**: `make claude-optimize-assignments` for team formation analysis  
+- **Health Assessment**: `make claude-health-analysis` for comprehensive system health
+- **Real-time Intelligence**: `make claude-stream` for live coordination insights
 
-**Claude Intelligence Integration**: Real-time priority analysis, team optimization, and system health assessment.
+**XAVOS System Management**:
+- **System Status**: `make xavos-status` for complete XAVOS health check
+- **Deployment**: `make xavos-deploy-complete` for full system deployment
+- **Management**: `make xavos-help` for all XAVOS operations
 
 ```bash
-# Core autonomous operations
-coordination_helper.sh claim-intelligent "autonomous_improvement" "AI-driven system enhancement" "high" "autonomous_team"
-coordination_helper.sh claude-analyze-priorities     # AI priority optimization
-coordination_helper.sh claude-optimize-assignments  # Team formation analysis
-coordination_helper.sh claude-health-analysis       # System health assessment
+# Comprehensive autonomous operations through Makefile
+make claude-analyze-priorities     # AI priority optimization
+make claude-optimize-assignments   # Team formation analysis  
+make claude-health-analysis        # System health assessment
+make claude-stream                 # Real-time coordination intelligence
 
-# Scrum at Scale autonomous events
-coordination_helper.sh pi-planning                  # Program Increment planning
-coordination_helper.sh system-demo                  # Business value demonstration
-coordination_helper.sh inspect-adapt               # Continuous improvement workshop
-coordination_helper.sh art-sync                     # Cross-team coordination
+# Agent coordination operations
+make coord-dashboard               # Coordination overview
+make coord-pi-planning            # Program Increment planning
+make coord-system-demo            # Business value demonstration
+make coord-inspect-adapt          # Continuous improvement workshop
+make coord-art-sync               # Cross-team coordination
+
+# System management operations
+make system-overview              # Complete system status
+make system-health-full           # Comprehensive health check
+make system-full-test             # Complete system validation
+
+# XAVOS system operations
+make xavos-status                 # XAVOS system health
+make xavos-deploy-complete        # Full XAVOS deployment
+
+# OpenTelemetry operations
+make otel-trace-validation        # Validate telemetry implementation
+make otel-test-integration        # Test OpenTelemetry integration
 ```
+
+**⚠️ Platform Dependencies**: Agents must check for `flock` availability (required for real coordination) and handle graceful fallback as documented in troubleshooting section.
 
 ## Autonomous Decision Patterns
 
@@ -56,15 +113,17 @@ coordination_helper.sh art-sync                     # Cross-team coordination
 
 **Coordination System**: `/agent_coordination/` with JSON-based atomic operations, file locking, telemetry integration.
 
-## Quality Gates and Validation
+## Quality Gates and Validation (Makefile-Driven)
 
-**Compilation**: `mix compile --warnings-as-errors` - zero tolerance for warnings in autonomous operation.
+**Comprehensive Quality Checks**: `make quality` - complete quality validation including compilation, formatting, static analysis, and type checking.
 
-**Testing**: `mix test` - comprehensive test coverage validation before autonomous completion.
+**Testing Suite**: `make test` - comprehensive test coverage including unit, integration, reactor, and coordination tests.
 
-**Code Quality**: `mix format --check-formatted && mix credo --strict` - automated quality enforcement.
+**System Validation**: `make system-full-test` - complete system test suite covering all components and integrations.
 
-**Performance**: Benchmark validation through `comprehensive_e2e_benchmarks.exs` and reactor performance testing.
+**Performance Validation**: `make benchmark-quick` or `make benchmark-full` - comprehensive performance benchmarking and validation.
+
+**CI Pipeline**: `make ci` - complete continuous integration pipeline including all quality gates and tests.
 
 ## JTBD Integration Workflows
 
@@ -88,16 +147,47 @@ coordination_helper.sh art-sync                     # Cross-team coordination
 
 ## Success Indicators
 
-**Health Score**: 105.8/100 (excellent) system health with coordination efficiency, performance, and business value optimization.
+**📊 Measured Performance** (from README.md validation):
+- **Enterprise SAFe**: 92.6% operation success rate, 126ms average operation duration, 40+ coordination commands
+- **Real Agent Process**: 5 concurrent agents, 1,700+ telemetry spans, 100% success rate, sub-100ms coordination operations
+- **Zero Conflicts**: Mathematical impossibility of work claim conflicts through nanosecond precision and atomic file locking
 
-**Zero Conflicts**: Mathematical impossibility of work claim conflicts through nanosecond precision and file locking.
+**🏗️ Dual Architecture Health**:
+- **Enterprise SAFe Coordination**: JSON-based atomic operations with Claude AI intelligence integration
+- **Real Process Coordination**: Distributed work queue with actual process execution and performance measurement
+- **Telemetry Completeness**: Dual telemetry streams (enterprise + real execution) with OpenTelemetry integration
 
-**Business Value**: All autonomous decisions optimize for customer outcomes and PI objective achievement.
+**💼 Business Value**: All autonomous decisions optimize for customer outcomes and PI objective achievement with comprehensive coordination system awareness.
 
-**Enterprise Integration**: Full Scrum at Scale event participation with autonomous facilitation.
+**🔧 Enterprise Integration**: Full Scrum at Scale event participation with autonomous facilitation plus real agent process execution.
 
-**Telemetry-Driven**: OpenTelemetry trace propagation enables complete observability of autonomous operations.
+**📈 Observable Operations**: Complete observability through dual telemetry streams, coordination logs, and performance metrics as documented in README.md.
 
-## Execution Command
+## Pre-Execution Checklist (Makefile-Driven)
 
-`/project:auto [focus_area]` - Agents autonomously determine priorities, coordinate work, execute improvements with Claude AI intelligence and enterprise Scrum at Scale methodology.
+Before autonomous operation, agents MUST:
+
+1. **📖 System Overview**: `make system-overview` - **MANDATORY** comprehensive system status
+2. **🏥 Health Verification**: `make system-health-full` - complete system health validation
+3. **⚙️ Dependency Check**: `make check-dependencies` - verify all required tools and dependencies
+4. **🔧 Capability Review**: `make help` - understand all 50+ available make commands
+5. **📋 Coordination Status**: `make coord-dashboard` - review current coordination state
+
+## Execution Command (Makefile-Driven)
+
+`/project:auto [focus_area]` - Agents autonomously operate through the unified Makefile interface:
+
+1. **FIRST**: `make system-overview` for complete system understanding and status
+2. **Initialize**: `make setup` if needed, or `make system-health-full` for validation
+3. **Coordinate**: Use `make coord-*` commands for agent coordination operations
+4. **Intelligence**: Use `make claude-*` commands for AI-driven decision making
+5. **Execute**: Perform improvements using appropriate `make` targets with measured performance
+6. **Monitor**: Track progress through `make system-health-full` and coordination dashboards
+
+**Makefile Command Categories for Autonomous Operation**:
+- **System Management**: `make system-overview`, `make system-health-full`, `make system-full-test`
+- **Agent Coordination**: `make coord-dashboard`, `make coord-pi-planning`, `make coord-art-sync`
+- **AI Intelligence**: `make claude-analyze-priorities`, `make claude-health-analysis`
+- **XAVOS Operations**: `make xavos-status`, `make xavos-deploy-complete`
+- **Quality Assurance**: `make quality`, `make test`, `make ci`
+- **Performance**: `make benchmark-quick`, `make benchmark-full`

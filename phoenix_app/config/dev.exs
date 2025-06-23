@@ -13,7 +13,7 @@ config :self_sustaining, SelfSustaining.Repo,
 # For development, we disable any cache and enable
 # debugging and code reloading.
 config :self_sustaining, SelfSustainingWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4001],
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -37,7 +37,7 @@ config :self_sustaining, SelfSustainingWeb.Endpoint,
 config :self_sustaining, :dev_routes, true
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, 
+config :logger, :console,
   format: "[$level] $message\n",
   metadata: [:trace_id, :span_id, :request_id]
 

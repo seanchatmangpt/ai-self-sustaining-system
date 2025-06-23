@@ -28,7 +28,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT:-5435}:5432"
     secrets:
       - postgrespassword
     networks:
@@ -51,7 +51,7 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - "${REDIS_PORT:-6380}:6379"
     command: redis-server --appendonly yes
     networks:
       - beamops_network
@@ -82,8 +82,8 @@ services:
       MAX_AGENT_COUNT: "${MAX_AGENT_COUNT:-10}"
       COORDINATION_POLL_INTERVAL: "${COORDINATION_POLL_INTERVAL:-10000}"
     ports:
-      - "4000:4000"    # Phoenix application
-      - "9568:9568"    # PromEx metrics
+      - "4001:4000"    # Phoenix application
+      - "9569:9568"    # PromEx metrics
     volumes:
       # Mount source code for development
       - .:/app
@@ -93,8 +93,6 @@ services:
       - ./agent_coordination:/app/coordination
     command: >
       bash -c "mix deps.get && 
-               mix ecto.create && 
-               mix ecto.migrate && 
                mix phx.server"
     depends_on:
       db:
@@ -115,7 +113,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "9090:9090"
+      - "9091:9090"
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
@@ -138,7 +136,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafanapassword
       GF_INSTALL_PLUGINS: "grafana-piechart-panel"

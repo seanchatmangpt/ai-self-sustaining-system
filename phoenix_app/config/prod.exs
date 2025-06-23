@@ -14,18 +14,20 @@ config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: SelfSustaining.F
 config :swoosh, local: false
 
 # Do not print debug messages in production
-config :logger, 
+config :logger,
   level: :info,
   metadata: [:trace_id, :span_id, :request_id]
 
 # Configure OpenTelemetry for production
 config :opentelemetry,
-  traces_exporter: {:otlp, %{
-    endpoint: {:system, "OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318/v1/traces"},
-    headers: [
-      {"authorization", {:system, "OTEL_EXPORTER_OTLP_HEADERS", ""}}
-    ]
-  }},
+  traces_exporter:
+    {:otlp,
+     %{
+       endpoint: {:system, "OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318/v1/traces"},
+       headers: [
+         {"authorization", {:system, "OTEL_EXPORTER_OTLP_HEADERS", ""}}
+       ]
+     }},
   resource: [
     service: [
       name: "self_sustaining_system",

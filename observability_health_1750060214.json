@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-06-16T07:50:14Z",
+  "services": {
+  "Grafana": {"status": "healthy", "url": "http://localhost:3001/api/health", "response_code": 200},
+  "Prometheus": {"status": "healthy", "url": "http://localhost:9091/-/healthy", "response_code": 200},
+  "Jaeger": {"status": "healthy", "url": "http://localhost:16686/", "response_code": 200},
+  "BeamOps App": {"status": "unhealthy", "url": "http://localhost:4001/", "response_code": 000000},
+  "PromEx Metrics": {"status": "no_metrics", "url": "http://localhost:9569/metrics"}
+  },
+  "summary": {
+    "total_services": 5,
+    "failed_services": 2,
+    "success_rate": "60.0%"
+  }
+}

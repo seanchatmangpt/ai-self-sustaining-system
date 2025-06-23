@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# BeamOps V2 Coordination Daemon
+# Monitors and manages agent coordination state
+
+set -euo pipefail
+
+readonly COORDINATION_DIR="${COORDINATION_DIR:-/coordination}"
+readonly TELEMETRY_FILE="${TELEMETRY_FILE:-${COORDINATION_DIR}/telemetry_spans.jsonl}"
+readonly DAEMON_LOG="${COORDINATION_DIR}/coordination-daemon.log"
+readonly PID_FILE="${COORDINATION_DIR}/coordination-daemon.pid"
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [COORDINATION-DAEMON] $*" | tee -a "${DAEMON_LOG}"
+}
+
+# Create necessary files
+initialize_coordination() {
+    log "Initializing coordination daemon..."
+    
+    # Create coordination files if they don't exist
+    touch "${COORDINATION_DIR}/work_claims.json"
+    touch "${COORDINATION_DIR}/agent_status.json" 
+    touch "${COORDINATION_DIR}/coordination_log.json"
+    touch "${TELEMETRY_FILE}"
+    
+    # Initialize with empty arrays if files are empty
+    if [[ ! -s "${COORDINATION_DIR}/work_claims.json" ]]; then
+        echo "[]" > "${COORDINATION_DIR}/work_claims.json"
+    fi
+    
+    if [[ ! -s "${COORDINATION_DIR}/agent_status.json" ]]; then
+        echo "[]" > "${COORDINATION_DIR}/agent_status.json"
+    fi
+    
+    if [[ ! -s "${COORDINATION_DIR}/coordination_log.json" ]]; then
+        echo "[]" > "${COORDINATION_DIR}/coordination_log.json"
+    fi
+    
+    log "Coordination daemon initialized successfully"
+}
+
+# Monitor coordination health
+monitor_coordination() {
+    log "Starting coordination monitoring loop..."
+    
+    while true; do
+        # Generate telemetry span for daemon heartbeat
+        local timestamp=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
+        local trace_id=$(openssl rand -hex 16)
+        local span_id=$(openssl rand -hex 8)
+        
+        cat >> "${TELEMETRY_FILE}" << EOF
+{
+  "trace_id": "${trace_id}",
+  "span_id": "${span_id}",
+  "parent_span_id": "",
+  "operation_name": "coordination.daemon.heartbeat",
+  "span_kind": "internal",
+  "status": "ok",
+  "start_time": "${timestamp}",
+  "duration_ms": 1,
+  "service": {
+    "name": "beamops_coordination",
+    "version": "2.0.0"
+  },
+  "resource_attributes": {
+    "service.name": "beamops_coordination",
+    "service.version": "2.0.0",
+    "coordination.component": "daemon",
+    "deployment.environment": "development"
+  },
+  "span_attributes": {
+    "coordination.operation": "heartbeat",
+    "coordination.status": "active",
+    "coordination.pid": "$$"
+  }
+}
+EOF
+        
+        # Sleep for 30 seconds before next heartbeat
+        sleep 30
+    done
+}
+
+# Cleanup on exit
+cleanup() {
+    log "Coordination daemon shutting down..."
+    rm -f "${PID_FILE}"
+    exit 0
+}
+
+# Signal handlers
+trap cleanup SIGTERM SIGINT
+
+# Main execution
+main() {
+    # Store PID
+    echo $$ > "${PID_FILE}"
+    
+    log "Starting BeamOps V2 Coordination Daemon (PID: $$)"
+    
+    # Initialize coordination
+    initialize_coordination
+    
+    # Start monitoring
+    monitor_coordination
+}
+
+# Execute if run directly
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

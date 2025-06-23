@@ -1,0 +1,144 @@
+{
+  "iteration": 1,
+  "session_id": "8020_1750056369", 
+  "master_trace_id": "72e0b964059e14ecf7ae387387cf7ead",
+  "timestamp": "2025-06-15T23:46:09-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     6940,
+  "work_items_count": 10
+}
+{
+  "iteration": 2,
+  "session_id": "8020_1750056369", 
+  "master_trace_id": "72e0b964059e14ecf7ae387387cf7ead",
+  "timestamp": "2025-06-15T23:46:12-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     6969,
+  "work_items_count": 11
+}
+{
+  "iteration": 3,
+  "session_id": "8020_1750056369", 
+  "master_trace_id": "72e0b964059e14ecf7ae387387cf7ead",
+  "timestamp": "2025-06-15T23:46:15-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7049,
+  "work_items_count": 12
+}
+{
+  "iteration": 4,
+  "session_id": "8020_1750056369", 
+  "master_trace_id": "72e0b964059e14ecf7ae387387cf7ead",
+  "timestamp": "2025-06-15T23:46:19-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7078,
+  "work_items_count": 13
+}
+{
+  "iteration": 5,
+  "session_id": "8020_1750056369", 
+  "master_trace_id": "72e0b964059e14ecf7ae387387cf7ead",
+  "timestamp": "2025-06-15T23:46:22-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7158,
+  "work_items_count": 14
+}
+{
+  "iteration": 1,
+  "session_id": "8020_1750056453", 
+  "master_trace_id": "69c63e830b850133e1be91fce5f44359",
+  "timestamp": "2025-06-15T23:47:33-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7374,
+  "work_items_count": 17
+}
+{
+  "iteration": 2,
+  "session_id": "8020_1750056453", 
+  "master_trace_id": "69c63e830b850133e1be91fce5f44359",
+  "timestamp": "2025-06-15T23:47:37-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7403,
+  "work_items_count": 18
+}
+{
+  "iteration": 3,
+  "session_id": "8020_1750056453", 
+  "master_trace_id": "69c63e830b850133e1be91fce5f44359",
+  "timestamp": "2025-06-15T23:47:40-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7432,
+  "work_items_count": 19
+}
+{
+  "iteration": 4,
+  "session_id": "8020_1750056453", 
+  "master_trace_id": "69c63e830b850133e1be91fce5f44359",
+  "timestamp": "2025-06-15T23:47:43-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7461,
+  "work_items_count": 20
+}
+{
+  "iteration": 5,
+  "session_id": "8020_1750056453", 
+  "master_trace_id": "69c63e830b850133e1be91fce5f44359",
+  "timestamp": "2025-06-15T23:47:46-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     7490,
+  "work_items_count": 21
+}
+{
+  "iteration": 1,
+  "session_id": "8020_1750056535", 
+  "master_trace_id": "7be2be5bca900ee759745952be2b29d2",
+  "timestamp": "2025-06-15T23:48:55-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     8290,
+  "work_items_count": 29
+}
+{
+  "iteration": 2,
+  "session_id": "8020_1750056535", 
+  "master_trace_id": "7be2be5bca900ee759745952be2b29d2",
+  "timestamp": "2025-06-15T23:48:58-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     8348,
+  "work_items_count": 31
+}
+{
+  "iteration": 3,
+  "session_id": "8020_1750056535", 
+  "master_trace_id": "7be2be5bca900ee759745952be2b29d2",
+  "timestamp": "2025-06-15T23:49:02-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     8377,
+  "work_items_count": 32
+}
+{
+  "iteration": 4,
+  "session_id": "8020_1750056535", 
+  "master_trace_id": "7be2be5bca900ee759745952be2b29d2",
+  "timestamp": "2025-06-15T23:49:05-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     8406,
+  "work_items_count": 33
+}
+{
+  "iteration": 5,
+  "session_id": "8020_1750056535", 
+  "master_trace_id": "7be2be5bca900ee759745952be2b29d2",
+  "timestamp": "2025-06-15T23:49:08-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":     8435,
+  "work_items_count": 34
+}
+{
+  "iteration": 1,
+  "session_id": "8020_1750061110", 
+  "master_trace_id": "e4cb5000908cbbe1652362b269927e58",
+  "timestamp": "2025-06-16T01:05:13-07:00",
+  "operation": "8020_iteration",
+  "telemetry_spans_count":    19178,
+  "work_items_count": 232
+}

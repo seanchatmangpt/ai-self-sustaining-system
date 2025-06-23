@@ -1,0 +1,137 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "AI Agent Coordination - Real-Time Performance",
+    "tags": ["ai-agents", "coordination", "real-time", "performance"],
+    "timezone": "browser",
+    "refresh": "5s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Active Agents",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "self_sustaining_coordination_active_agents",
+            "legendFormat": "Active Agents"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 5},
+                {"color": "green", "value": 10}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Agent Utilization",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "self_sustaining_coordination_agent_utilization_percent",
+            "legendFormat": "Utilization %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 40},
+                {"color": "green", "value": 70}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Work Queue Depth",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "self_sustaining_coordination_active_work",
+            "legendFormat": "Active Work"
+          },
+          {
+            "expr": "self_sustaining_coordination_pending_work", 
+            "legendFormat": "Pending Work"
+          }
+        ],
+        "yAxes": [
+          {"label": "Work Items", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Coordination Efficiency",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "self_sustaining_coordination_efficiency_ratio",
+            "legendFormat": "Efficiency Ratio"
+          }
+        ],
+        "yAxes": [
+          {"label": "Efficiency", "min": 0, "max": 1}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Velocity Trends",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(self_sustaining_coordination_velocity_points[5m])",
+            "legendFormat": "Velocity Points/min"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "System Health",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "self_sustaining_system_load",
+            "legendFormat": "System Load"
+          },
+          {
+            "expr": "self_sustaining_memory_usage_percent",
+            "legendFormat": "Memory Usage %"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 16}
+      }
+    ],
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    }
+  },
+  "overwrite": true
+}

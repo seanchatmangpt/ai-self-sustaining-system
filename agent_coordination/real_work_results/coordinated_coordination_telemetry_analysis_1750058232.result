@@ -1,0 +1,9 @@
+{
+  "work_type": "file_processing",
+  "coordinated": true,
+  "files_created":       10,
+  "total_lines":       10,
+  "total_bytes": ,
+  "operations": ["mkdir", "write", "read", "count", "cleanup"],
+  "success": true
+}

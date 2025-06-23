@@ -169,19 +169,32 @@ defmodule ProvenGovernmentE2E do
   end
   
   defp setup_proven_opentelemetry() do
-    # Start required applications
+    # Start required applications first
     {:ok, _} = Application.ensure_all_started(:inets)
     {:ok, _} = Application.ensure_all_started(:ssl)
+    {:ok, _} = Application.ensure_all_started(:crypto)
     
-    # Configure OTLP exporter to Jaeger's OTLP endpoint
+    # Start OpenTelemetry applications in correct order
+    {:ok, _} = Application.ensure_all_started(:opentelemetry_api)
+    {:ok, _} = Application.ensure_all_started(:opentelemetry)
+    
+    # Configure OTLP exporter environment variables
+    System.put_env("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
+    System.put_env("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "http://localhost:4318/v1/traces")
+    System.put_env("OTEL_SERVICE_NAME", "proven-government-operations")
+    System.put_env("OTEL_SERVICE_VERSION", "1.0.0")
+    
+    # Configure OTLP exporter
     Application.put_env(:opentelemetry_exporter, :otlp_endpoint, "http://localhost:4318")
     Application.put_env(:opentelemetry_exporter, :otlp_traces_endpoint, "http://localhost:4318/v1/traces")
     Application.put_env(:opentelemetry_exporter, :otlp_headers, [])
+    Application.put_env(:opentelemetry_exporter, :otlp_protocol, :http_protobuf)
     
-    # Start OpenTelemetry
-    {:ok, _} = Application.ensure_all_started(:opentelemetry_api)
-    {:ok, _} = Application.ensure_all_started(:opentelemetry)
+    # Start exporter
     {:ok, _} = Application.ensure_all_started(:opentelemetry_exporter)
+    
+    # Give time for exporter to initialize
+    Process.sleep(1000)
     
     Logger.info("📡 OpenTelemetry configured for direct Jaeger export")
   end
@@ -296,7 +309,7 @@ defmodule ProvenGovernmentE2E do
   end
   
   defp create_proven_child_spans(parent_span_ctx, trace_id, operation) do
-    ["plan", "apply", "audit"].each(fn phase ->
+    Enum.each(["plan", "apply", "audit"], fn phase ->
       :otel_tracer.with_span "government.#{phase}.phase", %{}, fn span_ctx ->
         :otel_span.set_attributes(span_ctx, [
           {"government.phase", phase},
@@ -310,7 +323,7 @@ defmodule ProvenGovernmentE2E do
   end
   
   defp create_proven_compliance_spans(parent_span_ctx, trace_id) do
-    ["fisma", "fedramp", "soc2", "stig"].each(fn framework ->
+    Enum.each(["fisma", "fedramp", "soc2", "stig"], fn framework ->
       :otel_tracer.with_span "government.compliance.#{framework}", %{}, fn span_ctx ->
         :otel_span.set_attributes(span_ctx, [
           {"compliance.framework", framework},

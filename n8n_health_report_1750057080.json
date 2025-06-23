@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-06-16T07:18:00Z",
+  "service_health": {
+    "api_status": "healthy",
+    "response_time_ms": 7.089,
+    "http_status": 200,
+    "service_accessible": true
+  },
+  "workflow_execution": {
+    "total_executions": 0,
+    "active_workflows": 0,
+    "execution_data_available": false,
+    "status": "no_activity"
+  },
+  "resource_usage": {
+    "container_found": false,
+    "process_found": false,
+    "status": "not_running_as_container"
+  },
+  "configuration": {
+    "workflow_files_found": 10,
+    "valid_workflows": [
+      "./n8n/demo-data/workflows/srOnR8PAY3u4RSwb.json",
+      "./worktrees/phoenix-ai-nexus/n8n_workflows/master_controller.json"
+    ],
+    "node_types_detected": [
+      "@n8n/n8n-nodes-langchain.chatTrigger",
+      "n8n-nodes-base.scheduleTrigger"
+    ]
+  },
+  "integration_endpoints": {
+    "webhook_accessible": true,
+    "webhook_response_time_ms": 15.201,
+    "api_accessible": true,
+    "workflows_count": 0
+  },
+  "telemetry_integration": {
+    "n8n_spans_found": false,
+    "n8n_work_items": 0,
+    "integration_status": "not_integrated"
+  },
+  "health_score": 40,
+  "health_assessment": "LIMITED_FUNCTIONALITY",
+  "issues_identified": [
+    "No active workflows running",
+    "No execution history available",
+    "n8n not running as container process",
+    "No telemetry integration detected",
+    "No coordination work items for workflows"
+  ],
+  "recommendations": [
+    "Start n8n service with: docker-compose up -d n8n",
+    "Import workflow configurations from found files",
+    "Configure webhook endpoints for Phoenix integration",
+    "Enable OpenTelemetry instrumentation for n8n",
+    "Create coordination work items for workflow management"
+  ],
+  "performance_baseline": {
+    "api_response_sla_ms": 100,
+    "api_response_actual_ms": 7.089,
+    "sla_compliance": true,
+    "webhook_response_sla_ms": 500,
+    "webhook_response_actual_ms": 15.201,
+    "webhook_sla_compliance": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "work_type": "calculation_work",
+  "sum_of_squares": 333833500,
+  "fibonacci_20": 6765,
+  "primes_up_to_100": 25,
+  "calculation_time_ns": 10353000,
+  "operations": ["sum_of_squares", "fibonacci", "prime_counting"],
+  "success": true
+}

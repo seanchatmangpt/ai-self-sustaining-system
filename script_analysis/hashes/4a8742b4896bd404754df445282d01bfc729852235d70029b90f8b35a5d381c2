@@ -1,0 +1,1 @@
+/Users/sac/dev/ai-self-sustaining-system/agent_coordination/coordination_helper.sh

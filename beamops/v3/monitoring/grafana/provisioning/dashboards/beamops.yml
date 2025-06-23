@@ -1,0 +1,15 @@
+# BEAMOPS v3 Grafana Dashboard Provisioning
+# Following Engineering Elixir Applications monitoring patterns
+
+apiVersion: 1
+
+providers:
+  # BEAMOPS v3 Dashboards
+  - name: 'beamops-v3'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true

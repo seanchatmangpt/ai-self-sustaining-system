@@ -1,0 +1,1911 @@
+{
+  "timestamp": "2025-06-16T07:05:23Z",
+  "trace_id": "e6fccec0984c4fd9860b3b767632df5c",
+  "span_id": "real_agent_1750057523851094000_work_1",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 63,
+  "success": true,
+  "agent_id": "real_agent_1750057523851094000",
+  "agent_pid": 78885,
+  "work_id": 1,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:05:56Z",
+  "trace_id": "64be15ef1660466b91a18cece33d703f",
+  "span_id": "real_agent_1750057523851094000_work_2",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2597,
+  "success": true,
+  "agent_id": "real_agent_1750057523851094000",
+  "agent_pid": 78885,
+  "work_id": 2,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:12Z",
+  "trace_id": "840ba80c1d694c499d08d13ef4a9ebc8",
+  "span_id": "real_agent_1750057932658686000_work_1",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 137,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 1,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:13Z",
+  "trace_id": "5a7484b71afb4e8595f2cb18a69a876e",
+  "span_id": "real_agent_1750057930652277000_work_1",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2466,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 1,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:14Z",
+  "trace_id": "0db8e16ba0384f2f9a68353040142abc",
+  "span_id": "real_agent_1750057934666737000_work_1",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 22,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 1,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:16Z",
+  "trace_id": "d1608aac3f57464a8d12f5279eca796f",
+  "span_id": "real_agent_1750057936670926000_work_1",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 22,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 1,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:18Z",
+  "trace_id": "83dd7ef358f140dfb6146f5cbafde2a8",
+  "span_id": "real_agent_1750057938678916000_work_1",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 23,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 1,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:42Z",
+  "trace_id": "684260dce265422bb8f440556f99256f",
+  "span_id": "real_agent_1750057932658686000_work_2",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 2,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:44Z",
+  "trace_id": "f02ae21897c24e8798c64eb21095ba22",
+  "span_id": "real_agent_1750057934666737000_work_2",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 2,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:45Z",
+  "trace_id": "f038ab5e89384f11b38ff61b8772a702",
+  "span_id": "real_agent_1750057930652277000_work_2",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2427,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 2,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:46Z",
+  "trace_id": "6dd522d4bc894cbd887bcf9610ef3758",
+  "span_id": "real_agent_1750057936670926000_work_2",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 2,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:12:51Z",
+  "trace_id": "ee265d5bfdf24f7b8f13ce7fcd809a4e",
+  "span_id": "real_agent_1750057938678916000_work_2",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2484,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 2,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:13Z",
+  "trace_id": "2e654931dd0544df95d12ea6b679528e",
+  "span_id": "real_agent_1750057932658686000_work_3",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 58,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 3,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:15Z",
+  "trace_id": "8569392c9bc4496fb247bb8638876d0e",
+  "span_id": "real_agent_1750057934666737000_work_3",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 138,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 3,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:15Z",
+  "trace_id": "18ffe358409e4b2d96159aaeae6e63d3",
+  "span_id": "real_agent_1750057930652277000_work_3",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 3,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:16Z",
+  "trace_id": "bd32bb3c8f204eacb2b15cee75b2d973",
+  "span_id": "real_agent_1750057936670926000_work_3",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 133,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 3,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:21Z",
+  "trace_id": "544951981779410e99765546a8e25409",
+  "span_id": "real_agent_1750057938678916000_work_3",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 58,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 3,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:43Z",
+  "trace_id": "d8a28dfc3554439fb0736a25b1bd2f36",
+  "span_id": "real_agent_1750057932658686000_work_4",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 26,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 4,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:45Z",
+  "trace_id": "4460ef2269614a05a6d82320ef5e49c0",
+  "span_id": "real_agent_1750057934666737000_work_4",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 4,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:45Z",
+  "trace_id": "44b23fcd356a4f5b8304ad37e0b04cd3",
+  "span_id": "real_agent_1750057930652277000_work_4",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 27,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 4,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:49Z",
+  "trace_id": "d2d87c3c5a284adabeb96403d7b3878b",
+  "span_id": "real_agent_1750057936670926000_work_4",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2276,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 4,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:13:54Z",
+  "trace_id": "ac9ec5512c88400baf45fd8047fc6e21",
+  "span_id": "real_agent_1750057938678916000_work_4",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2710,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 4,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:13Z",
+  "trace_id": "615cd528252b4114a31cd6c171967a66",
+  "span_id": "real_agent_1750057932658686000_work_5",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 5,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:15Z",
+  "trace_id": "77afdefa40024b2bba0b571743252f89",
+  "span_id": "real_agent_1750057934666737000_work_5",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 49,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 5,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:18Z",
+  "trace_id": "4a234f066f514db8b298265031213ff6",
+  "span_id": "real_agent_1750057930652277000_work_5",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2362,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 5,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:21Z",
+  "trace_id": "5329d50e7bc447c09d23d15d7eec823c",
+  "span_id": "real_agent_1750057936670926000_work_5",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2237,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 5,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:26Z",
+  "trace_id": "663c1ff5bd3a43d0bf49a09cb5613a28",
+  "span_id": "real_agent_1750057938678916000_work_5",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2251,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 5,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:45Z",
+  "trace_id": "161f69726f0d46feb6d39591cc4aa1cc",
+  "span_id": "real_agent_1750057934666737000_work_6",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 51,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 6,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:45Z",
+  "trace_id": "a295c87977004f3e910ad473565e7870",
+  "span_id": "real_agent_1750057932658686000_work_6",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2230,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 6,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:50Z",
+  "trace_id": "e699d6865b8347b8ba9390fe819931d5",
+  "span_id": "real_agent_1750057930652277000_work_6",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2234,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 6,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:51Z",
+  "trace_id": "a679fcc9274746eebd281a2a12888321",
+  "span_id": "real_agent_1750057936670926000_work_6",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 50,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 6,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:14:56Z",
+  "trace_id": "b96e25189a044cb39ed05ed74ca7d754",
+  "span_id": "real_agent_1750057938678916000_work_6",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 6,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:15Z",
+  "trace_id": "29d3144b745648d6b89d614cb0590377",
+  "span_id": "real_agent_1750057932658686000_work_7",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 7,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:17Z",
+  "trace_id": "334a1d0c311b40b78d4b33882530221c",
+  "span_id": "real_agent_1750057934666737000_work_7",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2300,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 7,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:21Z",
+  "trace_id": "926a0434d7b948ea8b8d8ae14d6fe10c",
+  "span_id": "real_agent_1750057936670926000_work_7",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 7,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:22Z",
+  "trace_id": "e28e922562b9468ba314c0dfbf0a375d",
+  "span_id": "real_agent_1750057930652277000_work_7",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2223,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 7,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:26Z",
+  "trace_id": "c539a566355242d39b2f8e750e80f2ad",
+  "span_id": "real_agent_1750057938678916000_work_7",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 144,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 7,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:47Z",
+  "trace_id": "81d8e8ccbe474f6a9fa98eedbf2a0399",
+  "span_id": "real_agent_1750057934666737000_work_8",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 8,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:48Z",
+  "trace_id": "cfaa7fb2a2314bb6819992464382abe2",
+  "span_id": "real_agent_1750057932658686000_work_8",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2584,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 8,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:51Z",
+  "trace_id": "14f2053ff98c4831845f0fbe1199a424",
+  "span_id": "real_agent_1750057936670926000_work_8",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 26,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 8,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:52Z",
+  "trace_id": "e9fb1006b18d4383ad863b4c7df0d29f",
+  "span_id": "real_agent_1750057930652277000_work_8",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 51,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 8,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:15:58Z",
+  "trace_id": "d9fed8c22599452b9e942f320292d7e4",
+  "span_id": "real_agent_1750057938678916000_work_8",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2347,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 8,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:17Z",
+  "trace_id": "cdeb331559d74635b07034600020935a",
+  "span_id": "real_agent_1750057934666737000_work_9",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 52,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 9,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:18Z",
+  "trace_id": "071f9225c2b6474ebf77fd1e2a492510",
+  "span_id": "real_agent_1750057932658686000_work_9",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 63,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 9,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:21Z",
+  "trace_id": "67d2fc75f8ee462e850499b34c480652",
+  "span_id": "real_agent_1750057936670926000_work_9",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 54,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 9,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:22Z",
+  "trace_id": "f6b3551361e446908d570825606b9ca2",
+  "span_id": "real_agent_1750057930652277000_work_9",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 63,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 9,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:29Z",
+  "trace_id": "50b1a83c3e9f4ed5a2c9f28a9a04c884",
+  "span_id": "real_agent_1750057938678916000_work_9",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 26,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 9,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:47Z",
+  "trace_id": "619bc61317524975a1cb2b96ac7bc678",
+  "span_id": "real_agent_1750057934666737000_work_10",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 145,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 10,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:50Z",
+  "trace_id": "4b7929bf69c54b08bf1b50057e11cc1a",
+  "span_id": "real_agent_1750057932658686000_work_10",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2352,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 10,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:52Z",
+  "trace_id": "22723a0d136c4c5780a7776a14a007e6",
+  "span_id": "real_agent_1750057930652277000_work_10",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 132,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 10,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:54Z",
+  "trace_id": "7f4e04c520724f9e8cb0c0816f51668e",
+  "span_id": "real_agent_1750057936670926000_work_10",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2245,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 10,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:16:59Z",
+  "trace_id": "a70c4fc2d21441c8a39d89b247c9bc09",
+  "span_id": "real_agent_1750057938678916000_work_10",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 134,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 10,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:17Z",
+  "trace_id": "097faf7028bd4a828f95da1acff5bb0f",
+  "span_id": "real_agent_1750057934666737000_work_11",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 51,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 11,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:22Z",
+  "trace_id": "c82e946bc58949cfb76b8b821abc0f59",
+  "span_id": "real_agent_1750057932658686000_work_11",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2313,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 11,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:24Z",
+  "trace_id": "8710928af6664d98863c3644c5a4eaed",
+  "span_id": "real_agent_1750057936670926000_work_11",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 55,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 11,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:25Z",
+  "trace_id": "b3f21339480241728fab6a44ff7e96dd",
+  "span_id": "real_agent_1750057930652277000_work_11",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2420,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 11,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:29Z",
+  "trace_id": "06e09089129a45259c30c7f1eff1b398",
+  "span_id": "real_agent_1750057938678916000_work_11",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 54,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 11,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:48Z",
+  "trace_id": "7f09cadd736540a0b2f2c77d5baf98d3",
+  "span_id": "real_agent_1750057934666737000_work_12",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 12,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:55Z",
+  "trace_id": "3124d609224447c99beb73b9980573c0",
+  "span_id": "real_agent_1750057932658686000_work_12",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2463,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 12,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:55Z",
+  "trace_id": "644496307a104989868a91759f3e91fc",
+  "span_id": "real_agent_1750057930652277000_work_12",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 12,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:56Z",
+  "trace_id": "28c2253093b54fbb81868904b67892ed",
+  "span_id": "real_agent_1750057936670926000_work_12",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2462,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 12,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:17:59Z",
+  "trace_id": "ba4f80aa1d304346b390fd300fb99edd",
+  "span_id": "real_agent_1750057938678916000_work_12",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 132,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 12,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:20Z",
+  "trace_id": "1263cfc0543d4d21a05896b4dcb44945",
+  "span_id": "real_agent_1750057934666737000_work_13",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2352,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 13,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:25Z",
+  "trace_id": "6c6716e963cb45e39750ef0252cb5c14",
+  "span_id": "real_agent_1750057930652277000_work_13",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 49,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 13,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:26Z",
+  "trace_id": "6df1f6e3807a49f5a233fdb4583db4f1",
+  "span_id": "real_agent_1750057936670926000_work_13",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 13,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:27Z",
+  "trace_id": "c72d1fb570404ced8e6dc1abe7abc9ec",
+  "span_id": "real_agent_1750057932658686000_work_13",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2367,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 13,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:29Z",
+  "trace_id": "3602da5bfcb444818f5f778bc183fa20",
+  "span_id": "real_agent_1750057938678916000_work_13",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 52,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 13,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:50Z",
+  "trace_id": "b588b0ce29364760a22fd6b2e63e5a6c",
+  "span_id": "real_agent_1750057934666737000_work_14",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 48,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 14,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:55Z",
+  "trace_id": "2c66140abcf44a228f2fbe3d3e3e9ebb",
+  "span_id": "real_agent_1750057930652277000_work_14",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 23,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 14,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:56Z",
+  "trace_id": "9d343eec896640c0a9150621d0c0c307",
+  "span_id": "real_agent_1750057936670926000_work_14",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 50,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 14,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:18:58Z",
+  "trace_id": "f779bef036a3410dbd7a58bfc2043373",
+  "span_id": "real_agent_1750057932658686000_work_14",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 14,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:01Z",
+  "trace_id": "8a2083e008e640418c6559e2e7c9109e",
+  "span_id": "real_agent_1750057938678916000_work_14",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2285,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 14,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:20Z",
+  "trace_id": "102be6fd93914b01a76cfc0ac314623a",
+  "span_id": "real_agent_1750057934666737000_work_15",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 47,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 15,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:25Z",
+  "trace_id": "50fc7a20b668439dacca2b67a8beef93",
+  "span_id": "real_agent_1750057930652277000_work_15",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 15,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:26Z",
+  "trace_id": "c960a82711ec4978882be4be3451fb28",
+  "span_id": "real_agent_1750057936670926000_work_15",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 49,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 15,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:28Z",
+  "trace_id": "def0d92bf6f1495ab790a5c5d565956d",
+  "span_id": "real_agent_1750057932658686000_work_15",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 15,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:34Z",
+  "trace_id": "48b9a32eb7664bebb3c1a85ec244cb82",
+  "span_id": "real_agent_1750057938678916000_work_15",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2307,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 15,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:50Z",
+  "trace_id": "1819cc77538a4f999b2810ed1640a925",
+  "span_id": "real_agent_1750057934666737000_work_16",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 129,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 16,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:55Z",
+  "trace_id": "9957d35a5fc8444ea968ecf0012cd06d",
+  "span_id": "real_agent_1750057930652277000_work_16",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 16,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:58Z",
+  "trace_id": "c057c7d133a14b9c9b32cdb242647c2c",
+  "span_id": "real_agent_1750057932658686000_work_16",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 23,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 16,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:19:59Z",
+  "trace_id": "914630cb039a4e97a85f6eca8f064099",
+  "span_id": "real_agent_1750057936670926000_work_16",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2330,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 16,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:04Z",
+  "trace_id": "ace5ae6ebd074dceaa54c37c5f5ca53e",
+  "span_id": "real_agent_1750057938678916000_work_16",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 16,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:20Z",
+  "trace_id": "028e9dd631b640469982cba64e3ec33c",
+  "span_id": "real_agent_1750057934666737000_work_17",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 17,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:28Z",
+  "trace_id": "13649604af264702bd36e98b63731e08",
+  "span_id": "real_agent_1750057930652277000_work_17",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2324,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 17,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:28Z",
+  "trace_id": "4bf3fe41a3d244eb843d0ff2c7ac30af",
+  "span_id": "real_agent_1750057932658686000_work_17",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 128,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 17,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:29Z",
+  "trace_id": "6ab7d55cc4d54611b38ea6b81b422069",
+  "span_id": "real_agent_1750057936670926000_work_17",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 58,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 17,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:34Z",
+  "trace_id": "e6a74b572691499499bcae6a8e206139",
+  "span_id": "real_agent_1750057938678916000_work_17",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 27,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 17,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:50Z",
+  "trace_id": "f41f200fa8aa4945b44ef34902418a4b",
+  "span_id": "real_agent_1750057934666737000_work_18",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 18,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:58Z",
+  "trace_id": "95589a8edad44ca7b0cb737a40cd146f",
+  "span_id": "real_agent_1750057930652277000_work_18",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 131,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 18,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:58Z",
+  "trace_id": "f9c4a459f25a4ecf97b1d7f4f5792136",
+  "span_id": "real_agent_1750057932658686000_work_18",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 131,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 18,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:20:59Z",
+  "trace_id": "54850d78228448e6ba56c4001b556c6f",
+  "span_id": "real_agent_1750057936670926000_work_18",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 133,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 18,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:04Z",
+  "trace_id": "8519672ac1f84ac9838152e368f5703c",
+  "span_id": "real_agent_1750057938678916000_work_18",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 138,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 18,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:20Z",
+  "trace_id": "39175df710a64b5abcdc173a086dfd46",
+  "span_id": "real_agent_1750057934666737000_work_19",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 19,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:28Z",
+  "trace_id": "53730c63a7894ec5893fc8773e638f33",
+  "span_id": "real_agent_1750057930652277000_work_19",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 51,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 19,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:31Z",
+  "trace_id": "a70f2fb2243c424db6c5fed0d39f276b",
+  "span_id": "real_agent_1750057932658686000_work_19",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2611,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 19,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:32Z",
+  "trace_id": "02670829b7854dbeaecd13872412f5a1",
+  "span_id": "real_agent_1750057936670926000_work_19",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2615,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 19,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:34Z",
+  "trace_id": "6b11b3c4ef4a4442949685adf39367fe",
+  "span_id": "real_agent_1750057938678916000_work_19",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 49,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 19,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:51Z",
+  "trace_id": "fcc68b42b0b544949f432a23fda6e2ce",
+  "span_id": "real_agent_1750057934666737000_work_20",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 137,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 20,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:21:58Z",
+  "trace_id": "41238c4b353b4006937f4ef062f4c7cd",
+  "span_id": "real_agent_1750057930652277000_work_20",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 62,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 20,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:02Z",
+  "trace_id": "b312e8d94e2548c3882c5f03267269f3",
+  "span_id": "real_agent_1750057936670926000_work_20",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 136,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 20,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:03Z",
+  "trace_id": "5051231e02e74e2399fe33bf64d8f6db",
+  "span_id": "real_agent_1750057932658686000_work_20",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2424,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 20,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:04Z",
+  "trace_id": "bd2ef29d407e45789791926b747de70f",
+  "span_id": "real_agent_1750057938678916000_work_20",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 20,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:21Z",
+  "trace_id": "c7b61bfd597748698de274df686a3338",
+  "span_id": "real_agent_1750057934666737000_work_21",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 130,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 21,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:28Z",
+  "trace_id": "36e875eca0db4ee9b1dc3e6af3946ae9",
+  "span_id": "real_agent_1750057930652277000_work_21",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 21,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:32Z",
+  "trace_id": "4255cb0dd55b446389a2403483d3fb6f",
+  "span_id": "real_agent_1750057936670926000_work_21",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 127,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 21,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:34Z",
+  "trace_id": "ccf620e0d1884c2ea46d81ddc4682c3e",
+  "span_id": "real_agent_1750057938678916000_work_21",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 133,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 21,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:35Z",
+  "trace_id": "ebb87a94274246faa1ea06dedbadc031",
+  "span_id": "real_agent_1750057932658686000_work_21",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2326,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 21,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:51Z",
+  "trace_id": "b344478164c34b8e975177c7a702ec09",
+  "span_id": "real_agent_1750057934666737000_work_22",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 57,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 22,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:22:58Z",
+  "trace_id": "e4232500f4084f8995150a5790d19032",
+  "span_id": "real_agent_1750057930652277000_work_22",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 22,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:02Z",
+  "trace_id": "c4794836f60343bc9dd77813c39d4556",
+  "span_id": "real_agent_1750057936670926000_work_22",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 26,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 22,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:04Z",
+  "trace_id": "189088aca2274be48e8768c35a952683",
+  "span_id": "real_agent_1750057938678916000_work_22",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 22,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:05Z",
+  "trace_id": "cd2d5162d41540cabf9e56f57fa0ccd0",
+  "span_id": "real_agent_1750057932658686000_work_22",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 29,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 22,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:21Z",
+  "trace_id": "943f5c1e16c040dd8e778b19cbef5af6",
+  "span_id": "real_agent_1750057934666737000_work_23",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 23,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:28Z",
+  "trace_id": "2b3c57e99d384fe798998efa11237136",
+  "span_id": "real_agent_1750057930652277000_work_23",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 55,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 23,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:32Z",
+  "trace_id": "1f120c4cf74e452a90dd734b6ef2dee0",
+  "span_id": "real_agent_1750057936670926000_work_23",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 49,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 23,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:34Z",
+  "trace_id": "2aa5e2d9b51c4d07baea13677fcf99ed",
+  "span_id": "real_agent_1750057938678916000_work_23",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 23,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:36Z",
+  "trace_id": "43516effbab04a93b646cc0d150e9fb0",
+  "span_id": "real_agent_1750057932658686000_work_23",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 49,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 23,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:23:51Z",
+  "trace_id": "9230c855da884b858c86174bd5628a9a",
+  "span_id": "real_agent_1750057934666737000_work_24",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 24,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 24,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:01Z",
+  "trace_id": "80f04a17e36d4f91a2ab9bfedceda580",
+  "span_id": "real_agent_1750057930652277000_work_24",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2323,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 24,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:04Z",
+  "trace_id": "587d8498f218414383248d8a65518f2e",
+  "span_id": "real_agent_1750057938678916000_work_24",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 23,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 24,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:04Z",
+  "trace_id": "53e551ff0cc84f8095958cfc3b13c519",
+  "span_id": "real_agent_1750057936670926000_work_24",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2350,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 24,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:06Z",
+  "trace_id": "4c1a726994964d68b77f4076f6e65acc",
+  "span_id": "real_agent_1750057932658686000_work_24",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 24,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:23Z",
+  "trace_id": "031bba135512443b891f74a415c98134",
+  "span_id": "real_agent_1750057934666737000_work_25",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2335,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 25,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:31Z",
+  "trace_id": "4439c33eb12a434ab7150166639738a4",
+  "span_id": "real_agent_1750057930652277000_work_25",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 50,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 25,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:34Z",
+  "trace_id": "9baa6c055bf24feb9f47cb971f2a9596",
+  "span_id": "real_agent_1750057938678916000_work_25",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 25,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:35Z",
+  "trace_id": "ded2e3bb581945f3bcb8b1266deafb66",
+  "span_id": "real_agent_1750057936670926000_work_25",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 23,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 25,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:38Z",
+  "trace_id": "acfaed11284f482dbe27ec6ab8e71183",
+  "span_id": "real_agent_1750057932658686000_work_25",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2409,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 25,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:24:56Z",
+  "trace_id": "0fef78ef690c49fc81c5f4c5b61a1654",
+  "span_id": "real_agent_1750057934666737000_work_26",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2748,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 26,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:01Z",
+  "trace_id": "b2c3ee5aaf8c4c7ba31239037aeca929",
+  "span_id": "real_agent_1750057930652277000_work_26",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 30,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 26,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:05Z",
+  "trace_id": "cf748377ee36472ca49add8275da852d",
+  "span_id": "real_agent_1750057938678916000_work_26",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 26,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:05Z",
+  "trace_id": "03ed71d46d8b4c41953f907e77b4a34d",
+  "span_id": "real_agent_1750057936670926000_work_26",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 26,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:08Z",
+  "trace_id": "66a891cfbc04460e9a94907a915c8ad2",
+  "span_id": "real_agent_1750057932658686000_work_26",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 57,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 26,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:29Z",
+  "trace_id": "064f844fb05f4c17b829725bbf5b7615",
+  "span_id": "real_agent_1750057934666737000_work_27",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2530,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 27,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:31Z",
+  "trace_id": "92649b55db1640129d675b2e7189bb11",
+  "span_id": "real_agent_1750057930652277000_work_27",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 135,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 27,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:35Z",
+  "trace_id": "735de3e2ce6a4640acbfff4383fbb388",
+  "span_id": "real_agent_1750057936670926000_work_27",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 28,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 27,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:35Z",
+  "trace_id": "3b7bc1065bf644c5ad3b0de69fefdee5",
+  "span_id": "real_agent_1750057938678916000_work_27",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 143,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 27,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:41Z",
+  "trace_id": "77ea10a6d82b4529bfecf817000e7795",
+  "span_id": "real_agent_1750057932658686000_work_27",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2464,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 27,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:25:59Z",
+  "trace_id": "84ee141333074c8fab0f822e969620ab",
+  "span_id": "real_agent_1750057934666737000_work_28",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 57,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 28,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:01Z",
+  "trace_id": "eb233012cc3e44d097b8d35ab0a79b87",
+  "span_id": "real_agent_1750057930652277000_work_28",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 57,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 28,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:05Z",
+  "trace_id": "c5e8a71acb5343b49d107444f44e245d",
+  "span_id": "real_agent_1750057938678916000_work_28",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 25,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 28,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:07Z",
+  "trace_id": "ee168a0599a942ebab23419b66d63ac2",
+  "span_id": "real_agent_1750057936670926000_work_28",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2550,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 28,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:11Z",
+  "trace_id": "48dcbc1d7cde45c49e244f9b8580abc4",
+  "span_id": "real_agent_1750057932658686000_work_28",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 27,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 28,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:29Z",
+  "trace_id": "ef3835f63d584adebc8d5a9e7368fcad",
+  "span_id": "real_agent_1750057934666737000_work_29",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 140,
+  "success": true,
+  "agent_id": "real_agent_1750057934666737000",
+  "agent_pid": 1005,
+  "work_id": 29,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:34Z",
+  "trace_id": "f6576330e39b48ed8488fa8e9a9be60e",
+  "span_id": "real_agent_1750057930652277000_work_29",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2517,
+  "success": true,
+  "agent_id": "real_agent_1750057930652277000",
+  "agent_pid": 97231,
+  "work_id": 29,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:35Z",
+  "trace_id": "ac95d320ecaa4b22ae215b8fcb18e810",
+  "span_id": "real_agent_1750057938678916000_work_29",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 26,
+  "success": true,
+  "agent_id": "real_agent_1750057938678916000",
+  "agent_pid": 1170,
+  "work_id": 29,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:40Z",
+  "trace_id": "1ec2a234e9e74a5cac3a540bf64f3b73",
+  "span_id": "real_agent_1750057936670926000_work_29",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 2488,
+  "success": true,
+  "agent_id": "real_agent_1750057936670926000",
+  "agent_pid": 1082,
+  "work_id": 29,
+  "real_execution": true
+}
+{
+  "timestamp": "2025-06-16T07:26:41Z",
+  "trace_id": "a0d4b107f5fb47558db481dab5427500",
+  "span_id": "real_agent_1750057932658686000_work_29",
+  "operation": "real.agent.work.execution",
+  "service": "real-agent-worker",
+  "duration_ms": 137,
+  "success": true,
+  "agent_id": "real_agent_1750057932658686000",
+  "agent_pid": 99711,
+  "work_id": 29,
+  "real_execution": true
+}

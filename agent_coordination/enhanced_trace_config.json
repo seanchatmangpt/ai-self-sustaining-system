@@ -1,0 +1,22 @@
+{
+  "trace_correlation": {
+    "enabled": true,
+    "sampling_rate": 1.0,
+    "cross_agent_correlation": true,
+    "promex_integration": true,
+    "phoenix_integration": true,
+    "performance_tracking": true
+  },
+  "service_configuration": {
+    "service_name": "ai-self-sustaining-coordination",
+    "service_version": "2.0.0",
+    "environment": "development",
+    "trace_endpoints": ["http://localhost:4318"]
+  },
+  "correlation_metadata": {
+    "system_type": "autonomous_ai_swarm",
+    "coordination_version": "enhanced_v2",
+    "initialization_trace_id": "5acc0b00d5044f751df6baa986ffee16",
+    "initialization_timestamp": "2025-06-16T07:56:11.3NZ"
+  }
+}

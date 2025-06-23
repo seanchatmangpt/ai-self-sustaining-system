@@ -16,7 +16,13 @@ defmodule SelfSustaining.MixProject do
   def application do
     [
       mod: {SelfSustaining.Application, []},
-      extra_applications: [:logger, :runtime_tools, :opentelemetry, :opentelemetry_exporter, :os_mon]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :opentelemetry,
+        :opentelemetry_exporter,
+        :os_mon
+      ]
     ]
   end
 
@@ -40,7 +46,7 @@ defmodule SelfSustaining.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      
+
       # Ash Framework
       {:ash, "~> 3.0"},
       {:ash_postgres, "~> 2.0"},
@@ -50,10 +56,10 @@ defmodule SelfSustaining.MixProject do
       {:ash_oban, "~> 0.4.9"},
       {:oban, "~> 2.17"},
       {:ash_ai, github: "ash-project/ash_ai"},
-      
+
       # Reactor for workflow orchestration
       {:reactor, "~> 0.15.4"},
-      
+
       # Additional dependencies
       {:tidewave, "~> 0.1"},
       {:httpoison, "~> 2.0"},
@@ -61,7 +67,7 @@ defmodule SelfSustaining.MixProject do
       {:file_system, "~> 1.0"},
       {:cachex, "~> 3.6"},
       {:yaml_elixir, "~> 2.9"},
-      
+
       # OpenTelemetry - using compatible versions
       {:opentelemetry, "~> 1.3"},
       {:opentelemetry_api, "~> 1.2"},
@@ -70,11 +76,14 @@ defmodule SelfSustaining.MixProject do
       {:opentelemetry_ecto, "~> 1.1"},
       {:opentelemetry_cowboy, "~> 0.2"},
       {:opentelemetry_liveview, "~> 1.0.0-rc.4"},
-      
+
+      # PromEx for Prometheus metrics
+      {:prom_ex, "~> 1.9.0"},
+
       # Asset compilation
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
-      
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev}
+
       # Livebook Teams Integration (optional - install separately)
       # {:livebook, "~> 0.12.0", optional: true},
       # {:kino, "~> 0.12.0", optional: true},
@@ -82,7 +91,6 @@ defmodule SelfSustaining.MixProject do
       # {:kino_db, "~> 0.2.5", optional: true},
       # {:vega_lite, "~> 0.1.7", optional: true},
       # {:explorer, "~> 0.7.0", optional: true},
-      
     ]
   end
 

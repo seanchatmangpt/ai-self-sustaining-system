@@ -10,6 +10,13 @@
 
 set -euo pipefail
 
+# 80/20 TRACE PROPAGATION FIX - Output inherited trace ID
+if [[ -n "${MASTER_TRACE:-}" ]]; then
+    echo "TRACE_PROPAGATED: $MASTER_TRACE"
+    echo "TRACE_CONTEXT: INHERITED_FROM_ORCHESTRATOR"
+fi
+
+
 # Configuration
 DEMO_ID="trace_demo_$(date +%s%N)"
 EVIDENCE_DIR="/tmp/trace_demo_$(date +%s)"
